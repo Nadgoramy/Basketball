@@ -1,0 +1,17 @@
+.playerList{
+    position: absolute;
+    width: 1300px;
+    /*height: 992px;*/
+    left: 140px;
+    top: 80px;
+    background: #F6F6F6;    
+    padding: 40px 80px;
+}
+
+.serachContainer{
+text-align: left;
+}
+
+.serachContainer Link{
+    float: right;
+}

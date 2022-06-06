@@ -1,0 +1,28 @@
+.loginPage{
+    width: 1440px;
+}
+.loginContainer{
+    position: absolute;
+    width: 606px;
+    height: 1024px;
+    left: 0px;
+    top: 0px;
+
+    /* UI / White */
+
+    background: #FFFFFF;
+}
+.imageContainer{
+    position: absolute;
+    width: 834px;
+    height: 1024px;
+    left: 606px;
+    top: 0px;
+
+    /* UI / Light Blue */
+
+    background: #F5FBFF;
+}
+.imageContainer>img{
+    padding: 306px 114px;
+}
