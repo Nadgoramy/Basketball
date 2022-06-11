@@ -1,9 +1,9 @@
-import { TeamDtoPageResult } from "../interface/teamDto"
+import { TeamDtoPageResult } from "api/Dto/teamDto"
 
 export const actionTypes = {
     START_REQUEST : () => ("START_REQUEST"),
     FINISH_REQUEST : () => ("FINISH_REQUEST"),
-    SET_FILTER: () =>  'SET_PLAYERS_FILTER',
+    SET_FILTER: () =>  'SET_FILTER',
     SET_CURRENTPAGE : () =>  'SET_CURRENTPAGE',
     SET_PAGESIZE: () =>  'SET_PAGESIZE',
     GOT_TEAMS: () =>  'GOT_TEAMS',   

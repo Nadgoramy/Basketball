@@ -1,6 +1,6 @@
-import {get, post, remove, put} from '../baseRequest';
-import AuthService from '../authService';
-import {NewPlayerDto, PlayerDto, PlayerDtoPageResult} from '../../modules/interface/playerDto';
+import {get, post, remove, put} from 'api/baseRequest';
+import AuthService from 'api/authService';
+import {NewPlayerDto, PlayerDto, PlayerDtoPageResult} from 'api/Dto/playerDto';
 
 
 const API_URL = "player/";
@@ -19,6 +19,7 @@ const getPlayers = (name: string, page: number, pageSize: number) => {
   let currentUser = AuthService.getCurrentUser();
   if(!currentUser) return;
   let requestParams = "?Name="+name+"&Page="+page+"&PageSize="+pageSize
+  console.log(requestParams);
   return get(API_URL + "getplayers"+requestParams,  currentUser.token)
     .then((response) => {    
       let result : PlayerDtoPageResult = response;

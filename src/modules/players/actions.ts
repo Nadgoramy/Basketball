@@ -1,6 +1,6 @@
-import { NewPlayerDto, PlayerDto, PlayerDtoPageResult } from "../interface/playerDto";
-import PlayerService from "../../api/players/playerService";
-import { InferActionsTypes } from "../../core/redux/configureStore";
+import { NewPlayerDto, PlayerDto, PlayerDtoPageResult } from "../../api/Dto/playerDto";
+import PlayerService from "api/players/playerService";
+import { InferActionsTypes } from "core/redux/configureStore";
 import { string } from "prop-types";
 
 export const actionTypes = {

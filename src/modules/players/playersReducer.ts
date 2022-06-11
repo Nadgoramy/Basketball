@@ -1,7 +1,7 @@
 import { number } from 'prop-types'
-import PlayerService from '../../api/players/playerService';
-import { BaseThunkType, InferActionsTypes } from '../../core/redux/configureStore';
-import {PlayerDto, NewPlayerDto, PlayerDtoPageResult} from '../interface/playerDto'
+import PlayerService from 'api/players/playerService';
+import { BaseThunkType, InferActionsTypes } from 'core/redux/configureStore';
+import {PlayerDto, NewPlayerDto, PlayerDtoPageResult} from 'api/Dto/playerDto'
 import {actions, actionTypes, ActionsTypes} from './actions';
 
 export const player = (state: PlayerDto, action: any) => {

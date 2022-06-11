@@ -1,4 +1,4 @@
-import { TeamDto } from "../interface/teamDto"
+import { TeamDto } from "api/Dto/teamDto"
 import { ActionsTypes, actionTypes } from "./actions"
 
 
@@ -40,7 +40,8 @@ export function teams(
       case actionTypes.GOT_TEAMS:
         return Object.assign({}, state, {
           isFetching: false, 
-          pageItems: action.teams.data,  
+          pageItems: action.teams.data,
+          count : action.teams.count,
           needToReload:false   
         })
       case actionTypes.SET_FILTER:{

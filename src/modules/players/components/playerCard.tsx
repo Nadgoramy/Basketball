@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { Component } from "react";
 import PropTypes from 'prop-types';
-import { PlayerDto } from "../../interface/playerDto";
+import { PlayerDto } from "api/Dto/playerDto";
 //import { Typography } from '@mui/material';
 import "./playerCard.css";
 

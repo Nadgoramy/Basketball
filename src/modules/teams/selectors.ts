@@ -19,3 +19,7 @@ export const getFilter = (state: AppStateType) => {
 export const getTeams = (state: AppStateType) => {    
     return state.teams.pageItems;
 }
+
+export const getCount = (state: AppStateType) =>{
+    return state.teams.count
+}
