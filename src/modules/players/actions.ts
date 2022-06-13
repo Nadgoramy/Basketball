@@ -25,7 +25,7 @@ export const actions = {
   setPageSize: (size:number) =>( { pageSize: size, type: actionTypes.SET_PAGESIZE } as const),
   gotPlayers: ( result :PlayerDtoPageResult) => ({ type: actionTypes.GOT_PLAYERS, playersPage: result } as const),
 
-     
+  getPlayer   
 }
 export type ActionsTypes = {
   type: ()=>string
@@ -75,21 +75,10 @@ export function gotPlayers( result :PlayerDtoPageResult):GotPlayerActionType{
   } as const
 }
 
-export function getPlayersAction(page:number, pageSize: number, filter:string) {
-  return async (dispatch:any) => {
-    dispatch(requestPlayers());
-    dispatch(setPlayersFilter(filter))
-    const response = await PlayerService.getPlayers(filter, page, pageSize);
-    if(!response)return;
-      dispatch(gotPlayers(response));
-  }  
-}
-
-export function getPlayer(action: object, id:number) {
+export function getPlayer(player: PlayerDto) {
   return {
     type: actionTypes.GET_PLAYER,
-    action,
-    id: id
+    player: player,
   }  as const
 }
 

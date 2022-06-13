@@ -15,10 +15,11 @@ const getPositions = () => {
     .catch((err)=>{console.log(err)});
 }
 
-const getPlayers = (name: string, page: number, pageSize: number) => {
+const getPlayers = (name: string, teamIds: number[]|null, page: number, pageSize: number) => {
   let currentUser = AuthService.getCurrentUser();
   if(!currentUser) return;
-  let requestParams = "?Name="+name+"&Page="+page+"&PageSize="+pageSize
+  let requestParams = "?Name="+name+"&Page="+page+"&PageSize="+pageSize ;
+  if(teamIds) teamIds.forEach(tId => requestParams+="&TeamIds="+tId);  //TeamIds=1907&TeamIds=1908
   console.log(requestParams);
   return get(API_URL + "getplayers"+requestParams,  currentUser.token)
     .then((response) => {    
@@ -29,11 +30,12 @@ const getPlayers = (name: string, page: number, pageSize: number) => {
 };
 
 const getPlayer = (id: number) => {
+  console.log("getting player");
     let currentUser = AuthService.getCurrentUser();
-    if(!currentUser) return;
+    if(!currentUser) return null;
     return get(API_URL + "get?id=" + id,  currentUser.token)
       .then((response) => {        
-        let result : PlayerDto = response.data;
+        let result : PlayerDto = response;
       return result;  
       })
       .catch((err)=>{console.log(err)});
@@ -45,7 +47,7 @@ const getPlayer = (id: number) => {
     if(!currentUser) return;
     return post(API_URL + "add", { player },  currentUser.token)
       .then((response) => {        
-        let result : PlayerDto = response.data;
+        let result : PlayerDto = response;
       return result;  
       })
       .catch((err)=>{console.log(err)});
@@ -56,7 +58,7 @@ const getPlayer = (id: number) => {
     if(!currentUser) return;
     return put(API_URL + "update", { player },  currentUser.token)
       .then((response) => {        
-        let result : PlayerDto = response.data;
+        let result : PlayerDto = response;
         return result;  
       })
       .catch((err)=>{console.log(err)});
@@ -67,7 +69,7 @@ const getPlayer = (id: number) => {
     if(!currentUser) return;
     return remove(API_URL + "delete?id=" + id,  currentUser.token)
       .then((response) => {        
-        let result : PlayerDto = response.data;
+        let result : PlayerDto = response;
         return result;  
       })
       .catch((err)=>{console.log(err)});

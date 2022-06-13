@@ -9,7 +9,7 @@ import Input from 'common/components/Input/Input';
 import styled from 'styled-components';
 
 const StyledLoginContainer = styled.div`
-padding:  340px 0 0 120px;
+margin: 226px 120px 0 120px;
 display: flex;
 flex-direction: column;
 

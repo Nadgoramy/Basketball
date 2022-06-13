@@ -1,4 +1,4 @@
-import { AppStateType } from "../../core/redux/configureStore";
+import { AppStateType } from "core/redux/configureStore";
 
 export const getCurrentPage=(state: AppStateType) => {
     return state.players.page;
@@ -20,6 +20,6 @@ export const getPlayers = (state: AppStateType) => {
     return state.players.pageItems;
 }
 
-export const getCount=(state: AppStateType) => {    
+export const getCount=(state: AppStateType) => {       
     return state.players.count;
 }

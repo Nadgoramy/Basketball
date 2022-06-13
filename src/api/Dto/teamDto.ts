@@ -4,7 +4,7 @@ export  class TeamDto{
     id: number =0;
     imageUrl: string ="";
     name: string = "";
-    yearOfFoundation: number = 0;
+    foundationYear: number = 0;
     division: string ="";
     conference: string = "";
     players: PlayerDto[] = [];

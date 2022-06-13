@@ -14,6 +14,7 @@ import { StyledFlex } from "common/components/Flex";
 import { StyledFooter, StyledGrid, StyledHeader } from "modules/interface/ListComponents";
 
 
+
 type PropsType = {};
 export const TeamsList: React.FunctionComponent<PropsType> = (
   props: PropsType

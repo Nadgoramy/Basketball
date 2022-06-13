@@ -1,6 +1,5 @@
 import { DetailedHTMLProps, InputHTMLAttributes, ReactNode } from "react";
 import styled from "styled-components";
-//import './Input.css'
 
 const borderProp=(props:InputProps)=>{
   if(props.error) return "1px solid #D1D1D1";
@@ -10,18 +9,22 @@ const borderProp=(props:InputProps)=>{
 
 const StyledInput = styled.div`
 position:relative;
+min-width: 364px;
+${( props:InputProps)  => props.width ? "width: "+props.width + ";" : "" }
 
 input{
-  width: 366px;
+  width: 100%;
   height: 40px;  
   border-radius: 4px;
   background: #F6F6F6;
   color: #303030;
   border: ${( props:InputProps)  => borderProp(props)};
+  box-shadow: none;
 }
 input:hover{
   color: #303030;
   background: #D1D1D1;
+  box-shadow: 0px 0px 5px #D9D9D9;
 }
 input:active{
   color: #303030;
@@ -64,6 +67,7 @@ export type InputProps = {
   className?: string;
   error?: string;
   icon?: string;
+  width?: string;
 } & ReactInputProps;
 
 const Input: React.FunctionComponent<InputProps> = (props: InputProps): JSX.Element => {

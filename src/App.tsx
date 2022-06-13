@@ -1,16 +1,13 @@
 import React, { createContext, useState } from 'react';
 import {connect, useSelector}  from 'react-redux'
-import './App.css';
-import AuthApp from './modules/interface/AuthApp';
-import UnauthApp from './modules/interface/UnauthApp';
-import AuthService from './api/authService';
-import { AppStateType } from './core/redux/configureStore';
+import UnauthApp from 'modules/interface/UnauthApp';
+import AuthService from 'api/authService';
+import { AppStateType } from 'core/redux/configureStore';
 import {ThemeProvider} from 'styled-components'
-import AuthApp2 from './modules/interface/AuthApp';
+import AuthApp from 'modules/interface/AuthApp';
 
 function App() {
   const  user  = AuthService.getCurrentUser();
-  //const [user, setUser] = useState();
   const userFromStore = useSelector((state: AppStateType) => state.user); 
   
   const theme={
@@ -30,7 +27,7 @@ function App() {
 console.log(userFromStore);
   return (
     <ThemeProvider theme={theme}>
-       {(userFromStore.token>"" ) ? <AuthApp2 /> : <UnauthApp />    }
+       {(user ) ? <AuthApp /> : <UnauthApp />    }
     </ThemeProvider> 
   );
 }

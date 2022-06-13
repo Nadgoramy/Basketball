@@ -4,45 +4,36 @@ import { BaseThunkType, InferActionsTypes } from 'core/redux/configureStore';
 import {PlayerDto, NewPlayerDto, PlayerDtoPageResult} from 'api/Dto/playerDto'
 import {actions, actionTypes, ActionsTypes} from './actions';
 
-export const player = (state: PlayerDto, action: any) => {
+type PlayerStateType = {  
+      isFetching: boolean 
+      player: PlayerDto | null
+}
+const initialPlayerState: PlayerStateType = {  
+  isFetching: false,  
+  player: null
+}
+type PlayerActionType = {  
+  type:  ()=>string 
+  player: PlayerDto
+}
+
+export const player = (state:PlayerStateType  = initialPlayerState, action: PlayerActionType) => {
     switch(action.type){
-        
-        case 'ADD_PLAYER':{
-          let newPlayer = Object.assign(new NewPlayerDto(), action);
-          return newPlayer;         
-      }
-        case 'UPDATE_PLAYER': 
-            if(state.id !== action.id)
-                return state;
-            
-            return {
-                ...state,
-                name: action.name,
-                number: action.number,
-                height: action.height,
-                weight: action.weight,
-                birthday: action.birthday,
-                position: action.position,
-                team: action.team,
-                avatarUrl: action.avatarUrl
-            }
+        case actionTypes.GET_PLAYER:
+        case actionTypes.ADD_PLAYER:
+        case actionTypes.UPDATE_PLAYER:
+        case actionTypes.DELETE_PLAYER:
+            {
+                return Object.assign({}, state, {
+                    player: action.player,                    
+                    isFetching: false,
+                  })    
+            }        
         default:
             return state;
     }
 }
-const players1 = (state: PlayerDto[] = [], action:any)=>{    
-    switch(action.type){
-        case 'ADD_PLAYER':
-            return[
-                ...state,
-                player(new PlayerDto(), action)
-            ]
-        case 'TOGGLE_TODO': 
-            return state.map( t => player(t, action));
-        default:
-             return state;
-    }
-}
+
 
 type StateType = {
   needToReload:boolean
@@ -65,8 +56,7 @@ const initialState: StateType = {
 }
 
 export function players(
-    state: StateType = initialState,
-    action: ActionsTypes
+    state: StateType = initialState,    action: ActionsTypes
   ) {
    
     switch (action.type) {      

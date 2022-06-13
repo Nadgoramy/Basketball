@@ -1,14 +1,10 @@
 import { render } from "@testing-library/react";
-import React, { Component, useEffect } from "react";
+import React from "react";
 import { TeamDto } from "api/Dto/teamDto";
 import styled from "styled-components";
+import * as CardComponents from "modules/interface/CardComponents"
+import { useNavigate } from "react-router-dom";
 
-const StyledContainer = styled.div`
-  background: linear-gradient(121.57deg, #707070 1.62%, #393939 81.02%);
-  display: inline-block;
-  position: relative;
-  
-`;
 const StyledImageContainer = styled.div`
   width: 150px;
   height: 150px;
@@ -28,31 +24,6 @@ const StyledImageContainer = styled.div`
     object-fit: contain;
   }
 `;
-const StyledFooter = styled.div`
-  position: absolute;
-  height: 100px;
-  bottom: 0;
-  width: 100%;
-  background: #303030;
-  border-radius: 0px 0px 4px 4px;
-  color: fff;
-  text-align: center;
-
-  h4 {
-    font-weight: 500;
-    font-size: 18px;
-    line-height: 25px;
-    color: #ffffff;
-    margin-bottom: 8px;
-  }
-  span {
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 24px;
-    text-align: center;
-    color: #9c9c9c;
-  }
-`;
 
 type PropsType = {
   team: TeamDto;
@@ -61,17 +32,25 @@ type PropsType = {
 export const TeamCard: React.FunctionComponent<PropsType> = (
   props: PropsType
 ) => {
+
+  let navigate = useNavigate(); 
+  const routeChange = (id: number | undefined) =>{ 
+    if(!id) return;
+    let path = `/team/`+id; 
+    navigate(path);
+  }
+
   return (
-    <StyledContainer key={props.team.id}>
-      <StyledImageContainer>
+    <CardComponents.StyledContainer key={props.team.id} onClick={()=> routeChange(props.team.id)}>
+      <CardComponents.StyledTeamImageContainer>
         <img src={props.team.imageUrl}></img>
-      </StyledImageContainer>
-      <StyledFooter>
+      </CardComponents.StyledTeamImageContainer>
+      <CardComponents.StyledFooter>
         <h4>{props.team.name}</h4>
-        <span>Year of foundation: {props.team.yearOfFoundation}</span>
-      </StyledFooter>
-    </StyledContainer>
+        <span>Year of foundation: {props.team.foundationYear}</span>
+      </CardComponents.StyledFooter>
+    </CardComponents.StyledContainer>
   );
 };
 
-//   style={{ background: `url(${props.team.imageUrl})` }}
+

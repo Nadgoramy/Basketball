@@ -9,17 +9,6 @@ export  class NewPlayerDto{
     position: string | undefined;
     team: number | undefined;    
     avatarUrl:string | undefined;
-
-    /*constructor(name:string , num: number, height: number, weight: number, birthday: string, position: string, team: number, avatar: string) {
-        this.name = name;
-        this.number = num;
-        this.height = height;
-        this.weight = weight;
-        this.birthday = new Date(birthday);
-        this.position = position;
-        this.team = team;
-        this.avatarUrl = avatar;
-      }*/
 }
 
 export  class PlayerDto{
@@ -32,24 +21,7 @@ export  class PlayerDto{
     position: string | undefined;
     team: number | undefined;
     avatarUrl: string | undefined;  
-    teamName: string | undefined;
-
-    /*constructor(obj: object) {
-      Object.assign(this, obj);
-    }*/
-
-    /*constructor(id: number, name: string, num: number, height: number, weight: number, birthday:string, position:string, team:number, avatar:string, teamName:string) {
-        this.id = id;
-        this.name = name;
-        this.number = num;
-        this.height = height;
-        this.weight = weight;
-        this.birthday = new Date(birthday);
-        this.position = position;
-        this.team = team;
-        this.avatarUrl = avatar;
-        this.teamName = teamName;
-      }*/
+    teamName: string | undefined;    
 }
 
 export class PlayerDtoPageResult{

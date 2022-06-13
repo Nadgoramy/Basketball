@@ -12,6 +12,8 @@ const MainContainer = styled.div`
     @media (max-width: ${({ theme }) => theme.mobile}) {
         left:0;
         top: 62px;
+        padding: 0;
+        width: 100%;
     }
 `
 export default MainContainer;
