@@ -167,11 +167,12 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
             nextLabel=">"
             breakLabel="..."
             breakClassName="break-me"
-            pageCount={5}
+            pageCount={Math.ceil(itemsCount / pageSize)}
             marginPagesDisplayed={2}
             pageRangeDisplayed={5}
             onPageChange={(pagination: any) => {
               console.log(pagination);
+              updateCurrentPage(pagination.selected+1)
             }}
             containerClassName="pagination"
             activeClassName="active"

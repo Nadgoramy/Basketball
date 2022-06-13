@@ -12,6 +12,8 @@ import Pagination from "common/components/Pagination/Pagination";
 import { StyledButton } from "common/components/Button/Button.styled"
 import { StyledFlex } from "common/components/Flex";
 import { StyledFooter, StyledGrid, StyledHeader } from "modules/interface/ListComponents";
+import { StyledPaginateContainer } from "common/components/Pagination/StyledPaginate";
+import ReactPaginate from "react-paginate";
 
 
 
@@ -69,13 +71,33 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
         {teams && teams.map((p: TeamDto) => <TeamCard team={p} key={p.id} />)}
       </StyledGrid>
       <StyledFooter>
-        <Pagination
-          onPageChange={updateCurrentPage}
-          totalCount={Math.ceil(itemsCount / pageSize)}
-          currentPage={1}
-        />
+        
+        <StyledPaginateContainer>
+          <ReactPaginate
+            previousLabel="<"
+            nextLabel=">"
+            breakLabel="..."
+            breakClassName="break-me"
+            pageCount={Math.ceil(itemsCount / pageSize)}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={(pagination: any) => {
+              console.log(pagination);
+              updateCurrentPage(pagination.selected+1)
+            }}
+            containerClassName="pagination"
+            activeClassName="active"
+          />
+        </StyledPaginateContainer>
         <PageSizeSelector onChange={handlePageSizeSelectorClick} />
       </StyledFooter>
     </StyledFlex>
   );
 };
+/*
+<Pagination
+          onPageChange={updateCurrentPage}
+          totalCount={Math.ceil(itemsCount / pageSize)}
+          currentPage={1}
+        />
+*/
