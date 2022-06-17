@@ -1,3 +1,4 @@
+import { PlayerDto } from "api/Dto/playerDto"
 import { TeamDto } from "api/Dto/teamDto"
 
 export const actionTypes = {
@@ -6,7 +7,8 @@ export const actionTypes = {
     GOT_TEAM: () =>  'GOT_TEAM',   
     ADD_TEAM: () =>  'ADD_TEAM',   
     SET_TEAM: () =>  'SET_TEAM',   
-    DELETE_TEAM: () =>  'DELETE_TEAM',   
+    DELETE_TEAM: () =>  'DELETE_TEAM',
+    GOT_TEAM_PLAYERS: ()  => 'GOT_TEAM_PLAYERS'
    }
 
 export const actions = {
@@ -16,11 +18,13 @@ export const actions = {
     addTeam: ( team :TeamDto) => ({ type: actionTypes.ADD_TEAM, team: team } as const),
     setTeam: ( team :TeamDto) => ({ type: actionTypes.SET_TEAM, team: team } as const),
     deleteTeam: ( team :TeamDto) => ({ type: actionTypes.DELETE_TEAM, team: team } as const),
+    gotTeamPlayers: ( players: PlayerDto[]) => ({type: actionTypes.GOT_TEAM_PLAYERS, players: players} as const)
 }
 
 export type ActionsTypes = {
     type: ()=>string
-    team: TeamDto    
+    team: TeamDto,
+    players: PlayerDto[]    
   }
 
 type StateType = {  
@@ -47,7 +51,7 @@ export function team(
         return Object.assign({}, state, {
           isFetching: false          
         })
-      }
+      }      
       case actionTypes.GOT_TEAM:
        
         case actionTypes.ADD_TEAM:

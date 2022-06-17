@@ -1,3 +1,4 @@
+import { PlayerDto } from "api/Dto/playerDto"
 import { TeamDtoPageResult } from "api/Dto/teamDto"
 
 export const actionTypes = {
@@ -6,7 +7,7 @@ export const actionTypes = {
     SET_FILTER: () =>  'SET_FILTER',
     SET_CURRENTPAGE : () =>  'SET_CURRENTPAGE',
     SET_PAGESIZE: () =>  'SET_PAGESIZE',
-    GOT_TEAMS: () =>  'GOT_TEAMS',   
+    GOT_TEAMS: () =>  'GOT_TEAMS', 
    }
 
 export const actions = {
@@ -16,6 +17,7 @@ export const actions = {
     setCurrentPage: (page:number) =>({ page: page, type: actionTypes.SET_CURRENTPAGE } as const),
     setPageSize: (size:number) =>( { pageSize: size, type: actionTypes.SET_PAGESIZE } as const),
     gotTeams: ( teams :TeamDtoPageResult) => ({ type: actionTypes.GOT_TEAMS, teams: teams } as const),
+    
 }
 
 export type ActionsTypes = {

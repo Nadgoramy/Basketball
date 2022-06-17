@@ -17,9 +17,7 @@ export const PlayerCard: React.FunctionComponent<PlayerCardPtopType> = (props : 
   
   return (      
     <CardComponents.StyledContainer key={props.player.id} onClick={()=> routeChange(props.player.id)}>
-      <CardComponents.StyledPlayerImageContainer>        
-          <img src={props.player.avatarUrl} alt="" /> 
-      </CardComponents.StyledPlayerImageContainer>
+      <CardComponents.StyledPlayerImageContainer url={props.player.avatarUrl}/>
       <CardComponents.StyledFooter>
         <h4>
           {props.player.name}<span>#{props.player.number}</span>

@@ -15,9 +15,10 @@ const initialPlayerState: PlayerStateType = {
 type PlayerActionType = {  
   type:  ()=>string 
   player: PlayerDto
+  value: string | number
 }
 
-export const player = (state:PlayerStateType  = initialPlayerState, action: PlayerActionType) => {
+export function player(state:PlayerStateType  = initialPlayerState, action: PlayerActionType) {
     switch(action.type){
         case actionTypes.GET_PLAYER:
         case actionTypes.ADD_PLAYER:
@@ -28,7 +29,71 @@ export const player = (state:PlayerStateType  = initialPlayerState, action: Play
                     player: action.player,                    
                     isFetching: false,
                   })    
-            }        
+            }       
+        case actionTypes.SET_PLAYER_NAME:{
+          return Object.assign({}, state, {
+            player: {
+              ...state.player,
+              name: action.value,
+            }            
+          })        
+        } 
+        case actionTypes.SET_PLAYER_AVATAR:{
+          return Object.assign({}, state, {
+            player: {
+              ...state.player,
+              avatarUrl: action.value,
+            }            
+          })        
+        } 
+        case actionTypes.SET_PLAYER_POSITION:{
+          return Object.assign({}, state, {
+            player: {
+              ...state.player,
+              position: action.value,
+            }            
+          })        
+        } 
+        case actionTypes.SET_PLAYER_BIRTHDAY:{
+          return Object.assign({}, state, {
+            player: {
+              ...state.player,
+              birthday: action.value,
+            }            
+          })        
+        } 
+        case actionTypes.SET_PLAYER_HEIGHT:{
+          return Object.assign({}, state, {
+            player: {
+              ...state.player,
+              height: action.value,
+            }            
+          })        
+        } 
+        case actionTypes.SET_PLAYER_WEIGHT:{
+          return Object.assign({}, state, {
+            player: {
+              ...state.player,
+              weight: action.value,
+            }            
+          })        
+        } 
+        case actionTypes.SET_PLAYER_TEAM:{
+          return Object.assign({}, state, {
+            player: {
+              ...state.player,
+              team: action.value,
+            }            
+          })        
+        } 
+        case actionTypes.SET_PLAYER_NUMBER:{
+          return Object.assign({}, state, {
+            player: {
+              ...state.player,
+              number: action.value,
+            }            
+          })          
+        } 
         default:
             return state;
     }
@@ -72,8 +137,7 @@ export function players(
           ...state,
           isFetching: false, 
           page: action.playersPage.page,
-          count: action.playersPage.count,
-          //pageSize: action.playersPage.size,        
+          count: action.playersPage.count,       
           pageItems: action.playersPage.data,  
           needToReload:false   
         }
@@ -98,8 +162,7 @@ export function players(
         case actionTypes.DELETE_PLAYER:
             {
                 return Object.assign({}, state, {
-                    isFetching: false,                          
-                    //player: action.player,
+                    isFetching: false,  
                     needToReload:true
                   })
     

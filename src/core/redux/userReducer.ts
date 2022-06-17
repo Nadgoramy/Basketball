@@ -16,7 +16,7 @@ export function userReducer(state:InitialStateType = initialState, action:any) {
             token: action.token    
         };  
     case 'REMOVE_USER':      
-      return {...state, name:"", avatarUrl:"", token:""  }  
+      return { name:"", avatarUrl:"", token:""  }  
     default:
       return state;
   }

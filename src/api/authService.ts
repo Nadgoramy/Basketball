@@ -1,10 +1,8 @@
 import {post} from './baseRequest';
 import {AuthUserDto} from './AuthUserDto'
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
-import { AppStateType } from '../core/redux/configureStore';
 
 const API_URL = "auth/";
+const throwError =(msg: string) => { throw Error(msg);}
 
 const register = (username:string, login: string, password:string) => {
   return post(API_URL + "signup", {
@@ -14,6 +12,7 @@ const register = (username:string, login: string, password:string) => {
   });
 };
 const login = (login: string, password:string) => {
+  console.log(login+"/"+password);
   return post(API_URL + "signin", {
       login,
       password,
@@ -23,6 +22,9 @@ const login = (login: string, password:string) => {
         localStorage.setItem("user", JSON.stringify(response));
       }
       return response;
+    })
+    .catch (err =>{
+      err.status == 401 ? throwError("User not found") : console.log(err)
     });
 };
 
@@ -36,10 +38,6 @@ const change = (username: string, avatarUrl: string) => {
       });
   };
 
-const logout = () => {
-  localStorage.removeItem("user");
-};
-
 const getCurrentUser = () : AuthUserDto|null => {
   
   let userFromStorage = localStorage.getItem("user");
@@ -51,7 +49,6 @@ const getCurrentUser = () : AuthUserDto|null => {
 const AuthService = {
   register,
   login,
-  logout,
   getCurrentUser,
 };
 export default AuthService;

@@ -1,42 +1,45 @@
 import { DetailedHTMLProps, InputHTMLAttributes, ReactNode } from "react";
-import styled from "styled-components";
+import styled, { ThemedStyledProps } from "styled-components";
 
-const borderProp=(props:InputProps)=>{
-  if(props.error) return "1px solid #D1D1D1";
-  if(props.icon) return "0.5px solid #D1D1D1";
+const borderProp=(props: any)=>{
+  if(props.error) return "1px solid " +props.theme.colors.lightest_grey;
+  if(props.icon) return "0.5px solid #" +props.theme.colors.lightest_grey;
   return "none";
 }
 
 const StyledInput = styled.div`
 position:relative;
-min-width: 364px;
+min-width: 300px;
+outline-style: none;
 ${( props:InputProps)  => props.width ? "width: "+props.width + ";" : "" }
 
 input{
   width: 100%;
   height: 40px;  
   border-radius: 4px;
-  background: #F6F6F6;
-  color: #303030;
+  background: ${({theme})=> theme.colors.lightest_grey1};
+  color: ${({theme})=> theme.colors.dark_grey};
   border: ${( props:InputProps)  => borderProp(props)};
   box-shadow: none;
 }
 input:hover{
-  color: #303030;
-  background: #D1D1D1;
-  box-shadow: 0px 0px 5px #D9D9D9;
+  color: ${({theme})=> theme.colors.dark_grey};
+  background: ${({theme})=> theme.colors.lightest_grey};
+  outline-style: none;
 }
 input:active{
-  color: #303030;
+  color: ${({theme})=> theme.colors.dark_grey};
+  outline-style: none;
 }
 input:focus{
-  background: #F6F6F6;
+  background: ${({theme})=> theme.colors.lightest_grey1};
   box-shadow: 0px 0px 5px #D9D9D9;
-  color: #303030;
+  color: ${({theme})=> theme.colors.dark_grey};
+  outline-style: none;
 }
 input:disabled{
-  background: #F6F6F6;
-  color: #D1D1D1;
+  background: ${({theme})=> theme.colors.lightest_grey};
+  color: ${({theme})=> theme.colors.lightest_grey};
 }
 
 span{
@@ -45,7 +48,7 @@ span{
   font-size: 12px;
   line-height: 150%;
 
-  color: #FF768E;
+  color: ${({theme})=> theme.colors.lightest_red};
   padding-top: 2px;
 }
 
@@ -60,14 +63,17 @@ img{
   height: 16px;
 }
 `
+
+//type ThemeProps<P> = ThemedStyledProps<P, DefaultTheme>;
+//type InputProps = ThemeProps<IInputProps> & ReactInputProps;
 type ReactInputProps = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 
 export type InputProps = {
-  children?: ReactNode;
-  className?: string;
-  error?: string;
-  icon?: string;
-  width?: string;
+  children?: ReactNode
+  className?: string
+  error?: string
+  icon?: string
+  width?: string
 } & ReactInputProps;
 
 const Input: React.FunctionComponent<InputProps> = (props: InputProps): JSX.Element => {

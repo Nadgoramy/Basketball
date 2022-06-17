@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import {StyledMultiSelect} from "common/components/StyledSelect"
 import { ActionMeta, SingleValue } from "react-select";
 
 interface PropType {
@@ -27,18 +26,19 @@ const options=[
 
 const StyledPageSizeSelector=styled.select<PropType>`
   height: 40px;
-  border: 0.5px solid #D1D1D1;
+  border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
   border-radius: 4px;
-  color: #303030;
+  color: ${({ theme }) => theme.colors.dark_grey};
   font-family: 'Avenir';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
   line-height: 24px;
+  outline: none;
 
   option{
     height: 40px;
-    color: #303030;
+    color: ${({theme})=> theme.colors.dark_grey};
   }
 `
 

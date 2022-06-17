@@ -1,16 +1,17 @@
 import {get, post, remove, put} from 'api/baseRequest';
 import AuthService from 'api/authService';
 import {NewPlayerDto, PlayerDto, PlayerDtoPageResult} from 'api/Dto/playerDto';
+import { PositionDto } from 'api/Dto/positionDto';
 
 
 const API_URL = "player/";
 
 const getPositions = () => {
   let currentUser = AuthService.getCurrentUser();
-  if(!currentUser) return;
+  if(!currentUser) return null;
   return get(API_URL + "getpositions", currentUser.token)
     .then((response) => {      
-      return response.data;
+      return response as PositionDto[];
     })
     .catch((err)=>{console.log(err)});
 }

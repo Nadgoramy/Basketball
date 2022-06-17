@@ -27,21 +27,25 @@ interface PropsType extends HTMLAttributes<HTMLHeadingElement> {
   show: boolean;
 }
 const StyledSideBar = styled.div<PropsType>`
-  position: absolute;
-  left: 0%;
-  top: 80px;
-  width: 140px;
+  position: fixed;
   height: 100%;
+  width: 140px;
+  left: 0;
+  top: 80px;
+  bottom: 0;
+  background: ${({ theme }) => theme.colors.white};
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
     width: 200px;
+    z-index: 8888;
+    background:${({ theme }) => theme.colors.white};
     display: ${(props) => (props.show ? "" : "none")};
   }
 `;
 
 const UserProfile = styled.div`
   height: 80px;
-  border-bottom: 0.5px solid #9c9c9c;
+  border-bottom: 0.5px solid ${({ theme }) => theme.colors.light_grey};
   display: flex;
   text-align: center;
 
@@ -57,7 +61,7 @@ const UserProfile = styled.div`
 
     position: relative;
     top: -20px;
-    color: #303030;
+    color: ${({ theme }) => theme.colors.dark_grey};
     margin-left: 8px;
   }
   img {
@@ -84,7 +88,7 @@ const NavContainer = styled.div`
 const NavBarLink = styled(Link)`
   padding: 36px 50px;
   display: inline-block;
-  color: #ff768e;
+  color: ${({ theme }) => theme.colors.lightest_red};
   text-decoration: none;
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
@@ -117,8 +121,11 @@ const StyledLogOut = styled(Link)`
   padding: 0 0 36px 39px;
   display: flex;
   text-align: center;
-  color: #ff768e;
+  color: ${({ theme }) => theme.colors.lightest_red};
   text-decoration: none;
+  font-weight: 500;
+  font-size:12px;
+  line-height:18px;
   img {
     width: 24px;
     height: 24px;    

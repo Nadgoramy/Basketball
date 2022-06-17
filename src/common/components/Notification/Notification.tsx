@@ -6,9 +6,9 @@ const StyledNotification = styled.div`
   right: p6px;
   z-index: 9999;
   margin: 8px 16px;
-  background: #ff5761;
+  background: ${({theme})=> theme.colors.light_red};
   border-radius: 4px;
-  color: #fff;
+  color: ${({theme})=> theme.colors.white};
 `;
 
 type PropType = {

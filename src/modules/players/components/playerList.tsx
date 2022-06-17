@@ -18,19 +18,20 @@ import PageSizeSelector from "common/components/PageSizeSelector/PageSizeSelecto
 import Select from "react-select";
 import { StyledFlex } from "common/components/Flex";
 import {
+  HeaderFlex,
   StyledFooter,
   StyledGrid,
   StyledHeader,
+  StyledMainContainer,
 } from "modules/interface/ListComponents";
 import Pagination from "common/components/Pagination/Pagination";
-import TeamService from "api/teams/teamService";
-import { TeamDto, TeamDtoPageResult } from "api/Dto/teamDto";
 import { StyledButton } from "common/components/Button/Button.styled";
 import Search from "common/components/Search/Search";
-import { StyledMultiSelect } from "common/components/StyledSelect";
-import styled from "styled-components";
+import { StyledMultiSelect } from "common/components/StyledMultiSelect";
 import { StyledPaginateContainer } from "common/components/Pagination/StyledPaginate";
 import ReactPaginate from "react-paginate";
+import { requestTeamOptions, TeamOptionType } from "../helpers/playerHelper";
+import { EmptyListScreen } from "modules/interface/EmptyListScreen";
 
 type PropsType = {};
 export const PlayerList: React.FunctionComponent<PropsType> = (
@@ -45,13 +46,9 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
   const itemsCount = useSelector(getCount);
 
   const [teamIds, setTeamIds] = useState<number[] | null>(null);
-  const [teamNames, setTeamNames] = useState<TeamNameType[] | undefined>(
+  const [teamNames, setTeamNames] = useState<TeamOptionType[] | undefined>(
     undefined
   );
-  interface TeamNameType {
-    label: string;
-    value: number;
-  }
 
   const updatePlayersTeamNames = (
     list: PlayerDtoPageResult
@@ -85,34 +82,8 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
         });
   };
 
-  const getTeamNames = (totalCount: number) => {
-    let promise = TeamService.getTeams("", 1, totalCount);
-    if (promise)
-      promise
-        .then((res) => {
-          let names = new Array<TeamNameType>();
-          (res as TeamDtoPageResult).data.map((t: TeamDto) =>
-            names.push({ label: t.name, value: t.id })
-          );
-          setTeamNames(names);
-        })
-        .catch((err) => {
-          console.log("err");
-        });
-  };
-  const requestTeams = () => {
-    let promise = TeamService.getTeams("", 1, 1);
-    if (promise)
-      promise
-        .then((res) => {
-          getTeamNames((res as TeamDtoPageResult).count);
-        })
-        .catch((err) => {
-          console.log("err");
-        });
-  };
   useEffect(() => {
-    requestTeams();
+    requestTeamOptions(setTeamNames);
   }, []);
 
   useEffect(() => {
@@ -131,7 +102,7 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
     dispatch(actions.setCurrentPage(n));
   };
 
-  const updateTeamFilter = (evn: TeamNameType[]) => {
+  const updateTeamFilter = (evn: TeamOptionType[]) => {
     if (!evn) setTeamIds(null);
     else {
       let teamRequest: number[] = [];
@@ -141,7 +112,7 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
   };
 
   return (
-    <StyledFlex direction="column">
+    <StyledMainContainer direction="column">
       <StyledHeader>
         <HeaderFlex>
           <Search onChange={(evt) => updateFilterValue(evt)} />
@@ -149,13 +120,13 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
             classNamePrefix="Select"
             options={teamNames}
             isMulti
-            onChange={(e) => updateTeamFilter(e as TeamNameType[])}
+            onChange={(e) => updateTeamFilter(e as TeamOptionType[])}
           />
         </HeaderFlex>
         <StyledButton mode="add">Add +</StyledButton>
       </StyledHeader>
       {isFetching && <Preloader />}
-
+      {players && players.length == 0 && <EmptyListScreen mode="player"/>}
       <StyledGrid>
         {players &&
           players.map((p: PlayerDto) => <PlayerCard player={p} key={p.id} />)}
@@ -180,22 +151,8 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
         </StyledPaginateContainer>
         <PageSizeSelector onChange={handlePageSizeSelectorClick} />
       </StyledFooter>
-    </StyledFlex>
+    </StyledMainContainer>
   );
 };
 
-const HeaderFlex = styled.div`
-  display: flex;
-  flex-direction: "row";
-  align-items: "stretch";
-  justify-content: "stretch";
-  margin: 0;
-  column-gap: 24px;
-  max-width: 1010px;
 
-  @media (max-width: ${({ theme }) => theme.mobile}) {
-    flex-direction: column;
-    margin: 0;
-    row-gap: 16px;
-  }
-`;

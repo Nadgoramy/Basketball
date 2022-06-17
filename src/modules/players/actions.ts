@@ -14,7 +14,16 @@ export const actionTypes = {
  ADDED_PLAYER: () =>  'ADDED_PLAYER',
  ADD_PLAYER: () =>  'ADD_PLAYER',
  UPDATE_PLAYER: () =>  'UPDATE_PLAYER',
- DELETE_PLAYER: () =>  'DELETE_PLAYER'
+ DELETE_PLAYER: () =>  'DELETE_PLAYER',
+ 
+ SET_PLAYER_NAME: () =>  'SET_PLAYER_NAME',
+ SET_PLAYER_POSITION: () =>  'SET_PLAYER_POSITION',
+ SET_PLAYER_HEIGHT: () =>  'SET_PLAYER_HEIGHT',
+ SET_PLAYER_WEIGHT: () =>  'SET_PLAYER_WEIGHT',
+ SET_PLAYER_TEAM: () =>  'SET_PLAYER_TEAM',
+ SET_PLAYER_AVATAR: () =>  'SET_PLAYER_AVATAR',
+ SET_PLAYER_BIRTHDAY: () =>  'SET_PLAYER_BIRTHDAY',
+ SET_PLAYER_NUMBER: () =>  'SET_PLAYER_NUMBER',
 }
 
 export const actions = {
@@ -24,9 +33,24 @@ export const actions = {
   setCurrentPage: (page:number) =>({ page: page, type: actionTypes.SET_CURRENTPAGE } as const),
   setPageSize: (size:number) =>( { pageSize: size, type: actionTypes.SET_PAGESIZE } as const),
   gotPlayers: ( result :PlayerDtoPageResult) => ({ type: actionTypes.GOT_PLAYERS, playersPage: result } as const),
-
-  getPlayer   
 }
+
+export const playerActions = {
+  getPlayer:(player: PlayerDto)=>({type: actionTypes.GET_PLAYER, player: player} as const ),
+  addedPlayer:(player: PlayerDto)=>({type: actionTypes.GET_PLAYER, player: player} as const ),
+  updatePlayer:(player: PlayerDto)=>({type: actionTypes.GET_PLAYER, player: player} as const ),
+  deletePlayer:(player: PlayerDto)=>({type: actionTypes.GET_PLAYER, player: player} as const ),
+
+  setName:(value: string)=>({type: actionTypes.SET_PLAYER_NAME, value: value} as const ),
+  setPosition:(value: string)=>({type: actionTypes.SET_PLAYER_POSITION, value: value} as const ),
+  setAvatar:(value: string)=>({type: actionTypes.SET_PLAYER_AVATAR, value: value} as const ),
+  setBirthday:(value: string)=>({type: actionTypes.SET_PLAYER_BIRTHDAY, value: value} as const ),
+  setHeight:(value: number)=>({type: actionTypes.SET_PLAYER_HEIGHT, value: value} as const ),
+  setWeight:(value: number)=>({type: actionTypes.SET_PLAYER_WEIGHT, value: value} as const ),
+  setNumber:(value: number)=>({type: actionTypes.SET_PLAYER_NUMBER, value: value} as const ),
+  setTeamId:(value: number)=>({type: actionTypes.SET_PLAYER_TEAM, value: value} as const ),
+}
+
 export type ActionsTypes = {
   type: ()=>string
   playersPage: PlayerDtoPageResult
@@ -35,81 +59,9 @@ export type ActionsTypes = {
   filter: string
 }
 
-export function requestPlayers() {
-  return {
-    type: actionTypes.START_REQUEST,        
-  } as const
-}
-
-export function setPlayersFilter(filter:string) {
-  return {    
-    filter: filter,
-    type: actionTypes.SET_FILTER     
-  } as const
-}
-
-export function setCurrentPage(page:number) {
-  return {    
-    page: page,
-    type: actionTypes.SET_CURRENTPAGE     
-  } as const
-}
-
-export function setPageSize(size:number) {
-  return {    
-    pageSize: size,
-    type: actionTypes.SET_PAGESIZE     
-  } as const
-}
 
 export type GotPlayerActionType={
   type: typeof actionTypes.GOT_PLAYERS,
   playersPage: PlayerDtoPageResult
 }
-
-export function gotPlayers( result :PlayerDtoPageResult):GotPlayerActionType{
-  return {
-    type: actionTypes.GOT_PLAYERS,    
-    playersPage: result,
-    //receivedAt: Date.now()
-  } as const
-}
-
-export function getPlayer(player: PlayerDto) {
-  return {
-    type: actionTypes.GET_PLAYER,
-    player: player,
-  }  as const
-}
-
-export function addedPlayer( player: PlayerDto) {
-    return {
-      type: actionTypes.ADDED_PLAYER,      
-      player: player
-    } as const
-  }
-
-export function addPlayer(player: NewPlayerDto) {
-  return async (dispatch:any) => {
-    dispatch(requestPlayers());
-    const response = await PlayerService.addPlayer(player);
-    if(!response)return ;
-    dispatch(addedPlayer(response));
-  }   
-}
-
-  export function updatePlayer(player: PlayerDto) {
-      return {
-        type: actionTypes.UPDATE_PLAYER,        
-        player: player
-      } as const
-    }
-
-    
-    export function deletePlayer( player: PlayerDto) {
-        return {
-          type: actionTypes.DELETE_PLAYER,
-          player: player
-        } as const
-      }
 

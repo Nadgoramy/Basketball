@@ -6,7 +6,7 @@ export const StyledPaginateContainer = styled.div`
   flex-direction: row;
 
   .pagination {
-    color: #707070;
+    color: ${({ theme }) => theme.colors.grey};
     list-style-type: none;
     cursor: pointer;
 
@@ -26,9 +26,9 @@ export const StyledPaginateContainer = styled.div`
   }
   .active {
     border-color: transparent;
-    background-color: #E4163A;
+    background-color: ${({ theme }) => theme.colors.red};
     border-radius: 4px;
-    color: white;
+    color: ${({ theme }) => theme.colors.white};
   }
   
 `

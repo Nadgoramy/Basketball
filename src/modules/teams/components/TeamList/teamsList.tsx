@@ -11,7 +11,7 @@ import Search from "common/components/Search/Search";
 import Pagination from "common/components/Pagination/Pagination";
 import { StyledButton } from "common/components/Button/Button.styled"
 import { StyledFlex } from "common/components/Flex";
-import { StyledFooter, StyledGrid, StyledHeader } from "modules/interface/ListComponents";
+import { StyledFooter, StyledGrid, StyledHeader, StyledMainContainer } from "modules/interface/ListComponents";
 import { StyledPaginateContainer } from "common/components/Pagination/StyledPaginate";
 import ReactPaginate from "react-paginate";
 
@@ -60,7 +60,7 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
   };
 
   return (
-    <StyledFlex direction="column">
+    <StyledMainContainer direction="column">
       <StyledHeader>
         <Search onChange={(evt) => updateFilterValue(evt)} />
         <StyledButton mode="add">Add +</StyledButton>
@@ -91,7 +91,7 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
         </StyledPaginateContainer>
         <PageSizeSelector onChange={handlePageSizeSelectorClick} />
       </StyledFooter>
-    </StyledFlex>
+    </StyledMainContainer>
   );
 };
 /*

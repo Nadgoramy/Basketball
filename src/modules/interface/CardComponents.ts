@@ -6,17 +6,19 @@ export const StyledContainer = styled.div`
   position: relative;
   border-radius: 4px;
 `;
-export const StyledTeamImageContainer = styled.div`
+export const StyledTeamImageContainer = styled.div<PhotoPropsType>`
   width: 150px;
   height: 150px;
   margin: 65px 107px;
+  position: relative;
+  background-image: url("${( props ) => props.url}");
+  background-repeat: no-repeat;
+  background-size: contain;
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
-    position: absolute;
-    width: 58.4px;
-    height: 50.68px;
-    left: 56.34px;
-    top: 31.59px;
+    margin: 32px 55px;
+    width: 58px;
+    height: 50px;
   }
 
   img {
@@ -26,18 +28,20 @@ export const StyledTeamImageContainer = styled.div`
   }
 `;
 
-export const StyledPlayerImageContainer = styled.div`
+type PhotoPropsType = {url? :string}
+export const StyledPlayerImageContainer = styled.div<PhotoPropsType>`
   width: 274px;
   height: 207px;
-  margin: 73px 45px 0 45px;
+  margin: 73px auto 0 auto ;
   position: relative;
+  background-image: url("${( props ) => props.url}");
+  background-repeat: no-repeat;
+  background-size: contain;
 
-  @media (max-width: ${({ theme }) => theme.mobile}) {
-    position: absolute;
+  @media (max-width: ${({ theme }) => theme.mobile}) {    
     width: 121.5px;
-    height: 92.62px;
-    left: 24px;
-    top: 11px;
+    height:120px;
+    margin: 11px auto 0 auto;
   }
 
   img {
@@ -64,27 +68,38 @@ export const StyledFooter = styled.div`
   height: 100px;
   bottom: 0;
   width: 100%;
-  background: #303030;
+  background: ${({ theme }) => theme.colors.dark_grey};
   border-radius: 0px 0px 4px 4px;
-  color: fff;
+  color: ${({ theme }) => theme.colors.white};
   text-align: center;
+  @media (max-width: ${({ theme }) => theme.mobile}) {
+    height: 86px;
+  }
 
   span {
     font-weight: 500;
     font-size: 14px;
     line-height: 24px;
     text-align: center;
-    color: #9c9c9c;
+    color: ${({ theme }) => theme.colors.light_grey};
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      font-size: 13px;
+    line-height: 18px;
+    }
   }
   h4 {
     font-weight: 500;
     font-size: 18px;
     line-height: 25px;
-    color: #ffffff;
+    color: ${({ theme }) => theme.colors.white};
     margin-bottom: 8px;
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      font-size: 15px;
+    line-height: 24px;
+    }
 
     span {
-      color: #e4163a;
+      color: ${({ theme }) => theme.colors.red};
       font-weight: 500;
       font-size: 18px;
       line-height: 25px;

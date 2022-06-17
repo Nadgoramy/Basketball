@@ -1,47 +1,49 @@
 import React, { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
 import styled from "styled-components";
+import {DefaultTheme } from "DefaultTheme"
 
 type ReactButtonProps = DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
 type BtnMode = "default" | "add" | "cancel"
 type PropsType = {    
-    mode?: BtnMode;    
+    mode?: BtnMode; 
+    theme: DefaultTheme   
   } & ReactButtonProps;
 
-const getBackgroundColorByMode = (mode?:string, state?:string)=>{
+const getBackgroundColorByMode = (theme: DefaultTheme, mode?:string, state?:string)=>{
     if(!state){    
-        if(mode === "cancel") return "#F6F6F6";
-    return "#E4163A";
+        if(mode === "cancel") return theme.colors.lightest_grey1;
+    return theme.colors.red;
     }
     if(state === "hover"){
-        if(mode === "cancel") return "#D1D1D1";
-        return "#FF5761";
+        if(mode === "cancel") return theme.colors.lightest_grey;
+        return theme.colors.light_red;
     }
     if(state === "active"){
-        if(mode === "cancel") return "#9C9C9C";
-        return "#C60E2E";
+        if(mode === "cancel") return theme.colors.light_grey;
+        return theme.colors.dark_red;
     }
     if(state === "disabled"){        
-        return "#F6F6F6";
+        return theme.colors.lightest_grey1;
     }
-    return "#E4163A"
+    return theme.colors.red
 }
 
-const getBorderByMode = (mode?:string, state?:string)=>{
+const getBorderByMode = (theme: DefaultTheme, mode?:string, state?:string )=>{
     if(mode === "add") return "none";
     if(mode === "cancel") {
-        if(!state || state=="hover") return "1px solid #9C9C9C"
-        return "1px solid #707070"
+        if(!state || state=="hover") return "1px solid "+theme.colors.light_grey
+        return "1px solid " + theme.colors.grey
     }
     return "none";
 }
 
-const getColorByMode = (mode?:string, state?:string)=>{    
+const getColorByMode = (theme: DefaultTheme, mode?:string, state?:string )=>{    
     if(mode === "cancel") {
-        if(!state || state=="hover") return "#9C9C9C"
-        if(state ==="disabled") return "#D1D1D1"
-        return "#707070"
+        if(!state || state=="hover") return theme.colors.light_grey
+        if(state ==="disabled") return theme.colors.lightest_grey
+        return theme.colors.grey
     }
-    return "#FFFFFF";
+    return theme.colors.white;
 }
 const getWidth=(props: PropsType)=>{
     if(props.mode == "add") return "104px"
@@ -58,8 +60,8 @@ export const StyledButton = styled.button<PropsType>`
         width:100%;
       }
     
-    border:${(props: PropsType) => getBorderByMode(props.mode)};
-    background-color: ${(props: PropsType) => getBackgroundColorByMode(props.mode)};
+    border:${(props) => getBorderByMode( props.theme,props.mode)};
+    background-color: ${(props: PropsType) => getBackgroundColorByMode( props.theme, props.mode)};
     border-radius: 4px;
     
     align-items: center;
@@ -67,27 +69,27 @@ export const StyledButton = styled.button<PropsType>`
     display: flex;    
     justify-content: center;
     
-    color: #FFFFFF;
+    color: ${(props: PropsType) => getColorByMode( props.theme, props.mode )};
 
     &:hover{
         background: #FF5761;
         color: #FFFFFF;
-        border:${(props: PropsType) => getBorderByMode(props.mode)};
-        background-color: ${(props: PropsType) => getBackgroundColorByMode(props.mode, "hover")};
+        border:${(props: PropsType) => getBorderByMode(props.theme, props.mode)};
+        background-color: ${(props: PropsType) => getBackgroundColorByMode(props.theme, props.mode, "hover")};
     }
 
     &:active {
         background: #C60E2E;
-        color: #FFFFFF;
-        border:${(props: PropsType) => getBorderByMode(props.mode)};
-        background-color: ${(props: PropsType) => getBackgroundColorByMode(props.mode, "active")};
+        color: ${(props: PropsType) => getColorByMode(props.theme, props.mode )};
+        border:${(props: PropsType) => getBorderByMode(props.theme, props.mode)};
+        background-color: ${(props: PropsType) => getBackgroundColorByMode(props.theme, props.mode, "active")};
     }
 
     &:disabled{
         background: #F6F6F6;
-        color: #D1D1D1;
-        border:${(props: PropsType) => getBorderByMode(props.mode)};
-        background-color: ${(props: PropsType) => getBackgroundColorByMode(props.mode, "disabled")};
+        color: ${(props: PropsType) => getColorByMode(props.theme, props.mode)};
+        border:${(props: PropsType) => getBorderByMode(props.theme, props.mode)};
+        background-color: ${(props: PropsType) => getBackgroundColorByMode(props.theme, props.mode, "disabled")};
     }
 `
 

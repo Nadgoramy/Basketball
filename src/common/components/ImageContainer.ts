@@ -6,7 +6,7 @@ export const StyledImageContainer = styled.div`
   height: 1024px;
   left: 0px;
   top: 0px;
-  background: #ffffff;
+  background: ${({theme})=> theme.colors.white};
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
     display: none;

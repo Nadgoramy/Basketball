@@ -1,77 +1,139 @@
-import React, { Component, useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { TeamDto } from "api/Dto/teamDto";
 import { useDispatch, useSelector } from "react-redux";
 import { AppStateType } from "core/redux/configureStore";
 import { actions } from "modules/teams/teamReducer";
 import TeamService from "api/teams/teamService";
+import { StyledFlex } from "common/components/Flex";
+import * as Info from "modules/interface/InfoComponents";
+import PlayerService from "api/players/playerService";
+import { PlayerDto, PlayerDtoPageResult } from "api/Dto/playerDto";
 
 type PropTypes = {};
 export const TeamInfo: React.FunctionComponent<PropTypes> = (
   props: PropTypes
 ) => {
-  const { search } = useLocation();
-  const match = search.match(/id=(.*)/);
-  const id: number = match ? parseInt(match[1]) : -1;
-
   const dispatch = useDispatch();
+  let { id } = useParams();
   let team = useSelector((state: AppStateType) => state.team.team);
 
-  const requestTeam = () => {
-    console.log("Id is " + id);
+  useEffect(() => {
+    if (!id) return;
+    let playerId = parseInt(id);
+    requestTeam(playerId);
+  }, [id]);
+
+  const requestTeam = (teamId: number) => {
     dispatch(actions.startRequest());
-    let promise = TeamService.getTeam(id);
+    console.log(teamId);
+    let promise = TeamService.getTeam(teamId);
     if (promise)
       promise
         .then((res) => {
-          dispatch(actions.gotTeam(res as TeamDto));
+          let team = res as TeamDto;
+          dispatch(actions.gotTeam(team));
+          PlayerService.getPlayers("", [teamId], 1, 100)?.then((responce) => {
+            team.players = (responce as PlayerDtoPageResult).data;
+            dispatch(actions.gotTeam(team));
+          });
         })
         .catch((err) => {
-          dispatch(actions.finishRequest());
-        });
+          console.log(err);
+        })
+        .finally(() => dispatch(actions.finishRequest()));
   };
-  useEffect(() => {
-    requestTeam();
-  }, []);
+
+  const getAge = (birthday: Date | undefined) => {
+    if (!birthday) return "";
+    let age = new Date(Date.now() - new Date(birthday).getTime());
+    return Math.abs(age.getUTCFullYear() - 1970);
+  };
 
   return (
-    <div className="container">
-      {!team && <div className="noteam"></div>}
-      {team && (
-        <div>
-          <div className="containerHeader">
-            <span className="headerText">
-              <Link to="/teams">Teams</Link>
-              <span> / </span>
-              <span>{team.name}</span>
-            </span>
-            <div className="headerbuttons">
-              <button>edit</button>
-              <button>delete</button>
-            </div>
-          </div>
-          <div className="mainInfo">
-            <div className="logoContainer"></div>
-            <div className="main">
-              <h2>{team.name}</h2>
-              <div>
-                <div>
-                  <h4>Year of foundation</h4>
-                  <h4>{team.foundationYear}</h4>
-                </div>
-                <div>
-                  <h4>Division</h4>
-                  <h4>{team.division}</h4>
-                </div>
+    <StyledFlex direction="column">
+      <Info.StyledContainer>
+        {!team && <div className="noPlayer"></div>}
+        {team && (
+          <div>
+            <Info.StyledHeaderContainer>
+              <span className="headerText">
+                <Link to="/teams">Teams</Link>
+                <span> / </span>
+                <span>{team.name}</span>
+              </span>
+              <div className="headerbuttons">
+                <button>edit</button>
+                <button>delete</button>
               </div>
-              <div>
-                <h4>Conference</h4>
-                <h4>{team.conference}</h4>
-              </div>
-            </div>
+            </Info.StyledHeaderContainer>
+            <Info.StyledMainContainer>
+              <Info.StyledLogoContainer
+                url={team.imageUrl}
+              ></Info.StyledLogoContainer>
+              <Info.StyledDescriptionContainer>
+                <h2>{team.name}</h2>
+                <Info.StyledDescriptionRow>
+                  <div>
+                    <label>Year of foundation</label>
+                    <p>{team.foundationYear}</p>
+                  </div>
+                  <div>
+                    <label>Division</label>
+                    <p>{team.division}</p>
+                  </div>
+                </Info.StyledDescriptionRow>
+                <Info.StyledDescriptionRow>
+                  <div>
+                    <label>Conference</label>
+                    <p>{team.conference}</p>
+                  </div>
+                </Info.StyledDescriptionRow>
+              </Info.StyledDescriptionContainer>
+            </Info.StyledMainContainer>
           </div>
-        </div>
+        )}
+      </Info.StyledContainer>
+
+      {team && team.players && team.players.length>0 && (
+        <Info.StyledContainer>
+          <Info.StyledTeamListHeader>
+            <label>Roster</label>
+          </Info.StyledTeamListHeader>
+          <Info.StyledTeamListContainer>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Player</th>
+                  <th className="hide">Height</th>
+                  <th className="hide">Weight</th>
+                  <th className="hide">Age</th>
+                </tr>
+              </thead>
+              <tbody>
+                {team.players.map((p, index) => (
+                  <tr key={index}>
+                    <td>{p.number}</td>
+                    <td>
+                      <StyledFlex direction="row">
+                        <Info.StyledPhotoInList url={p.avatarUrl}></Info.StyledPhotoInList>                        
+                        <StyledFlex direction="column">
+                          <label>{p.name}</label>
+                          <span>{p.position}</span>
+                        </StyledFlex>
+                      </StyledFlex>
+                    </td>
+                    <td className="hide">{p.height}</td>
+                    <td className="hide">{p.weight}</td>
+                    <td className="hide">{getAge(p.birthday)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Info.StyledTeamListContainer>
+        </Info.StyledContainer>
       )}
-    </div>
+    </StyledFlex>
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import img from '../../asserts/images/loading.svg'
+import img from 'asserts/images/loading.svg'
 
 type PropsType = {
 }

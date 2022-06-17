@@ -1,20 +1,30 @@
 import React from "react";
 import LoginForm from "./loginForm";
 import loginWebPageImg from "asserts/images/loginWebPage.svg";
-import { StyledFlex } from "common/components/Flex";
 import styled from "styled-components";
 
 const StyledContainer = styled.div`{    
     width: 1440px;
+    display: flex;
+    flex-direction: row;
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      width: 100%;
+      display: flex;
+    flex-direction: column;
+    }
 }`
 
 const StyledLoginContainer = styled.div`{
     position: absolute;
     width: 606px;
-    height: 1024px;
+    height: 100%;
     left: 0px;
     top: 0px;
-    background: #FFFFFF;
+    background: ${({ theme }) => theme.colors.white};
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      width: 100%;    
+
+    }
 }`
 const StyledImageContainer = styled.div`
     position: absolute;
@@ -23,6 +33,19 @@ const StyledImageContainer = styled.div`
     left: 606px;
     top: 0px;
     background: #F5FBFF;
+    background-image: url('${loginWebPageImg}');
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      dispplay: none;
+      position: relative;
+      width: 100%px;
+      width: 1px;
+      height: 1px;
+      left: 0px;
+      top: 0px;
+    }
 
     img{
         margin: 306px 114px;
@@ -32,16 +55,12 @@ const StyledImageContainer = styled.div`
 class UnauthApp extends React.Component {
   render() {
     return (
-      <StyledFlex>
         <StyledContainer>
           <StyledLoginContainer>
             <LoginForm />
           </StyledLoginContainer>
-          <StyledImageContainer>
-            <img src={loginWebPageImg}></img>
-          </StyledImageContainer>
+          <StyledImageContainer />
         </StyledContainer>
-      </StyledFlex>
     );
   }
 }

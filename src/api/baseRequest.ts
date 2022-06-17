@@ -65,3 +65,7 @@ export const remove = (url: string, token: string) => request(`${base}${url}`, {
 export function put<T extends RequestGenericType>(url: string, body: T, token: string) {
   return request(`${base}${url}`, { method: 'PUT', body: JSON.stringify(body) }, token);
 }
+
+export function imagePost<T extends RequestGenericType>(url: string, body: FormData, token?: string) {
+  return request(`${base}${url}`, { method: 'POST', body: body }, token);
+}

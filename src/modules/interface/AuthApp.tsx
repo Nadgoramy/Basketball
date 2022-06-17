@@ -7,6 +7,7 @@ import { TeamInfo } from "modules/teams/components/TeamInfo/teamInfo";
 import { PlayerList } from "modules/players/components/playerList";
 import { PlayerInfo } from "modules/players/components/PlayerInfo"
 import MainContainer from "./MainContainer";
+import PlayerEdit from "modules/players/components/playerEdit";
 
 type AuthProps = { };
 type AuthState = { mobileSideBarOpen: boolean };
@@ -30,7 +31,7 @@ const AuthApp: React.FunctionComponent<AuthProps> = (props: AuthProps) =>{
               <Route path="/team/:id" element={<TeamInfo />} />
               <Route path="/player/:id" element={<PlayerInfo />} />
               <Route path="/players" element={<PlayerList />} />
-              
+              <Route path="/editPlayer/:id" element={<PlayerEdit/>}/>
             </Routes>
           </MainContainer>
         </BrowserRouter>

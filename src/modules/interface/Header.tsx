@@ -12,7 +12,7 @@ const StyledHeader = styled.header`
   right: 0%;
   top: 0%;
 
-  background: #ffffff;
+  background: ${({ theme }) => theme.colors.white};
   box-shadow: 0px 1px 10px rgba(209, 209, 209, 0.5);
 
   @media (max-width: ${({ theme }) => theme.mobile}) {

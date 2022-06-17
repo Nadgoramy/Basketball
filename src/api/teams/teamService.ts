@@ -21,7 +21,7 @@ const getTeam = (id: number) => {
     if(!currentUser) return;
     return get(API_URL + "get?id=" + id,  currentUser.token)
       .then((response) => {        
-        return response.data;
+        return response;
       });
   };
 
@@ -31,7 +31,7 @@ const getTeam = (id: number) => {
     if(!currentUser) return;
     return post(API_URL + "add", { team },  currentUser.token)
       .then((response) => {        
-        return response.data;
+        return response;
       });
   };
 
@@ -40,7 +40,7 @@ const getTeam = (id: number) => {
     if(!currentUser) return;
     return put(API_URL + "update", { team },  currentUser.token)
       .then((response) => {        
-        return response.data;
+        return response;
       });
   };
 
@@ -49,13 +49,12 @@ const getTeam = (id: number) => {
     if(!currentUser) return;
     return remove(API_URL + "delete?id=" + id,  currentUser.token)
       .then((response) => {        
-        return response.data;
+        return response;
       });
   };
 
 
-const TeamService = {
- 
+const TeamService = { 
   getTeams,
   getTeam,
   addTeam,

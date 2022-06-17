@@ -2,11 +2,11 @@ import styled from "styled-components";
 
 const MainContainer = styled.div`
     position: absolute;
-    max-width: 1300px;
+    max-width: 1145px;
     left: 140px;
     top: 80px;
-    background: #F6F6F6;    
-    padding: 32px 80px;
+    background: ${({ theme }) => theme.colors.lightest_grey1};    
+    padding: 32px 80px 0 80px;
     height:100%;
 
     @media (max-width: ${({ theme }) => theme.mobile}) {

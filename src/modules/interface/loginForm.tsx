@@ -12,6 +12,9 @@ const StyledLoginContainer = styled.div`
 margin: 226px 120px 0 120px;
 display: flex;
 flex-direction: column;
+@media (max-width: ${({ theme }) => theme.mobile}) {
+  margin: 226px 24px 0 24px;
+}
 
 h4{  
   font-style: normal;
@@ -33,7 +36,7 @@ div{
     font-weight: 500;
     font-size: 14px;
     line-height: 24px;
-    color: #707070;
+    color: ${({ theme }) => theme.colors.grey};
     margin: 0 0 8px 0;
   }
   button{
@@ -45,17 +48,17 @@ nav{
   text-align: center;
   position: relative;
   top: 60px;
-  color:#707070;
+  color:${({ theme }) => theme.colors.grey};
 
   a{
-    color: #FF768E;
+    color: ${({ theme }) => theme.colors.lightest_red};
   }
 }
 `
 
 
 type PropsType = {
-  user : AuthUserDto
+  //user : AuthUserDto
       dispatch : (action: any) => any;
 }
 type StateType = {
@@ -79,12 +82,13 @@ type StateType = {
       };
 
     onSubmit=(e: React.SyntheticEvent) => {
-        e.preventDefault();        
+        e.preventDefault();             
         AuthService.login(this.state.login, this.state.password)
         .then(user=>{ 
           this.props.dispatch({ type: 'SET_USER', name : user.name, avatarUrl: user.avatarUrl, token:user.token })                     
         })
-        .catch(err => this.setState({msg: err.toString()}));        
+        .catch(err => 
+          this.setState({msg: err.toString()}));        
       }
 
     render() {
@@ -100,6 +104,7 @@ type StateType = {
                   name="login" 
                   value={this.state.login} 
                   onChange={this.onLoginChange} 
+                  required
                   />
             </div>
             <div>
@@ -111,7 +116,8 @@ type StateType = {
                   name="password" 
                   value={this.state.password} 
                   onChange={this.onPasswordChange} 
-                  error={this.state.msg}/>
+                  error={this.state.msg}
+                  required/>
                 
             </div>            
             <div>
@@ -130,7 +136,7 @@ type StateType = {
 
 function mapStateToProps(state:any , ownProps: any){
     return{
-      user : state.user,
+      //user : state.user,
       dispatch : state.dispatch
     }
 }
@@ -138,10 +144,4 @@ function mapStateToProps(state:any , ownProps: any){
   export default connect(mapStateToProps)(LoginForm);
 
 
-  /*
-  <input type="password" 
-                    name="password" 
-                    value={this.state.password} 
-                    onChange={this.onPasswordChange} 
-                    className='loginFormInput'/>
-  */
+ 
