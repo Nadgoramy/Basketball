@@ -6,6 +6,7 @@ import { AppStateType } from 'core/redux/configureStore';
 import {ThemeProvider} from 'styled-components'
 import AuthApp from 'modules/interface/AuthApp';
 import { theme } from 'DefaultTheme';
+import { BrowserRouter } from 'react-router-dom';
 
 function App() {
   const  user  = AuthService.getCurrentUser();
@@ -13,9 +14,11 @@ function App() {
  
 console.log(userFromStore);
   return (
+    <BrowserRouter>
     <ThemeProvider theme={theme}>
        {(user ) ? <AuthApp /> : <UnauthApp />    }
     </ThemeProvider> 
+    </BrowserRouter>
   );
 }
 

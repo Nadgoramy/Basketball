@@ -9,7 +9,7 @@ const register = (username:string, login: string, password:string) => {
     username,
     login,
     password,
-  });
+  })
 };
 const login = (login: string, password:string) => {
   console.log(login+"/"+password);

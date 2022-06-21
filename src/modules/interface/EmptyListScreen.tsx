@@ -1,4 +1,4 @@
-import { NoTeamStyled } from "./NoTeamInList";
+import { NoTeamStyled } from "./StyledEmptyList";
 
 export type EmptyListScreenPtopType={
     mode: "team"|"player"

@@ -1,12 +1,10 @@
-import React from "react";
-import ReactSelect, { Props } from "react-select";
-//import {defaultProps} from "react-select/dist/declaration/Select"
 import styled from "styled-components";
+import ReactSelect, { Props } from "react-select";
 
-export const StyledMultiSelect = styled(ReactSelect)`
+export const StyledSelect = styled(ReactSelect)`
   .Select__control {
     min-height: 40px;
-    min-width: 364px;
+    min-width: 88px;
     background: ${({ theme }) => theme.colors.white};
     border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
     border-radius: 4px;
@@ -16,20 +14,11 @@ export const StyledMultiSelect = styled(ReactSelect)`
       width: 100%;
     }
   }
-
-  .Select__multi-value {
-    background: ${({ theme }) => theme.colors.red};
-    border-radius: 4px;
-    color: ${({ theme }) => theme.colors.white};
-  }
-  .Select__multi-value__label {
-    color: ${({ theme }) => theme.colors.white};
-  }
+  
   .Select__indicator Select__dropdown-indicator {
     border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
   }
   .Select__value-container
-    Select__value-container--is-multi
     Select__value-container--has-value {
   }
   .Select__control:hover {
@@ -50,6 +39,16 @@ export const StyledMultiSelect = styled(ReactSelect)`
     border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
     box-shadow: none;
   }
+
+  .Select__menu{
+
+  }
+  .Select__single-value {
+    color: ${({ theme }) => theme.colors.light_grey};
+  }
+  .Select__single-value__label {
+    color: ${({ theme }) => theme.colors.light_grey};
+  }
   
   .Select__option {
     border-bottom: "0.5px solid ${({ theme }) => theme.colors.lightest_grey}";
@@ -57,10 +56,18 @@ export const StyledMultiSelect = styled(ReactSelect)`
     backgroundcolor: ${({ theme }) => theme.colors.white};
   }
   .Select__option:hover {
+    background-color:${({ theme }) => theme.colors.lightest_red};
+    color: ${({ theme }) => theme.colors.white};
+  }
+  .Select__option:active {
     background-color:${({ theme }) => theme.colors.dark_red};
     color: ${({ theme }) => theme.colors.white};
   }
-  .Select__option:focused {
+  .Select__option:isSelected {
+    background-color:${({ theme }) => theme.colors.dark_red};
+    color: ${({ theme }) => theme.colors.white};
+  } 
+  .Select__option:focuse {
     background-color: ${({ theme }) => theme.colors.lightest_red};
     color: ${({ theme }) => theme.colors.white};
   }
@@ -69,21 +76,4 @@ export const StyledMultiSelect = styled(ReactSelect)`
     color: ${({ theme }) => theme.colors.white};
   }
 `;
-export interface SelectProps
-  extends React.HTMLAttributes<HTMLSelectElement | HTMLInputElement> {    
-  options: Array<any>;
-  isMulti: boolean;
-  isDisabled: boolean;
-  isSearchable: boolean;
-}
-/**
-type KnownKeys<T> = {
-  [K in keyof T]: string extends K ? never : number extends K ? never : K
-} extends {[_ in keyof T]: infer U}
-  ? U
-  : never;
 
-export type CustomSelectProps<T> = Pick<
-  ReactSelect<T>['props'],
-  KnownKeys<ReactSelect<T>['props']>
->;*/

@@ -17,7 +17,7 @@ export const requestPlayer = (id: number, dispatch: any) => {
   };
 
 
-  export interface TeamOptionType {
+  export interface OptionType {
     label: string;
     value: number;
   }
@@ -38,7 +38,7 @@ export const requestPlayer = (id: number, dispatch: any) => {
     if (promise)
       promise
         .then((res) => {
-          let names = new Array<TeamOptionType>();
+          let names = new Array<OptionType>();
           (res as TeamDtoPageResult).data.map((t: TeamDto) =>
             names.push({ label: t.name, value: t.id })
           );

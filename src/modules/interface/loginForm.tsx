@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import { useForm } from "react-hook-form";
 import { connect } from 'react-redux';
-import { Link, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import AuthService from 'api/authService';
-import { AuthUserDto } from 'api/AuthUserDto';
 import {StyledButton} from 'common/components/Button/Button.styled';
 import Input from 'common/components/Input/Input';
 import styled from 'styled-components';
@@ -60,6 +59,7 @@ nav{
 type PropsType = {
   //user : AuthUserDto
       dispatch : (action: any) => any;
+      setError:(msg: string)=>void
 }
 type StateType = {
     login: string;

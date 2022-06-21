@@ -3,7 +3,7 @@ import { AppStateType } from "core/redux/configureStore";
 import { SelectHTMLAttributes, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { requestPlayer, requestTeamOptions, TeamOptionType } from "../helpers/playerHelper";
+import { requestPlayer, requestTeamOptions, OptionType } from "../helpers/playerHelper";
 import * as Info from "modules/interface/InfoComponents";
 import { playerActions } from "../actions";
 import { PlayerDto } from "api/Dto/playerDto";
@@ -26,7 +26,7 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
   const [file, setFile] = useState(null);
   const [positions, setPositions] = useState<PositionDto[] | null>(null);
   const [positionsOption, setPositionsOption] = useState<OptionProps[] | null>( null );
-  const [teamNames, setTeamNames] = useState<TeamOptionType[] | undefined>( undefined );
+  const [teamNames, setTeamNames] = useState<OptionType[] | undefined>( undefined );
   const player = useSelector((state: AppStateType) => state.player.player);
 
   useEffect(() => {

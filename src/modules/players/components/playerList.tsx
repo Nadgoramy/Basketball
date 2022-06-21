@@ -30,8 +30,10 @@ import Search from "common/components/Search/Search";
 import { StyledMultiSelect } from "common/components/StyledMultiSelect";
 import { StyledPaginateContainer } from "common/components/Pagination/StyledPaginate";
 import ReactPaginate from "react-paginate";
-import { requestTeamOptions, TeamOptionType } from "../helpers/playerHelper";
+import { OptionType, requestTeamOptions } from "../helpers/playerHelper";
 import { EmptyListScreen } from "modules/interface/EmptyListScreen";
+import { StyledSelect } from "common/components/StyledSelect";
+import { DefaultTheme } from "DefaultTheme";
 
 type PropsType = {};
 export const PlayerList: React.FunctionComponent<PropsType> = (
@@ -46,9 +48,46 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
   const itemsCount = useSelector(getCount);
 
   const [teamIds, setTeamIds] = useState<number[] | null>(null);
-  const [teamNames, setTeamNames] = useState<TeamOptionType[] | undefined>(
+  const [teamNames, setTeamNames] = useState<OptionType[] | undefined>(
     undefined
   );
+
+function customStyle(theme: DefaultTheme){
+  return{
+    ...theme,
+    colors:{
+      ...theme.colors,
+      primary25: 'red',
+      primary: 'white'
+    },
+    menu: (provided: any, state: any) => ({
+      ...provided,
+      borderBottom: '1px dotted pink',
+      color: state.selectProps.menuColor,
+      padding: 20,
+    }),
+  }
+}
+const customStyles = {
+  menu: (provided: any, state: any) => ({
+    ...provided,
+    width: state.selectProps.width,
+    borderBottom: '1px dotted pink',
+    color: state.selectProps.menuColor,
+    padding: 20,
+  }),
+
+  /*control: (_, { selectProps: { width }}) => ({
+    width: width
+  }),*/
+
+  singleValue: (provided: any, state: any) => {
+    const opacity = state.isDisabled ? 0.5 : 1;
+    const transition = 'opacity 300ms';
+
+    return { ...provided, opacity, transition };
+  }
+}
 
   const updatePlayersTeamNames = (
     list: PlayerDtoPageResult
@@ -95,6 +134,9 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
   ) => {
     dispatch(actions.setPageSize(parseInt(event.target.value)));
   };
+  const handlePageSizeSelect = (a: any, b: any ) => {
+    //dispatch(actions.setPageSize(value));
+  };
   const updateFilterValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(actions.setPlayersFilter(e.target.value));
   };
@@ -102,7 +144,7 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
     dispatch(actions.setCurrentPage(n));
   };
 
-  const updateTeamFilter = (evn: TeamOptionType[]) => {
+  const updateTeamFilter = (evn: OptionType[]) => {
     if (!evn) setTeamIds(null);
     else {
       let teamRequest: number[] = [];
@@ -110,7 +152,20 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
       setTeamIds(teamRequest);
     }
   };
-
+  const pageSizeOptions=[
+    {
+      label:"6",
+      value:6 
+    },
+    {
+      label:"12",
+      value: 12
+    },
+    {
+      label:"24",
+      value: 24
+    }
+  ]
   return (
     <StyledMainContainer direction="column">
       <StyledHeader>
@@ -120,7 +175,7 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
             classNamePrefix="Select"
             options={teamNames}
             isMulti
-            onChange={(e) => updateTeamFilter(e as TeamOptionType[])}
+            onChange={(e: any) => updateTeamFilter(e as OptionType[])}
           />
         </HeaderFlex>
         <StyledButton mode="add">Add +</StyledButton>
@@ -150,6 +205,12 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
           />
         </StyledPaginateContainer>
         <PageSizeSelector onChange={handlePageSizeSelectorClick} />
+        <StyledSelect            
+            classNamePrefix="Select"
+            options={pageSizeOptions}     
+            defaultValue={pageSizeOptions[0]}                
+            onChange={handlePageSizeSelect}
+          />
       </StyledFooter>
     </StyledMainContainer>
   );

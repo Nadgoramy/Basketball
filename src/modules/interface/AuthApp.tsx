@@ -20,7 +20,6 @@ const AuthApp: React.FunctionComponent<AuthProps> = (props: AuthProps) =>{
 
   return (
     <div >
-        <BrowserRouter>
           <Header toggleMobileSideBar={toggleMobileSideBar}/>
           <SideBar isOpen={mobileSideBarOpen}/>
 
@@ -34,7 +33,6 @@ const AuthApp: React.FunctionComponent<AuthProps> = (props: AuthProps) =>{
               <Route path="/editPlayer/:id" element={<PlayerEdit/>}/>
             </Routes>
           </MainContainer>
-        </BrowserRouter>
       </div>
   )
 }
