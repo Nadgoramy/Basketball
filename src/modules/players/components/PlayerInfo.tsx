@@ -59,7 +59,7 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
                 <span>{player.name}</span>
               </div>
               <StyledFlex >              
-                <EditLink to={"/editPlayer/"+id}/>
+                <EditLink to={"/players/edit/"+id}/>
                 <DeleteLink onClick={handleDeleteClick} to="#0"/>
               </StyledFlex>
             </Info.StyledHeaderContainer>

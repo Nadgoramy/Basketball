@@ -71,10 +71,10 @@ const initialValue: UserSubmitForm = {
   confirmPassword: "",
   acceptTerms: false,
 };
-interface RegProps{
-  setError:(msg: string)=>void
+interface RegProps {
+  setError: (msg: string) => void;
 }
-const RegistrationForm: React.FC<RegProps> = ({setError}) => {
+const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
   const {
     register,
     handleSubmit,
@@ -93,21 +93,27 @@ const RegistrationForm: React.FC<RegProps> = ({setError}) => {
   const onSubmit = (data: UserSubmitForm) => {
     console.log(data);
     AuthService.register(data.userName, data.login, data.password)
-    .then((response) => {      
-      if (response.token) {        
-        localStorage.setItem("user", JSON.stringify(response));
-        dispatch({ type: 'SET_USER', name : response.name, avatarUrl: response.avatarUrl, token:response.token })
-        location.pathname = "/";
-      }
-    })
-    .catch (err =>{
-      console.error(err)
-      if(err.status == 409) setError("User with such login already exists") 
-      else setError(err);
-          setTimeout(() => {
-            setError("");
-          }, 15000);
-    })      
+      .then((response) => {
+        if (response.token) {
+          localStorage.setItem("user", JSON.stringify(response));
+          dispatch({
+            type: "SET_USER",
+            name: response.name,
+            avatarUrl: response.avatarUrl,
+            token: response.token,
+          });
+          location.pathname = "/";
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        if (err.status == 409) setError("User with such login already exists");
+        else setError(err);
+
+        setTimeout(() => {
+          setError("");
+        }, 15000);
+      });
   };
 
   return (
@@ -189,7 +195,7 @@ const RegistrationForm: React.FC<RegProps> = ({setError}) => {
       <nav>
         <span>Already a member? </span>
         <a href="/">Sing ip</a>
-      </nav>      
+      </nav>
     </StyledFormContainer>
   );
 };

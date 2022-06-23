@@ -9,6 +9,8 @@ import { StyledFlex } from "common/components/Flex";
 import * as Info from "modules/interface/InfoComponents";
 import PlayerService from "api/players/playerService";
 import { PlayerDto, PlayerDtoPageResult } from "api/Dto/playerDto";
+import { DeleteLink, EditLink } from "common/components/Link/editLink";
+import { StyledLink } from "common/components/Link/styledLink";
 
 type PropTypes = {};
 export const TeamInfo: React.FunctionComponent<PropTypes> = (
@@ -32,10 +34,10 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
       promise
         .then((res) => {
           let team = res as TeamDto;
-          dispatch(actions.gotTeam(team));
+          dispatch(actions.setTeam(team));
           PlayerService.getPlayers("", [teamId], 1, 100)?.then((responce) => {
             team.players = (responce as PlayerDtoPageResult).data;
-            dispatch(actions.gotTeam(team));
+            dispatch(actions.setTeam(team));
           });
         })
         .catch((err) => {
@@ -49,6 +51,10 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
     let age = new Date(Date.now() - new Date(birthday).getTime());
     return Math.abs(age.getUTCFullYear() - 1970);
   };
+  
+  const handleDeleteClick = (e: any) =>{
+
+  }
 
   return (
     <StyledFlex direction="column">
@@ -58,14 +64,14 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
           <div>
             <Info.StyledHeaderContainer>
               <span className="headerText">
-                <Link to="/teams">Teams</Link>
+              <StyledLink to="/teams">Teams</StyledLink>
                 <span> / </span>
                 <span>{team.name}</span>
               </span>
-              <div className="headerbuttons">
-                <button>edit</button>
-                <button>delete</button>
-              </div>
+              <StyledFlex >              
+                <EditLink to={"/teams/edit/"+id}/>
+                <DeleteLink onClick={handleDeleteClick} to="#0"/>
+              </StyledFlex>
             </Info.StyledHeaderContainer>
             <Info.StyledMainContainer>
               <Info.StyledLogoContainer

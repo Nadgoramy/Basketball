@@ -3,7 +3,10 @@ import { imagePost, post } from "./baseRequest";
 
 const API_URL = "image/";
 
-const saveImage = (file:string ) => {
+function ab2str(buf: ArrayBuffer) {
+  return new TextDecoder().decode(buf);
+}
+const saveImage = (file:File ) => {
   let currentUser = AuthService.getCurrentUser();
   if(!currentUser) return null;  
   var formData = new FormData();

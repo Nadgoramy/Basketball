@@ -11,7 +11,7 @@ export const PlayerCard: React.FunctionComponent<PlayerCardPtopType> = (props : 
   let navigate = useNavigate(); 
   const routeChange = (id: number | undefined) =>{ 
     if(!id) return;
-    let path = `/player/`+id; 
+    let path = `/players/`+id; 
     navigate(path);
   }
   

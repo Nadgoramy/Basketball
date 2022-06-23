@@ -3,8 +3,8 @@ import styled from "styled-components";
 import svg from "asserts/icons/addPhoto.svg";
 
 const StyledFileUploader = styled.div<PropsType>`    
-margin: 0 auto;
-margin-top: 48px;
+/*margin: 0 auto;*/
+margin: 48px auto;
 
     input{
         display: none;

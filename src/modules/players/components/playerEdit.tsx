@@ -4,7 +4,6 @@ import { SelectHTMLAttributes, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { requestPlayer, requestTeamOptions, OptionType } from "../helpers/playerHelper";
-import * as Info from "modules/interface/InfoComponents";
 import { playerActions } from "../actions";
 import { PlayerDto } from "api/Dto/playerDto";
 import PlayerService from "api/players/playerService";
@@ -15,9 +14,17 @@ import { InputActionMeta, OptionProps } from "react-select";
 import DragDropFile from "common/components/DragDropFile";
 import ImageService from "api/imageServise";
 import { StyledLink } from "common/components/Link/styledLink";
+import { useForm } from "react-hook-form";
+import { StyledHeaderContainer, StyledMainContainer } from "modules/interface/StyledEditComponents";
 
 interface PropTypeInterface {}
-
+type PlayerForm = {
+  userName: string;
+  login: string;
+  password: string;
+  confirmPassword: string;
+  acceptTerms: boolean;
+};
 const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
   props: PropTypeInterface
 ) => {
@@ -28,7 +35,13 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
   const [positionsOption, setPositionsOption] = useState<OptionProps[] | null>( null );
   const [teamNames, setTeamNames] = useState<OptionType[] | undefined>( undefined );
   const player = useSelector((state: AppStateType) => state.player.player);
-
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    getValues,
+  } = useForm<PlayerForm>();
   useEffect(() => {
     PlayerService.getPositions()?.then((res) => {
       setPositions(res as PositionDto[]);
@@ -89,10 +102,8 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
   function ab2str(buf: ArrayBuffer) {
     return new TextDecoder().decode(buf);
   }
-  const handleFiles = async (file: File) => {
-    console.log(file);
-    const content = await file.arrayBuffer();
-    ImageService.saveImage(ab2str(content))?.then((url: string) => {
+  const handleFiles = async (file: File) => {    
+    ImageService.saveImage(file)?.then((url: string) => {
       dispatch(playerActions.setAvatar(url));
       console.log(url);
     });
@@ -101,14 +112,14 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
   return (
     <StyledFlex direction="row">
       <StyledFlex direction="column">
-        <Info.StyledHeaderContainer>
+        <StyledHeaderContainer>
           <span className="headerText">
           <StyledLink to="/players">Players</StyledLink>
             <span> / </span>
             <span>{id ? "Edit player" : "Add new player"}</span>
           </span>
-        </Info.StyledHeaderContainer>
-        <StyledFlex direction="row">
+        </StyledHeaderContainer>
+        <StyledMainContainer>
           <div>
             <DragDropFile handleFiles={handleFiles} url={player?.avatarUrl}/>
           </div>
@@ -118,9 +129,8 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
                 <p>Name</p>
                 <Input
                   type="text"
-                  name="name"
                   value={player?.name}
-                  onChange={onNameChange}
+                  onChange={onNameChange}                  
                 />
               </div>
               <div>
@@ -167,7 +177,7 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
               </StyledFlex>
             </form>
           </div>
-        </StyledFlex>
+        </StyledMainContainer>
       </StyledFlex>
     </StyledFlex>
   );

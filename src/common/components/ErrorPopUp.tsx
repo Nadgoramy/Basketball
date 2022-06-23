@@ -2,18 +2,21 @@ import styled from "styled-components";
 
 const ErrorPopUpStyled = styled.div`
 position: absolute;
+display: flex;
 right: 0;
 top: 0;
+height: 40px;
 
 background: ${({theme})=> theme.colors.light_red};
 border-radius: 4px;
 margin: 36px;
 
-p{
+span{
     color: ${({theme})=> theme.colors.white};
     font-weight: 500;
     font-size: 16px;
     line-height: 24px;
+    margin: auto 16px;
 }
 `
 interface PropType{
@@ -22,7 +25,7 @@ interface PropType{
 const ErrorPopUp = (props: PropType)=>{
 return(
     <ErrorPopUpStyled>
-        <p>{props.errorMessage}</p>
+        <span>{props.errorMessage}</span>
     </ErrorPopUpStyled>
 )}
 

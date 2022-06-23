@@ -8,9 +8,7 @@ import { TeamDto, TeamDtoPageResult } from "api/Dto/teamDto";
 import { TeamCard } from "modules/teams/components/TeamCard/teamCard";
 import TeamService from "api/teams/teamService";
 import Search from "common/components/Search/Search";
-import Pagination from "common/components/Pagination/Pagination";
 import { StyledButton } from "common/components/Button/Button.styled"
-import { StyledFlex } from "common/components/Flex";
 import { StyledFooter, StyledGrid, StyledHeader, StyledMainContainer } from "modules/interface/ListComponents";
 import { StyledPaginateContainer } from "common/components/Pagination/StyledPaginate";
 import ReactPaginate from "react-paginate";
@@ -94,10 +92,4 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
     </StyledMainContainer>
   );
 };
-/*
-<Pagination
-          onPageChange={updateCurrentPage}
-          totalCount={Math.ceil(itemsCount / pageSize)}
-          currentPage={1}
-        />
-*/
+

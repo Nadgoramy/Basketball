@@ -17,7 +17,7 @@ const login = (login: string, password:string) => {
       login,
       password,
     })
-    .then((response) => {      
+    /*.then((response) => {      
       if (response.token) {        
         localStorage.setItem("user", JSON.stringify(response));
       }
@@ -25,7 +25,7 @@ const login = (login: string, password:string) => {
     })
     .catch (err =>{
       err.status == 401 ? throwError("User not found") : console.log(err)
-    });
+    });*/
 };
 
 const change = (username: string, avatarUrl: string) => {

@@ -28,8 +28,10 @@ const getTeam = (id: number) => {
 
   const addTeam = (team: NewTeamDto) => {
     let currentUser = AuthService.getCurrentUser();
-    if(!currentUser) return;
-    return post(API_URL + "add", { team },  currentUser.token)
+    if(!currentUser) return new Promise((resolve, reject) => {
+      throw new Error("Unauthorize exception");
+    })
+    return post<NewTeamDto>(API_URL + "add", team , currentUser.token)
       .then((response) => {        
         return response;
       });
@@ -39,9 +41,6 @@ const getTeam = (id: number) => {
     let currentUser = AuthService.getCurrentUser();
     if(!currentUser) return;
     return put(API_URL + "update", { team },  currentUser.token)
-      .then((response) => {        
-        return response;
-      });
   };
 
   const deleteTeam = (id: number) => {

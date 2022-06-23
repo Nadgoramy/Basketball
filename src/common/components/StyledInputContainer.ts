@@ -19,7 +19,8 @@ export const StyledInputContaner = styled.div<InputProps>`
     left: 0;
     right: 0;
     height: 40px;
-    padding: 0;
+    width: -moz-available;
+    padding: 0;    
 
     border-radius: 4px;
     border-width: 0;
@@ -27,6 +28,9 @@ export const StyledInputContaner = styled.div<InputProps>`
     color: ${({ theme }) => theme.colors.dark_grey};
     border: ${(props) => borderProp(props)};
     box-shadow: none;
+  }
+  input:-internal-autofill-selected {
+    background: ${({ theme }) => theme.colors.lightest_grey1};
   }
   input:hover {
     color: ${({ theme }) => theme.colors.dark_grey};

@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 export const StyledContainer = styled.div`
 max-width: 1140px;
+flex:1;
 
 @media (max-width: ${({ theme }) => theme.mobile}) {
   max-width: ${({ theme }) => theme.mobile};

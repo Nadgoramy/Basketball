@@ -15,7 +15,7 @@ export const TeamCard: React.FunctionComponent<PropsType> = (
   let navigate = useNavigate(); 
   const routeChange = (id: number | undefined) =>{ 
     if(!id) return;
-    let path = `/team/`+id; 
+    let path = `/teams/`+id; 
     navigate(path);
   }
 
@@ -30,4 +30,8 @@ export const TeamCard: React.FunctionComponent<PropsType> = (
   );
 };
 
+
+function useHistory() {
+  throw new Error("Function not implemented.");
+}
 
