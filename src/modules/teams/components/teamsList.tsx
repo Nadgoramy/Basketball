@@ -5,13 +5,14 @@ import * as selectors from "modules/teams/selectors";
 import Preloader from "common/components/preloader";
 import PageSizeSelector from "common/components/PageSizeSelector/PageSizeSelector";
 import { TeamDto, TeamDtoPageResult } from "api/Dto/teamDto";
-import { TeamCard } from "modules/teams/components/TeamCard/teamCard";
+import { TeamCard } from "modules/teams/components/teamCard";
 import TeamService from "api/teams/teamService";
 import Search from "common/components/Search/Search";
 import { StyledButton } from "common/components/Button/Button.styled"
 import { StyledFooter, StyledGrid, StyledHeader, StyledMainContainer } from "modules/interface/ListComponents";
 import { StyledPaginateContainer } from "common/components/Pagination/StyledPaginate";
 import ReactPaginate from "react-paginate";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -26,6 +27,7 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
   const pageSize = useSelector(selectors.getPageSize);
   const isFetching = useSelector(selectors.getIsFetching);
   const itemsCount = useSelector(selectors.getCount);
+  const navigate = useNavigate();
 
   const requestTeams = () => {
     dispatch(actions.startRequest());
@@ -61,7 +63,7 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
     <StyledMainContainer direction="column">
       <StyledHeader>
         <Search onChange={(evt) => updateFilterValue(evt)} />
-        <StyledButton mode="add">Add +</StyledButton>
+        <StyledButton mode="add" onClick={()=>navigate("edit/0")}>Add +</StyledButton>
       </StyledHeader>
       {isFetching && <Preloader />}
       <StyledGrid>

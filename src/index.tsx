@@ -3,14 +3,12 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {configureStore} from './core/redux/configureStore';
 import { Provider } from 'react-redux';
+import { store } from 'core/redux/store';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-
-const store = configureStore();
 
 root.render(
   <React.StrictMode>

@@ -7,13 +7,15 @@ import { PositionDto } from 'api/Dto/positionDto';
 const API_URL = "player/";
 
 const getPositions = () => {
+  console.log("getting positions");
   let currentUser = AuthService.getCurrentUser();
   if(!currentUser) return null;
   return get(API_URL + "getpositions", currentUser.token)
     .then((response) => {      
-      return response as PositionDto[];
+      let list: PositionDto[] = [];
+      (response as Array<string>).map((value: any, i: number)=>list.push({id:i, title: value} as PositionDto ))
+      return list
     })
-    .catch((err)=>{console.log(err)});
 }
 
 const getPlayers = (name: string, teamIds: number[]|null, page: number, pageSize: number) => {
@@ -27,8 +29,7 @@ const getPlayers = (name: string, teamIds: number[]|null, page: number, pageSize
       let result : PlayerDtoPageResult = response;
       return result;        
     })
-    .catch((err)=>{console.log(err)});
-};
+  }
 
 const getPlayer = (id: number) => {
   console.log("getting player");
@@ -39,30 +40,27 @@ const getPlayer = (id: number) => {
         let result : PlayerDto = response;
       return result;  
       })
-      .catch((err)=>{console.log(err)});
   };
 
 
   const addPlayer = (player: NewPlayerDto) => {
     let currentUser = AuthService.getCurrentUser();
     if(!currentUser) return;
-    return post(API_URL + "add", { player },  currentUser.token)
+    return post(API_URL + "add",  player,  currentUser.token)
       .then((response) => {        
         let result : PlayerDto = response;
       return result;  
       })
-      .catch((err)=>{console.log(err)});
   };
 
   const updatePlayer = (player: PlayerDto) => {
     let currentUser = AuthService.getCurrentUser();
     if(!currentUser) return;
-    return put(API_URL + "update", { player },  currentUser.token)
+    return put(API_URL + "update",  player,  currentUser.token)
       .then((response) => {        
         let result : PlayerDto = response;
         return result;  
       })
-      .catch((err)=>{console.log(err)});
   };
 
   const deletePlayer = (id: number) => {
@@ -73,7 +71,6 @@ const getPlayer = (id: number) => {
         let result : PlayerDto = response;
         return result;  
       })
-      .catch((err)=>{console.log(err)});
   };
 
 

@@ -23,7 +23,8 @@ margin: 48px auto;
 
         background-image: url('${( props ) => props.url}'); 
         background-repeat: no-repeat;
-        background-size: contain;       
+        background-size: contain; 
+        margin: 0 auto;      
         
         @media (max-width: ${({ theme }) => theme.mobile}) {
             width: 185px;
@@ -35,6 +36,7 @@ margin: 48px auto;
         width: 75px;
         height: 75px;        
         background-image: url(${svg});
+        background-color: transparent;
         background-repeat: no-repeat;
         background-size: contain;
 
@@ -83,7 +85,7 @@ const DragDropFile = (props: PropsType) => {
   const handleChange = function (e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     if (e.target.files && e.target.files[0]) {
-      props.handleFiles(e.target.files);
+      props.handleFiles(e.target.files[0]);
     }
   };
   const onClick = () => {
@@ -112,7 +114,5 @@ const DragDropFile = (props: PropsType) => {
     </StyledFileUploader>
   );
 };
-
-
 
 export default DragDropFile;

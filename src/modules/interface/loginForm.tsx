@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,8 @@ import Input from "common/components/Input/Input";
 import styled from "styled-components";
 import PasswordInput from "common/components/PasswordInput";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { AppStateType } from "core/redux/configureStore";
 
 const StyledLoginContainer = styled.div`
   margin: 226px 120px 0 120px;
@@ -78,6 +80,13 @@ const LoginForm: React.FC<PropsType> = (posts) => {
     setError
   } = useForm<UserLoginForm>();
   const dispatch = useDispatch();
+  const currentUser = useSelector((state:AppStateType) => state.user)
+  const navigate = useNavigate();
+
+useEffect(()=>{
+  if(currentUser.token) navigate("/teams")
+},
+[currentUser])
 
   const onSubmit = (data: UserLoginForm) => {
     console.log(data);
@@ -90,6 +99,7 @@ const LoginForm: React.FC<PropsType> = (posts) => {
           avatarUrl: user.avatarUrl,
           token: user.token,
         });
+        navigate("/teams")
       })
       .catch((err) => {
         if (err.status == 401) globalSetError("User with the specified username / password was not found.");

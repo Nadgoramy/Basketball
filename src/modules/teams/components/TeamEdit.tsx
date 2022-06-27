@@ -8,9 +8,10 @@ import { AppStateType } from "core/redux/configureStore";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Input from "common/components/Input/Input";
 import { actions } from "../teamReducer";
+import { errorActions } from "core/redux/errorSlice";
 import {
   StyledHeaderContainer,
   StyledMainContainer,
@@ -23,6 +24,7 @@ const TeamEdit = () => {
   const team = useSelector((state: AppStateType) => state.team.team);
   const [initialState, setInitialState] = useState<TeamDto | null>();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   let { id } = useParams();
   const [file, setFile] = useState(null);
   const {
@@ -38,7 +40,7 @@ const TeamEdit = () => {
     if (!id) dispatch(actions.setTeam(new TeamDto()));
     else {
       let teamId = parseInt(id);
-      if (teamId > 0) requestTeam(teamId, dispatch);
+      if (teamId > 0) requestTeam(teamId, dispatch, navigate);
     }
   }, [id]);
   useEffect(()=>{
@@ -55,17 +57,16 @@ const TeamEdit = () => {
     })
   }
   const baseUrl = process.env.REACT_APP_IMAGEURL;
-  const handleFiles = async (file: File) => {    
+  const handleFiles = (file: File) => {    
     ImageService.saveImage(file)?.then((url: string) => {
       dispatch(actions.setTeamImage(baseUrl+url));
       console.log(url);
-    });
+    }).catch(e=>dispatch(errorActions.setErrorMessage(e.message)));
   };
 
   const removeImageOnServer=(url:string)=>{
     ImageService.deleteImage(url)?.then((url: string) => {
-      dispatch(actions.setTeamImage(url));
-      console.log(url);
+      console.log("Removed image url:"+ url)
     });
   }
 
@@ -79,7 +80,7 @@ const TeamEdit = () => {
           dispatch(actions.setTeam(response))
           if(initialState) removeImageOnServer(initialState.imageUrl)
         })
-        .catch((err: any) => console.error(err));
+        .catch((err: any) => dispatch(errorActions.setErrorMessage(err.message)));
     } else{
       let newTeam={
         name:data.name, 
@@ -90,20 +91,24 @@ const TeamEdit = () => {
 
       } as NewTeamDto
       TeamService.addTeam(newTeam)!
-        .then((response: TeamDto) => dispatch(actions.setTeam(response as TeamDto)))
+        .then((response: TeamDto) => {
+          dispatch(actions.setTeam(response as TeamDto))
+          navigate("/teams")
+        })
         .catch((err: any) => {
-          console.error(err);
+          dispatch(errorActions.setErrorMessage(err.message))
         });
       }
   };
   const onCancel=()=>{    
-    //if(image was uploaded) remove image
+    if(getValues("imageUrl") != initialState?.imageUrl) {
+      removeImageOnServer(getValues("imageUrl"))
+    }
     setFormValues(initialState as TeamDto)
   }
 
   return (
-    <StyledFlex>
-      <Info.StyledContainer>
+    <StyledFlex direction="column">
         <StyledHeaderContainer>
           <span className="headerText">
             <StyledLink to="/teams">Teams</StyledLink>
@@ -170,7 +175,6 @@ const TeamEdit = () => {
             </form>
           </div>
         </StyledMainContainer>
-      </Info.StyledContainer>
     </StyledFlex>
   );
 };

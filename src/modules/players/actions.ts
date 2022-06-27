@@ -10,11 +10,8 @@ export const actionTypes = {
  SET_CURRENTPAGE : () =>  'SET_CURRENTPAGE',
  SET_PAGESIZE: () =>  'SET_PAGESIZE',
  GOT_PLAYERS: () =>  'GET_PLAYERS',
- GET_PLAYER: () =>  'GET_PLAYER',
- ADDED_PLAYER: () =>  'ADDED_PLAYER',
- ADD_PLAYER: () =>  'ADD_PLAYER',
- UPDATE_PLAYER: () =>  'UPDATE_PLAYER',
- DELETE_PLAYER: () =>  'DELETE_PLAYER',
+ SET_PLAYER: () =>  'GET_PLAYER',
+ ADDED_PLAYER: () =>  'ADDED_PLAYER', 
  
  SET_PLAYER_NAME: () =>  'SET_PLAYER_NAME',
  SET_PLAYER_POSITION: () =>  'SET_PLAYER_POSITION',
@@ -36,10 +33,7 @@ export const actions = {
 }
 
 export const playerActions = {
-  getPlayer:(player: PlayerDto)=>({type: actionTypes.GET_PLAYER, player: player} as const ),
-  addedPlayer:(player: PlayerDto)=>({type: actionTypes.GET_PLAYER, player: player} as const ),
-  updatePlayer:(player: PlayerDto)=>({type: actionTypes.GET_PLAYER, player: player} as const ),
-  deletePlayer:(player: PlayerDto)=>({type: actionTypes.GET_PLAYER, player: player} as const ),
+  setPlayer:(player: PlayerDto)=>({type: actionTypes.SET_PLAYER, player: player} as const ),  
 
   setName:(value: string)=>({type: actionTypes.SET_PLAYER_NAME, value: value} as const ),
   setPosition:(value: string)=>({type: actionTypes.SET_PLAYER_POSITION, value: value} as const ),

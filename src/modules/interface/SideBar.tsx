@@ -5,21 +5,23 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import teamImg from "asserts/images/group_person.svg";
 import playerImg from "asserts/images/person.svg";
+import teamImgActive from "asserts/images/group_person_active.svg";
+import playerImgActive from "asserts/images/person_active.svg";
 import noUserImg from "asserts/images/profile.svg";
 import SingoutImg from "asserts/images/singout.svg";
-import { StyledFlex as Flex } from "common/components/Flex";
-
 
 const menu = [
   {
     link: "/teams",
     label: "Teams",
     img: teamImg,
+    imgActive: teamImgActive,
   },
   {
     link: "/players",
     label: "Players",
     img: playerImg,
+    imgActive: playerImgActive,
   },
 ];
 
@@ -83,14 +85,19 @@ const NavContainer = styled.div`
     text-align: left;
     margin: 24px 0 24px 20px;
   }
+  .active{
+    color: ${({ theme }) => theme.colors.lightest_red};
+  }
 `;
 
 const NavBarLink = styled(Link)`
   padding: 36px 50px;
   display: inline-block;
-  color: ${({ theme }) => theme.colors.lightest_red};
+  color: ${({ theme }) => theme.colors.light_grey};
   text-decoration: none;
-
+  .active{
+    color: ${({ theme }) => theme.colors.lightest_red};
+  }
   @media (max-width: ${({ theme }) => theme.mobile}) {
     padding: 0 0;
     display: block;
@@ -160,6 +167,7 @@ const StyledLogOut = styled(Link)`
 
 interface SideBarProps {
   isOpen: boolean;
+  activeItem: "team" | "player";
 }
 const SideBar = (props: SideBarProps) => {
   const dispatch = useDispatch();
@@ -172,24 +180,25 @@ const SideBar = (props: SideBarProps) => {
 
   const userFromStore = useSelector((state: AppStateType) => state.user);
   console.log(props.isOpen);
+  console.log(props.activeItem)
+  const itemIsActive=(item: any)=>item.link.indexOf(props.activeItem)>0
   return (
     <StyledSideBar show={props.isOpen}>
       <UserProfile>
         <div>
           <img
             src={
-              //userFromStore.avatarUrl > "" ? userFromStore.avatarUrl : noUserImg
-              noUserImg
+              userFromStore.avatarUrl > "" ? userFromStore.avatarUrl : noUserImg              
             }
           />
           <label>{userFromStore.name}</label>
         </div>
       </UserProfile>
 
-      {menu.map((item) => (
-        <NavContainer key={item.label}>
-          <NavBarLink to={item.link}>
-            <img src={item.img} />
+      {menu.map((item) =>(
+        <NavContainer key={item.label} className={itemIsActive(item) ? "active": ""}>
+          <NavBarLink to={item.link} className={itemIsActive(item) ? "active": ""}>
+            <img src={itemIsActive(item) ? item.imgActive : item.img} />
             <label>{item.label}</label>
           </NavBarLink>
         </NavContainer>

@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 
 export const StyledContainer = styled.div`
-max-width: 1140px;
+/*max-width: 1140px;*/
 flex:1;
 
 @media (max-width: ${({ theme }) => theme.mobile}) {
@@ -142,6 +142,7 @@ text-align: left;
   text-align: center;
 }
 div{
+  flex: auto;
   min-width: 230px;
   width: 50%;
   @media (max-width: ${({ theme }) => theme.mobile}) {

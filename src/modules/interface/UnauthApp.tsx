@@ -3,9 +3,10 @@ import LoginForm from "./loginForm";
 import loginWebPageImg from "asserts/images/loginWebPage.svg";
 import registerPageImg from "asserts/images/registerWebPage.svg"
 import styled from "styled-components";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import RegistrationForm from "./RegistrationForm";
 import ErrorPopUp from "common/components/ErrorPopUp";
+import { PageNotFound } from "./PageNotFound";
 
 const StyledContainer = styled.div`
    {
@@ -43,7 +44,7 @@ const StyledLoginImageContainer = styled.div`
   left: 606px;
   top: 0px;
   background: #f5fbff;
-  background-image: url("${loginWebPageImg }");
+  background-image: url("${(props)=>loginWebPageImg }");
   background-repeat: no-repeat;
   background-size: contain;
 
@@ -68,7 +69,7 @@ const StyledRegisterImageContainer = styled.div`
   left: 606px;
   top: 0px;
   background: #f5fbff;
-  background-image: url("${ registerPageImg }");
+  background-image: url("${(props) => registerPageImg }");
   background-repeat: no-repeat;
   background-size: contain;
   
@@ -100,10 +101,14 @@ useEffect(() => {
   return (   
       <StyledContainer>
         <StyledLoginContainer>
-          <Routes>
-            <Route path="/" element={<LoginForm setError={setError}/>}></Route>
-            <Route path="/register" element={<RegistrationForm setError={setError}/>}></Route>
-          </Routes>
+        <Routes>            
+              <Route path="/" element={<LoginForm setError={setError} />} />
+              <Route
+                path="/register"
+                element={<RegistrationForm setError={setError} />}
+              />            
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>       
         </StyledLoginContainer>
         { isRegisterPage ? <StyledRegisterImageContainer /> : <StyledLoginImageContainer /> }
         {error && <ErrorPopUp errorMessage={error} />}

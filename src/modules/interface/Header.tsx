@@ -6,7 +6,7 @@ import { AppStateType } from "core/redux/configureStore";
 import noUserImg from "asserts/images/profile.svg";
 
 const StyledHeader = styled.header`
-  max-width:1440px;
+  /*max-width:1440px;*/
   position: absolute;
   left: 0%;
   right: 0%;

@@ -13,7 +13,7 @@ export const StyledFlex = styled.div<PropsType>`
   }
 `;
 
-interface PropsType extends HTMLAttributes<HTMLHeadingElement>{
+export interface PropsType extends HTMLAttributes<HTMLHeadingElement>{
   direction?: string;
   align?: string;
   justify?: string;

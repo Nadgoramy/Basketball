@@ -9,7 +9,7 @@ const borderProp = (props: any) => {
 
 export const StyledInputContaner = styled.div<InputProps>`
   position: relative;
-  min-width: 300px;
+  min-width: 150px;
   height: 40px;
   outline-style: none;
   ${(props: any) => (props.width ? "width: " + props.width + ";" : "")}

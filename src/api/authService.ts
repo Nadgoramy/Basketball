@@ -43,7 +43,7 @@ const getCurrentUser = () : AuthUserDto|null => {
   let userFromStorage = localStorage.getItem("user");
   if(!userFromStorage) return null;
   let user = JSON.parse(userFromStorage);
-  return new AuthUserDto(user.name,user.avatarUrl, user.token);
+  return {name: user.name, avatarUrl:user.avatarUrl, token:user.token} as AuthUserDto;
 };
 
 const AuthService = {

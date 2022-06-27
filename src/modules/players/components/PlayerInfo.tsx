@@ -9,16 +9,17 @@ import {
   useParams,  
 } from "react-router-dom";
 import * as Info from "modules/interface/InfoComponents"
-import { requestPlayer } from "../helpers/playerHelper";
 import { DeleteLink, EditLink} from "common/components/Link/editLink";
 import { StyledLink } from "common/components/Link/styledLink";
+import { getPlayer, deletePlayer } from "../hooks/playerSlice";
+import { useAppDispatch } from "core/redux/store";
 
 type PlayerInfoPtopType = React.HTMLAttributes<HTMLElement> & {};
 
 export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
   props: PlayerInfoPtopType
 ) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const player = useSelector((state: AppStateType) => state.player.player);
   const params = useParams();
   let { id } = useParams();
@@ -27,7 +28,7 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
     console.log(params);
     if (!id) return;
     let playerId = parseInt(id);
-    requestPlayer(playerId, dispatch);
+    dispatch(getPlayer(playerId));
   }, [id]);
 
   let navigate = useNavigate();
@@ -43,7 +44,9 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
   };
 
   const handleDeleteClick = (e: any) =>{
-
+    if (!id) return;
+    let playerId = parseInt(id);
+    dispatch(deletePlayer(playerId));
   }
 
   return (
@@ -84,11 +87,11 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
                 <Info.StyledDescriptionRow>
                   <div>
                     <label>Height</label>
-                    <p>{player.height}</p>
+                    <p>{player.height} cm</p>
                   </div>
                   <div>
                     <label>Weight</label>
-                    <p>{player.weight}</p>
+                    <p>{player.weight} kg</p>
                   </div>
                 </Info.StyledDescriptionRow>
                 <Info.StyledDescriptionRow>

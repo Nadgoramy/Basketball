@@ -1,4 +1,5 @@
 import { PlayerDto } from "api/Dto/playerDto";
+import { PositionDto } from "api/Dto/positionDto";
 import { TeamDto, TeamDtoPageResult } from "api/Dto/teamDto";
 import PlayerService from "api/players/playerService";
 import TeamService from "api/teams/teamService";
@@ -9,13 +10,24 @@ export const requestPlayer = (id: number, dispatch: any) => {
     if (promise)
       promise
         .then((res) => {
-          dispatch(playerActions.getPlayer(res as PlayerDto));
+          dispatch(playerActions.setPlayer(res as PlayerDto));
         })
         .catch((err) => {
           console.log("err");
         });
   };
 
+  export const requestPositionOptions=(callback: any)=>{
+    PlayerService.getPositions()?.then((res) => {
+      if(res){
+        let optopns = new Array<OptionType>();
+        res.map((t : PositionDto)  =>
+          optopns.push({ label: t.title, value: t.id })
+          );
+          callback(optopns);
+        }
+    });
+  }
 
   export interface OptionType {
     label: string;

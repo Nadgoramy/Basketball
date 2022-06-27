@@ -24,6 +24,14 @@ export const DeleteLink: React.FunctionComponent<EditLinkinterface> = (
   );
 };
 
+export const DeleteButton: React.FunctionComponent<EditLinkinterface> = (
+  props: EditLinkinterface
+) => {
+  return (    
+      <div ></div>
+  );
+};
+
 export const StyledEditLink = styled(Link)`
   text-decoration: none;
   width: 24px;

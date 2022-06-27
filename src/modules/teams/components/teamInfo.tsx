@@ -1,49 +1,29 @@
 import React, { useEffect } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
-import { TeamDto } from "api/Dto/teamDto";
-import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { AppStateType } from "core/redux/configureStore";
-import { actions } from "modules/teams/teamReducer";
-import TeamService from "api/teams/teamService";
 import { StyledFlex } from "common/components/Flex";
 import * as Info from "modules/interface/InfoComponents";
-import PlayerService from "api/players/playerService";
-import { PlayerDto, PlayerDtoPageResult } from "api/Dto/playerDto";
 import { DeleteLink, EditLink } from "common/components/Link/editLink";
 import { StyledLink } from "common/components/Link/styledLink";
+import { useAppDispatch, useAppSelector } from "core/redux/store";
+import { getTeam } from "../hooks/teamSlice";
 
 type PropTypes = {};
 export const TeamInfo: React.FunctionComponent<PropTypes> = (
   props: PropTypes
 ) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   let { id } = useParams();
-  let team = useSelector((state: AppStateType) => state.team.team);
+  let team = useAppSelector((state: AppStateType) => state.team.team);
 
   useEffect(() => {
     if (!id) return;
-    let playerId = parseInt(id);
-    requestTeam(playerId);
+    let teamId = parseInt(id);
+    requestTeam(teamId);
   }, [id]);
 
   const requestTeam = (teamId: number) => {
-    dispatch(actions.startRequest());
-    console.log(teamId);
-    let promise = TeamService.getTeam(teamId);
-    if (promise)
-      promise
-        .then((res) => {
-          let team = res as TeamDto;
-          dispatch(actions.setTeam(team));
-          PlayerService.getPlayers("", [teamId], 1, 100)?.then((responce) => {
-            team.players = (responce as PlayerDtoPageResult).data;
-            dispatch(actions.setTeam(team));
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => dispatch(actions.finishRequest()));
+    dispatch(getTeam(teamId));
   };
 
   const getAge = (birthday: Date | undefined) => {
@@ -51,26 +31,28 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
     let age = new Date(Date.now() - new Date(birthday).getTime());
     return Math.abs(age.getUTCFullYear() - 1970);
   };
-  
-  const handleDeleteClick = (e: any) =>{
 
-  }
+  const handleDeleteClick = (e: any) => {
+    if (!id) return;
+    let teamId = parseInt(id);
+    if (window.confirm("Are you sure?")) dispatch(getTeam(teamId));
+  };
 
   return (
     <StyledFlex direction="column">
       <Info.StyledContainer>
-        {!team && <div className="noPlayer"></div>}
+        {!team && <div className="noTeam"></div>}
         {team && (
           <div>
             <Info.StyledHeaderContainer>
               <span className="headerText">
-              <StyledLink to="/teams">Teams</StyledLink>
+                <StyledLink to="/teams">Teams</StyledLink>
                 <span> / </span>
                 <span>{team.name}</span>
               </span>
-              <StyledFlex >              
-                <EditLink to={"/teams/edit/"+id}/>
-                <DeleteLink onClick={handleDeleteClick} to="#0"/>
+              <StyledFlex>
+                <EditLink to={"/teams/edit/" + id} />
+                <DeleteLink onClick={handleDeleteClick} to={"#"} />
               </StyledFlex>
             </Info.StyledHeaderContainer>
             <Info.StyledMainContainer>
@@ -101,7 +83,7 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
         )}
       </Info.StyledContainer>
 
-      {team && team.players && team.players.length>0 && (
+      {team && team.players && team.players.length > 0 && (
         <Info.StyledContainer>
           <Info.StyledTeamListHeader>
             <label>Roster</label>
@@ -123,7 +105,9 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
                     <td>{p.number}</td>
                     <td>
                       <StyledFlex direction="row">
-                        <Info.StyledPhotoInList url={p.avatarUrl}></Info.StyledPhotoInList>                        
+                        <Info.StyledPhotoInList
+                          url={p.avatarUrl}
+                        ></Info.StyledPhotoInList>
                         <StyledFlex direction="column">
                           <label>{p.name}</label>
                           <span>{p.position}</span>

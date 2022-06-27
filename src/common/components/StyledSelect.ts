@@ -2,6 +2,9 @@ import styled from "styled-components";
 import ReactSelect, { Props } from "react-select";
 
 export const StyledSelect = styled(ReactSelect)`
+.error{
+  border: 0.5px solid ${({ theme }) => theme.colors.red};
+}
   .Select__control {
     min-height: 40px;
     min-width: 88px;
@@ -44,16 +47,16 @@ export const StyledSelect = styled(ReactSelect)`
 
   }
   .Select__single-value {
-    color: ${({ theme }) => theme.colors.light_grey};
+    color: ${({ theme }) => theme.colors.dark_grey};
   }
   .Select__single-value__label {
-    color: ${({ theme }) => theme.colors.light_grey};
+    color: ${({ theme }) => theme.colors.dark_grey};
   }
   
   .Select__option {
     border-bottom: "0.5px solid ${({ theme }) => theme.colors.lightest_grey}";
     color: ${({ theme }) => theme.colors.light_grey};
-    backgroundcolor: ${({ theme }) => theme.colors.white};
+    background-color: ${({ theme }) => theme.colors.white};
   }
   .Select__option:hover {
     background-color:${({ theme }) => theme.colors.lightest_red};
@@ -75,5 +78,18 @@ export const StyledSelect = styled(ReactSelect)`
     background-color: ${({ theme }) => theme.colors.lightest_red};
     color: ${({ theme }) => theme.colors.white};
   }
+  .Select__option--is-selected {
+    background-color: ${({ theme }) => theme.colors.dark_red};
+    color: ${({ theme }) => theme.colors.white};
+  }
 `;
 
+export interface OptionTypeValueNumber {
+  label: string;
+  value: number;
+}
+
+export interface OptionTypeValueString {
+  label: string;
+  value: string;
+}

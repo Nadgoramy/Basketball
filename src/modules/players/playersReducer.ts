@@ -20,10 +20,7 @@ type PlayerActionType = {
 
 export function player(state:PlayerStateType  = initialPlayerState, action: PlayerActionType) {
     switch(action.type){
-        case actionTypes.GET_PLAYER:
-        case actionTypes.ADD_PLAYER:
-        case actionTypes.UPDATE_PLAYER:
-        case actionTypes.DELETE_PLAYER:
+        case actionTypes.SET_PLAYER:
             {
                 return Object.assign({}, state, {
                     player: action.player,                    
@@ -153,13 +150,11 @@ export function players(
         }
         case actionTypes.SET_PAGESIZE:{
           return Object.assign({}, state, {
-            pageSize: action.pageSize          
+            pageSize: action.pageSize,
+            page: 1          
           })
         }
-        case actionTypes.GET_PLAYER:
-        case actionTypes.ADD_PLAYER:
-        case actionTypes.UPDATE_PLAYER:
-        case actionTypes.DELETE_PLAYER:
+        case actionTypes.SET_PLAYER:
             {
                 return Object.assign({}, state, {
                     isFetching: false,  

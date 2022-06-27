@@ -37,6 +37,7 @@ export const StyledMainContainer = styled.div`
   }
 
   &>div{
+    flex: 1 1 380px;
     min-width: 400px;
   }
 

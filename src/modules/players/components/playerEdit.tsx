@@ -1,21 +1,38 @@
 import { StyledFlex } from "common/components/Flex";
 import { AppStateType } from "core/redux/configureStore";
 import { SelectHTMLAttributes, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { requestPlayer, requestTeamOptions, OptionType } from "../helpers/playerHelper";
-import { playerActions } from "../actions";
+//import { playerActions } from "../actions";
+import {
+  playerActions,
+  getPlayer,
+  updatePlayer,
+  addPlayer,
+} from "../hooks/playerSlice";
 import { PlayerDto } from "api/Dto/playerDto";
-import PlayerService from "api/players/playerService";
 import Input from "common/components/Input/Input";
-import Select from "react-select";
-import { PositionDto } from "api/Dto/positionDto";
-import { InputActionMeta, OptionProps } from "react-select";
 import DragDropFile from "common/components/DragDropFile";
 import ImageService from "api/imageServise";
 import { StyledLink } from "common/components/Link/styledLink";
-import { useForm } from "react-hook-form";
-import { StyledHeaderContainer, StyledMainContainer } from "modules/interface/StyledEditComponents";
+import { Controller, useForm } from "react-hook-form";
+import {
+  StyledHeaderContainer,
+  StyledMainContainer,
+} from "modules/interface/StyledEditComponents";
+import { StyledButton } from "common/components/Button/Button.styled";
+import { useAppDispatch, useAppSelector } from "core/redux/store";
+import { getPositions } from "../hooks/positionSlice";
+import { getTeamOptions } from "../hooks/teamOptionSlice";
+import {
+  OptionTypeValueNumber,
+  OptionTypeValueString,
+  StyledSelect,
+} from "common/components/StyledSelect";
+import { number } from "prop-types";
+import {
+  StyledFlexAutoDiv,
+  StyledFlexRow,
+} from "modules/interface/EditComponents";
 
 interface PropTypeInterface {}
 type PlayerForm = {
@@ -25,160 +42,244 @@ type PlayerForm = {
   confirmPassword: string;
   acceptTerms: boolean;
 };
+
 const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
   props: PropTypeInterface
 ) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   let { id } = useParams();
+
   const [file, setFile] = useState(null);
-  const [positions, setPositions] = useState<PositionDto[] | null>(null);
-  const [positionsOption, setPositionsOption] = useState<OptionProps[] | null>( null );
-  const [teamNames, setTeamNames] = useState<OptionType[] | undefined>( undefined );
-  const player = useSelector((state: AppStateType) => state.player.player);
+  const positionOptions = useAppSelector((store) => store.positions.options);
+  const teamOptions = useAppSelector((store) => store.teamOptions.options);
+  const player = useAppSelector((state: AppStateType) => state.player.player);
+  const [initialState, setInitialState] = useState<PlayerDto | null>();
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
     getValues,
-  } = useForm<PlayerForm>();
-  useEffect(() => {
-    PlayerService.getPositions()?.then((res) => {
-      setPositions(res as PositionDto[]);
-    });
+    control,
+    watch,
+  } = useForm<PlayerDto>();
+  const error = useAppSelector((store) => store.player.error);
 
-    requestTeamOptions(setTeamNames)
+  useEffect(() => {
+    console.log(error);
+  }, [error]);
+
+  useEffect(() => {
+    if (positionOptions.length == 0) dispatch(getPositions()); //
+    if (teamOptions.length == 0) dispatch(getTeamOptions());
   }, []);
+  useEffect(() => {
+    console.log(positionOptions);
+  }, [positionOptions]);
 
   useEffect(() => {
-    if (!id) dispatch(playerActions.getPlayer(new PlayerDto()));
-    else {
+    if (id) {
       let playerId = parseInt(id);
-      if (playerId > 0) requestPlayer(playerId, dispatch);
+      if (playerId > 0) dispatch(getPlayer(playerId));
     }
   }, [id]);
+
+  useEffect(() => {
+    setInitialState(player);
+    setFormValues(player);
+  }, [player]);
 
   const handleChange = (file: any) => {
     setFile(file);
   };
 
-  const onSubmit = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    if (!id) return;
-    if (!player) return;
-
-    /*let playerId = parseInt(id);
-    if(playerId == 0) PlayerService.addPlayer(player).then(res=>{  }).catch(err => console.log(err));        
-    else PlayerService.updatePlayer(player).then(res=>{  }).catch(err => console.log(err)); 
-    */
-  };
-  const onNameChange = (e: React.FormEvent<HTMLInputElement>): void => {
-    dispatch(playerActions.setName(e.currentTarget.value));
-  };
-
-  const onPositiondChange = (e: any): void => {
-    dispatch(playerActions.setPosition(e.value));
-  };
-
-  const onNumberChange = (e: any): void => {
-    dispatch(playerActions.setNumber(e.target.value));
-  };
-
-  const onHeightChange = (e: any): void => {
-    dispatch(playerActions.setHeight(e.target.value));
-  };
-
-  const onWeightChange = (e: any): void => {
-    dispatch(playerActions.setWeight(e.target.value));
-  };
-
-  const onBirthdayChange = (e: any): void => {
-    dispatch(playerActions.setBirthday(e));
-  };
-  const onTeamChange = (e:any) =>{
-    dispatch(playerActions.setTeamId(e.value));
-  }
-
-  function ab2str(buf: ArrayBuffer) {
-    return new TextDecoder().decode(buf);
-  }
-  const handleFiles = async (file: File) => {    
+  const handleFiles = (file: File) => {
     ImageService.saveImage(file)?.then((url: string) => {
-      dispatch(playerActions.setAvatar(url));
+      dispatch(playerActions.setPlayerPhoto(url));
       console.log(url);
     });
   };
+  const onCancel = () => {
+    let currentAvatarUrl = getValues("avatarUrl");
+    if (currentAvatarUrl && currentAvatarUrl != initialState?.avatarUrl) {
+      removeImageOnServer(currentAvatarUrl);
+    }
+    setFormValues(initialState as PlayerDto);
+  };
+  const removeImageOnServer = (url: string) => {
+    ImageService.deleteImage(url)?.then((url: string) => {
+      console.log("Removed image url:" + url);
+    });
+  };
+  function setFormValues(player: PlayerDto | null) {
+    reset({
+      name: player?.name,
+      birthday: player?.birthday,
+      height: player?.height,
+      weight: player?.weight,
+      avatarUrl: player?.avatarUrl,
+    });
+  }
+  const onSubmit = (data: any) => {
+    let updatedPlayer = {
+      id: id,
+      name: data.name,
+      birthday: data.birthday,
+      height: data.height,
+      weight: data.weight,
+      avatarUrl: data.avatarUrl,
+      number: data.number,
+      team: typeof data.team == "number" ? data.team : data.team?.value,
+      position:
+        typeof data.position == "string" ? data.position : data.position?.value,
+    };
+    console.log(JSON.stringify(updatedPlayer, null, 4));
 
+    if (id && parseInt(id) > 0)
+      dispatch(updatePlayer(updatedPlayer as PlayerDto));
+    else dispatch(addPlayer(updatedPlayer as PlayerDto));
+  };
+  const values = watch();
   return (
-    <StyledFlex direction="row">
-      <StyledFlex direction="column">
+    <StyledFlex>
+      <StyledFlexAutoDiv>
         <StyledHeaderContainer>
           <span className="headerText">
-          <StyledLink to="/players">Players</StyledLink>
+            <StyledLink to="/players">Players</StyledLink>
             <span> / </span>
-            <span>{id ? "Edit player" : "Add new player"}</span>
+            <span>
+              {id && parseInt(id) > 0 ? "Edit player" : "Add new player"}
+            </span>
           </span>
         </StyledHeaderContainer>
         <StyledMainContainer>
           <div>
-            <DragDropFile handleFiles={handleFiles} url={player?.avatarUrl}/>
+            <DragDropFile handleFiles={handleFiles} url={player?.avatarUrl} />
           </div>
           <div>
-            <form onSubmit={onSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div>
                 <p>Name</p>
                 <Input
                   type="text"
-                  value={player?.name}
-                  onChange={onNameChange}                  
+                  error={errors.name?.message}
+                  {...register("name", {
+                    required: "Name is required",
+                    maxLength: 30,
+                  })}
                 />
               </div>
               <div>
                 <p>Position</p>
-                <Select
-                  options={[{ label: "1", value: "1" }]}
-                  value={{ label: "1", value: "1" }}
-                  onChange={(e) => onPositiondChange(e)}
-                  inputValue={""}
-                  onInputChange={function (
-                    newValue: string,
-                    actionMeta: InputActionMeta
-                  ): void {
-                  }}
-                  onMenuOpen={function (): void {
-                  }}
-                  onMenuClose={function (): void {
-                  }}
+                <Controller
+                  control={control}
+                  name="position"
+                  render={({
+                    field: { onChange, onBlur, value, name, ref },
+                    fieldState: { invalid, isTouched, isDirty, error },
+                    formState,
+                  }) => (
+                    <StyledSelect
+                      classNamePrefix={
+                        "Select" + (errors.position ? "error" : null)
+                      }
+                      id={name}
+                      options={positionOptions}
+                      defaultValue={undefined}
+                      menuPlacement="auto"
+                      onChange={(val: any, action) => onChange(val.value) }
+                      onBlur={onBlur}
+                      value={value}
+                      ref={ref}
+                    />
+                  )}
                 />
               </div>
               <div>
                 <p>Team</p>
-                <Select options={teamNames} onChange={(e) => onTeamChange(e)} />
+                <Controller
+                  control={control}
+                  name="team"
+                  render={({
+                    field: { onChange, onBlur, value, name, ref },
+                    fieldState: { invalid, isTouched, isDirty, error },
+                    formState,
+                  }) => (
+                    <StyledSelect
+                    classNamePrefix={
+                      "Select" + (errors.position ? "error" : null)
+                    }
+                      options={teamOptions}
+                      defaultValue={undefined}
+                      menuPlacement="auto"
+                      onChange={(val: any, action) => onChange(val.value)}
+                      onBlur={onBlur}
+                      value={value}
+                      ref={ref}
+                    />
+                  )}
+                />
               </div>
-              <StyledFlex>
-              <div>
-                <p>Height(cm)</p>
-                <Input type="number" id="height" value={player?.height} onChange={onHeightChange}/>
-              </div>
-              <div>
-                <p>Weight(kg)</p>
-                <Input type="number" id="weight" value={player?.weight} onChange={onWeightChange}/>
-              </div>
-              </StyledFlex>
-              <StyledFlex>
-              <div>
-                <p>Birthday</p>
-                <Input type="text" id="birthday" onChange={onBirthdayChange}/>
-              </div>
-              <div>
-                <p>Number</p>
-                <Input type="number" id="number" value={player?.number} onChange={onNumberChange}/>
-              </div>
-              </StyledFlex>
+              <StyledFlexRow>
+                <div>
+                  <p>Height(cm)</p>
+                  <Input
+                    type="number"
+                    error={errors.height?.message}
+                    {...register("height", {
+                      required: "Height is required",
+                      valueAsNumber: true,
+                    })}
+                  />
+                </div>
+                <div>
+                  <p>Weight(kg)</p>
+                  <Input
+                    type="number"
+                    error={errors.weight?.message}
+                    {...register("weight", {
+                      required: "Weight is required",
+                      valueAsNumber: true,
+                    })}
+                  />
+                </div>
+              </StyledFlexRow>
+              <StyledFlexRow>
+                <div>
+                  <p>Birthday</p>
+                  <Input
+                    type="text"
+                    error={errors.birthday?.message}
+                    {...register("birthday", {
+                      required: "Birthday is required",
+                      valueAsDate: true,
+                    })}
+                  />
+                </div>
+                <div>
+                  <p>Number</p>
+                  <Input
+                    type="number"
+                    error={errors.number?.message}
+                    {...register("number", {
+                      required: "Number is required",
+                      valueAsNumber: true,
+                    })}
+                  />
+                </div>
+              </StyledFlexRow>
+              <StyledFlexRow>
+                <StyledButton mode="cancel" type="button" onClick={onCancel}>
+                  Cancel
+                </StyledButton>
+                <StyledButton type="submit">Save</StyledButton>
+              </StyledFlexRow>
+              <Input type="hidden" {...register("avatarUrl")} />
+              <Input type="hidden" {...register("id")} />
             </form>
           </div>
         </StyledMainContainer>
-      </StyledFlex>
+      </StyledFlexAutoDiv>
     </StyledFlex>
   );
 };

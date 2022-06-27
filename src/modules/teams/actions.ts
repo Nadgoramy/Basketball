@@ -1,4 +1,3 @@
-import { PlayerDto } from "api/Dto/playerDto"
 import { TeamDtoPageResult } from "api/Dto/teamDto"
 
 export const actionTypes = {

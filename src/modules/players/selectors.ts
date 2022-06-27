@@ -23,3 +23,7 @@ export const getPlayers = (state: AppStateType) => {
 export const getCount=(state: AppStateType) => {       
     return state.players.count;
 }
+
+export const getTeamIds=(state: AppStateType) => {       
+    return state.players.teamFilter;
+}

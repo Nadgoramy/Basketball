@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { actions } from "modules/players/actions";
-import { useSelector, useDispatch } from "react-redux";
+import { playersActions } from "modules/players/hooks/playersPageSlice"
 import { PlayerCard } from "./playerCard";
 import { PlayerDto, PlayerDtoPageResult } from "api/Dto/playerDto";
 import {
@@ -10,13 +10,10 @@ import {
   getIsFetching,
   getPageSize,
   getPlayers,
+  getTeamIds
 } from "modules/players/selectors";
 import Preloader from "common/components/preloader";
-import PlayerService from "api/players/playerService";
-import { Link } from "react-router-dom";
-import PageSizeSelector from "common/components/PageSizeSelector/PageSizeSelector";
-import Select from "react-select";
-import { StyledFlex } from "common/components/Flex";
+import { Link, useNavigate } from "react-router-dom";
 import {
   HeaderFlex,
   StyledFooter,
@@ -24,7 +21,6 @@ import {
   StyledHeader,
   StyledMainContainer,
 } from "modules/interface/ListComponents";
-import Pagination from "common/components/Pagination/Pagination";
 import { StyledButton } from "common/components/Button/Button.styled";
 import Search from "common/components/Search/Search";
 import { StyledMultiSelect } from "common/components/StyledMultiSelect";
@@ -33,63 +29,29 @@ import ReactPaginate from "react-paginate";
 import { OptionType, requestTeamOptions } from "../helpers/playerHelper";
 import { EmptyListScreen } from "modules/interface/EmptyListScreen";
 import { StyledSelect } from "common/components/StyledSelect";
-import { DefaultTheme } from "DefaultTheme";
+import {useAppDispatch, useAppSelector} from "core/redux/store"
+import { getTeamOptions } from "../hooks/teamOptionSlice";
 
 type PropsType = {};
 export const PlayerList: React.FunctionComponent<PropsType> = (
   props: PropsType
 ) => {
-  const dispatch = useDispatch();
-  const players = useSelector(getPlayers);
-  const currentPage = useSelector(getCurrentPage);
-  const filter = useSelector(getFilter);
-  const pageSize = useSelector(getPageSize);
-  const isFetching = useSelector(getIsFetching);
-  const itemsCount = useSelector(getCount);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const players = useAppSelector(getPlayers);
+  const currentPage = useAppSelector(getCurrentPage);
+  const filter = useAppSelector(getFilter);
+  const pageSize = useAppSelector(getPageSize);
+  const isFetching = useAppSelector(getIsFetching);
+  const itemsCount = useAppSelector(getCount);
+  const teamIds = useAppSelector(getTeamIds);
 
-  const [teamIds, setTeamIds] = useState<number[] | null>(null);
   const [teamNames, setTeamNames] = useState<OptionType[] | undefined>(
     undefined
   );
+  
 
-function customStyle(theme: DefaultTheme){
-  return{
-    ...theme,
-    colors:{
-      ...theme.colors,
-      primary25: 'red',
-      primary: 'white'
-    },
-    menu: (provided: any, state: any) => ({
-      ...provided,
-      borderBottom: '1px dotted pink',
-      color: state.selectProps.menuColor,
-      padding: 20,
-    }),
-  }
-}
-const customStyles = {
-  menu: (provided: any, state: any) => ({
-    ...provided,
-    width: state.selectProps.width,
-    borderBottom: '1px dotted pink',
-    color: state.selectProps.menuColor,
-    padding: 20,
-  }),
-
-  /*control: (_, { selectProps: { width }}) => ({
-    width: width
-  }),*/
-
-  singleValue: (provided: any, state: any) => {
-    const opacity = state.isDisabled ? 0.5 : 1;
-    const transition = 'opacity 300ms';
-
-    return { ...provided, opacity, transition };
-  }
-}
-
-  const updatePlayersTeamNames = (
+   /*const updatePlayersTeamNames = (
     list: PlayerDtoPageResult
   ): PlayerDtoPageResult => {
     if (!teamNames) return list;
@@ -99,7 +61,7 @@ const customStyles = {
     return list;
   };
 
-  const requestPlayers = () => {
+ const requestPlayers = () => {
     dispatch(actions.startRequest());
     let promise = PlayerService.getPlayers(
       filter,
@@ -119,39 +81,37 @@ const customStyles = {
         .catch((err) => {
           dispatch(actions.finishRequest());
         });
-  };
+  };*/
 
-  useEffect(() => {
-    requestTeamOptions(setTeamNames);
+  /*useEffect(() => {
+    //requestTeamOptions(setTeamNames);
+    dispatch(getTeamOptions)
   }, []);
-
+*/
   useEffect(() => {
-    requestPlayers();
+    dispatch(playersActions.getPlayersPage({filter: filter,
+      teamIds: teamIds,   page: currentPage, pageSize: pageSize}))
   }, [filter, teamIds, currentPage, pageSize]);
 
-  const handlePageSizeSelectorClick = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    dispatch(actions.setPageSize(parseInt(event.target.value)));
-  };
+  
   const handlePageSizeSelect = (a: any, b: any ) => {
-    //dispatch(actions.setPageSize(value));
+    dispatch(playersActions.setPageSize(a.value));
   };
   const updateFilterValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(actions.setPlayersFilter(e.target.value));
+    dispatch(playersActions.setFilter(e.target.value));
   };
   const updateCurrentPage = (n: number) => {
-    dispatch(actions.setCurrentPage(n));
+    dispatch(playersActions.setPageNumber(n));
   };
-
   const updateTeamFilter = (evn: OptionType[]) => {
-    if (!evn) setTeamIds(null);
+    if (!evn) dispatch(playersActions.setTeamFilter(null))
     else {
       let teamRequest: number[] = [];
       evn.map((item) => teamRequest.push(item.value));
-      setTeamIds(teamRequest);
+      dispatch(playersActions.setTeamFilter(teamRequest))
     }
   };
+
   const pageSizeOptions=[
     {
       label:"6",
@@ -178,7 +138,7 @@ const customStyles = {
             onChange={(e: any) => updateTeamFilter(e as OptionType[])}
           />
         </HeaderFlex>
-        <StyledButton mode="add">Add +</StyledButton>
+        <StyledButton mode="add" onClick={()=>navigate("edit/0")}>Add +</StyledButton>
       </StyledHeader>
       {isFetching && <Preloader />}
       {players && players.length == 0 && <EmptyListScreen mode="player"/>}
@@ -204,12 +164,13 @@ const customStyles = {
             activeClassName="active"
           />
         </StyledPaginateContainer>
-        <PageSizeSelector onChange={handlePageSizeSelectorClick} />
         <StyledSelect            
             classNamePrefix="Select"
             options={pageSizeOptions}     
             defaultValue={pageSizeOptions[0]}                
             onChange={handlePageSizeSelect}
+            menuPlacement="auto"
+            value={pageSizeOptions.filter(({value}) => value === pageSize)}
           />
       </StyledFooter>
     </StyledMainContainer>
