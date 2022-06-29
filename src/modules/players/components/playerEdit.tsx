@@ -1,6 +1,6 @@
 import { StyledFlex } from "common/components/Flex";
 import { AppStateType } from "core/redux/configureStore";
-import { SelectHTMLAttributes, useEffect, useState } from "react";
+import { SelectHTMLAttributes, SyntheticEvent, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 //import { playerActions } from "../actions";
 import {
@@ -33,6 +33,10 @@ import {
   StyledFlexAutoDiv,
   StyledFlexRow,
 } from "modules/interface/EditComponents";
+import { errorActions } from "core/redux/errorSlice";
+import { useNavigate } from "react-router-dom";
+import BirthdayCalendarInput, { StyledCalendar } from "common/components/BirthdayCalendarInput";
+import { ErrorInputSpan } from "common/components/ErrorInputSpan";
 
 interface PropTypeInterface {}
 type PlayerForm = {
@@ -48,8 +52,9 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
 ) => {
   const dispatch = useAppDispatch();
   let { id } = useParams();
-
+  let navigate = useNavigate();
   const [file, setFile] = useState(null);
+  const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | undefined>(undefined);
   const positionOptions = useAppSelector((store) => store.positions.options);
   const teamOptions = useAppSelector((store) => store.teamOptions.options);
   const player = useAppSelector((state: AppStateType) => state.player.player);
@@ -60,23 +65,22 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
     reset,
     formState: { errors, isDirty },
     getValues,
+    setValue,
     control,
     watch,
   } = useForm<PlayerDto>();
-  const error = useAppSelector((store) => store.player.error);
 
+  const error = useAppSelector((store) => store.player.error);
   useEffect(() => {
-    console.log(error);
+    dispatch(errorActions.setErrorMessage(error));
   }, [error]);
 
   useEffect(() => {
-    if (positionOptions.length == 0) dispatch(getPositions()); //
-    if (teamOptions.length == 0) dispatch(getTeamOptions());
+    dispatch(playerActions.setPlayer({} as PlayerDto));
+     dispatch(getPositions()); 
+     dispatch(getTeamOptions());
   }, []);
-  useEffect(() => {
-    console.log(positionOptions);
-  }, [positionOptions]);
-
+  
   useEffect(() => {
     if (id) {
       let playerId = parseInt(id);
@@ -84,9 +88,14 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
     }
   }, [id]);
 
+  useEffect(() => {    
+    setFormValues({} as PlayerDto);
+  }, []);
+
   useEffect(() => {
     setInitialState(player);
     setFormValues(player);
+    setCurrentAvatarUrl(player?.avatarUrl)
   }, [player]);
 
   const handleChange = (file: any) => {
@@ -95,16 +104,24 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
 
   const handleFiles = (file: File) => {
     ImageService.saveImage(file)?.then((url: string) => {
-      dispatch(playerActions.setPlayerPhoto(url));
+      //dispatch(playerActions.setPlayerPhoto(url));
+      setValue("avatarUrl", url)
+      setCurrentAvatarUrl(url)
       console.log(url);
     });
   };
+  const redirect=()=>{
+    if (id && parseInt(id) > 0) {
+      navigate("/players/" + id);
+    } else navigate("/players");
+  }
   const onCancel = () => {
     let currentAvatarUrl = getValues("avatarUrl");
     if (currentAvatarUrl && currentAvatarUrl != initialState?.avatarUrl) {
       removeImageOnServer(currentAvatarUrl);
     }
-    setFormValues(initialState as PlayerDto);
+    
+    redirect()
   };
   const removeImageOnServer = (url: string) => {
     ImageService.deleteImage(url)?.then((url: string) => {
@@ -118,6 +135,9 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
       height: player?.height,
       weight: player?.weight,
       avatarUrl: player?.avatarUrl,
+      number: player?.number,
+      position: player?.position,
+      team: player?.team
     });
   }
   const onSubmit = (data: any) => {
@@ -138,6 +158,8 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
     if (id && parseInt(id) > 0)
       dispatch(updatePlayer(updatedPlayer as PlayerDto));
     else dispatch(addPlayer(updatedPlayer as PlayerDto));
+
+    redirect()
   };
   const values = watch();
   return (
@@ -154,7 +176,7 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
         </StyledHeaderContainer>
         <StyledMainContainer>
           <div>
-            <DragDropFile handleFiles={handleFiles} url={player?.avatarUrl} />
+            <DragDropFile handleFiles={handleFiles} url={currentAvatarUrl} />
           </div>
           <div>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -174,31 +196,40 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
                 <Controller
                   control={control}
                   name="position"
+                  rules={{
+                    required: "Position is required",                    
+                  }}
                   render={({
                     field: { onChange, onBlur, value, name, ref },
                     fieldState: { invalid, isTouched, isDirty, error },
                     formState,
                   }) => (
                     <StyledSelect
-                      classNamePrefix={
-                        "Select" + (errors.position ? "error" : null)
-                      }
+                      classNamePrefix="Select"
+                      className={errors.position?"error":""}
                       id={name}
                       options={positionOptions}
                       defaultValue={undefined}
                       menuPlacement="auto"
-                      onChange={(val: any, action) => onChange(val.value) }
+                      onChange={onChange}
                       onBlur={onBlur}
                       value={value}
                       ref={ref}
                     />
-                  )}
+                  )}                  
                 />
+                {errors.position && <ErrorInputSpan>{errors.position.message}</ErrorInputSpan>}
               </div>
               <div>
                 <p>Team</p>
                 <Controller
                   control={control}
+                  rules={{
+                    required: true,
+                    validate: (value) => {
+                    if (!value || value <0) { return "Please provide input name"; }
+                    },
+                  }}
                   name="team"
                   render={({
                     field: { onChange, onBlur, value, name, ref },
@@ -206,14 +237,12 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
                     formState,
                   }) => (
                     <StyledSelect
-                    classNamePrefix={
-                      "Select" + (errors.position ? "error" : null)
-                    }
+                      classNamePrefix="Select" 
                       options={teamOptions}
                       defaultValue={undefined}
                       menuPlacement="auto"
-                      onChange={(val: any, action) => onChange(val.value)}
-                      onBlur={onBlur}
+                      onChange={onChange}
+                      onBlur={onBlur}                      
                       value={value}
                       ref={ref}
                     />
@@ -222,7 +251,7 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
               </div>
               <StyledFlexRow>
                 <div>
-                  <p>Height(cm)</p>
+                  <p>Height (cm)</p>
                   <Input
                     type="number"
                     error={errors.height?.message}
@@ -233,7 +262,7 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
                   />
                 </div>
                 <div>
-                  <p>Weight(kg)</p>
+                  <p>Weight (kg)</p>
                   <Input
                     type="number"
                     error={errors.weight?.message}
@@ -247,14 +276,29 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
               <StyledFlexRow>
                 <div>
                   <p>Birthday</p>
-                  <Input
-                    type="text"
-                    error={errors.birthday?.message}
-                    {...register("birthday", {
-                      required: "Birthday is required",
-                      valueAsDate: true,
-                    })}
-                  />
+                  
+                  <Controller
+                  control={control}
+                  name="birthday"
+                  rules={{
+                    required: "Birthday is required",
+                    validate: (value) => {
+                    if (!value || value.valueOf() > Date.now()) { return "Please provide correct date"; }
+                    },
+                  }}
+                  render={({
+                    field: { onChange, onBlur, value, name, ref },
+                    fieldState: { invalid, isTouched, isDirty, error },
+                    formState,
+                  }) => (
+                  <BirthdayCalendarInput 
+                    name={name}                    
+                    selected={value}
+                    error={errors.birthday?.message} 
+                    onChange={onChange}
+                    ref={ref}
+                    />
+                  )}/>
                 </div>
                 <div>
                   <p>Number</p>

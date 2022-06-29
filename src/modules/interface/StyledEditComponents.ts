@@ -40,10 +40,4 @@ export const StyledMainContainer = styled.div`
     flex: 1 1 380px;
     min-width: 400px;
   }
-
-  button{
-    width:50%;
-    margin-right:24px;
-    margin-top: 32px;
-  }
 `;

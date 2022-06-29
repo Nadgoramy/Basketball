@@ -1,8 +1,6 @@
 import { StyledFlex } from "common/components/Flex";
 import { AppStateType } from "core/redux/configureStore";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
 import {
   Link,
   useNavigate,
@@ -12,7 +10,7 @@ import * as Info from "modules/interface/InfoComponents"
 import { DeleteLink, EditLink} from "common/components/Link/editLink";
 import { StyledLink } from "common/components/Link/styledLink";
 import { getPlayer, deletePlayer } from "../hooks/playerSlice";
-import { useAppDispatch } from "core/redux/store";
+import { useAppDispatch, useAppSelector } from "core/redux/store";
 
 type PlayerInfoPtopType = React.HTMLAttributes<HTMLElement> & {};
 
@@ -20,7 +18,7 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
   props: PlayerInfoPtopType
 ) => {
   const dispatch = useAppDispatch();
-  const player = useSelector((state: AppStateType) => state.player.player);
+  const player = useAppSelector((state: AppStateType) => state.player.player);
   const params = useParams();
   let { id } = useParams();
 

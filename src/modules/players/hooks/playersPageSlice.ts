@@ -1,28 +1,23 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PlayerDto, PlayerDtoPageResult } from "api/Dto/playerDto";
-import { PositionDto } from "api/Dto/positionDto";
-import { TeamDto } from "api/Dto/teamDto";
 import PlayerService from "api/players/playerService";
-import { useAppDispatch, useAppSelector } from "core/redux/store";
-import { OptionType } from "../helpers/playerHelper";
-import { LoadTeamOptions } from "./teamOptionSlice";
+import { OptionTypeValueNumber } from "common/components/StyledSelect";
 
 interface IParams {
   filter: string;
-  teamIds: number[] | null;
+  teamFilter: number[] | null;
   page: number;
   pageSize: number;
 }
 export const getPlayersPage = createAsyncThunk(
   `playersPage/getPlayers`,
-  async (params: IParams, { rejectWithValue }) => {
-    try {
-      let { page, pageSize, filter, teamIds } = params;
-      const responce = await PlayerService.getPlayers(
-        filter,
-        teamIds,
+  async (params: IParams, { rejectWithValue, getState }) => {
+    try {      
+      const {page, pageSize, filter, teamFilter} = params;//(getState() as AppStateType).players;
+      const responce = await PlayerService.getPlayers(filter,       
         page,
-        pageSize
+        pageSize,
+        teamFilter
       );
 
       let playerPage = responce as PlayerDtoPageResult;
@@ -63,22 +58,25 @@ const playersPageSlice = createSlice({
     },
     setFilter: (state, action) => {
       state.filter = action.payload;
+      state.page = 1;
     },
-    setPageNumber: (state, action) => {
+    setPageNumber: (state, action) => {      
       state.page = action.payload;
     },
     setPageSize: (state, action) => {
-      state.pageSize = action.payload;
+      state.page = 1;
+      state.pageSize = action.payload;      
     },
     setTeamFilter: (state, action) => {
-      state.filter = action.payload;
+      state.teamFilter = action.payload;
+      state.page = 1;
     },
     setPlayerTeamName: (state, action) => {
-      let options = action.payload as OptionType[];
+      let options = action.payload as OptionTypeValueNumber[];
       state.pageItems.forEach(
         (item) =>
           (item.teamName = action.payload.find(
-            (t: OptionType) => t.value == item.team
+            (t: OptionTypeValueNumber) => t.value == item.team
           ).label)
       );
     },

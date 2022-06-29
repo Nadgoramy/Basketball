@@ -5,12 +5,12 @@ import PlayerService from "api/players/playerService";
 import TeamService from "api/teams/teamService";
 
 export const getTeam = createAsyncThunk(
-  `team/getPlayer`,
+  `team/getTeam`,
   async (id: number, { rejectWithValue }) => {
     try {
       const responce = await TeamService.getTeam(id);
       if (responce) {
-        const teamPlayers = await PlayerService.getPlayers("", [id], 1, 100);
+        const teamPlayers = await PlayerService.getPlayers("",  1, 100,[id]);
         responce.players = (teamPlayers as PlayerDtoPageResult).data;
       }
       return responce as TeamDto;
@@ -20,7 +20,7 @@ export const getTeam = createAsyncThunk(
   }
 );
 export const updateTeam = createAsyncThunk(
-  `team/updatePlayer`,
+  `team/updateTeam`,
   async (params: TeamDto, { rejectWithValue }) => {
     try {
       const responce = await TeamService.updateTeam(params);
@@ -31,7 +31,7 @@ export const updateTeam = createAsyncThunk(
   }
 );
 export const deleteTeam = createAsyncThunk(
-  `team/deletePlayer`,
+  `team/deleteTeam`,
   async (id: number, { rejectWithValue }) => {
     try {
       const responce = await TeamService.deleteTeam(id);
@@ -42,7 +42,7 @@ export const deleteTeam = createAsyncThunk(
   }
 );
 export const addTeam = createAsyncThunk(
-  `team/addPlayer`,
+  `team/addTeam`,
   async (player: NewTeamDto, { rejectWithValue }) => {
     try {
       const responce = await TeamService.addTeam(player);
@@ -57,20 +57,22 @@ interface StateType {
   team: TeamDto;
   isFetching: boolean;
   error: string | undefined;
+  operationSucceded:boolean
 }
 const initialState: StateType = {
   team: {} as TeamDto,
   isFetching: false,
   error: "" as string | undefined,
+  operationSucceded: false
 };
 const teamSlice = createSlice({
   name: "team",
   initialState: initialState,
   reducers: {
-    setPlayer: (state, action) => {
+    setTeam: (state, action) => {
       state.team = action.payload;
     },
-    setPlayerPhoto: (state, action) => {
+    setTeamImage: (state, action) => {
       state.team.imageUrl = action.payload;
     },
   },
@@ -93,6 +95,7 @@ const teamSlice = createSlice({
       .addCase(updateTeam.fulfilled, (state, action) => {
         state.isFetching = false;
         state.team = action.payload;
+        state.operationSucceded=true;
       })
       .addCase(updateTeam.rejected, (state, action) => {
         state.isFetching = false;
@@ -104,6 +107,7 @@ const teamSlice = createSlice({
       .addCase(deleteTeam.fulfilled, (state, action) => {
         state.isFetching = false;
         state.team = action.payload;
+        state.operationSucceded=true;
       })
       .addCase(deleteTeam.rejected, (state, action) => {
         state.isFetching = false;
@@ -115,6 +119,7 @@ const teamSlice = createSlice({
       .addCase(addTeam.fulfilled, (state, action) => {
         state.isFetching = false;
         state.team = action.payload;
+        state.operationSucceded = true;
       })
       .addCase(addTeam.rejected, (state, action) => {
         state.isFetching = false;

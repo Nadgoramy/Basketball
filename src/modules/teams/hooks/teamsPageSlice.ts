@@ -4,7 +4,6 @@ import TeamService from "api/teams/teamService";
 
 interface IParams {
   filter: string;
-  teamIds: number[] | null;
   page: number;
   pageSize: number;
 }
@@ -61,6 +60,7 @@ const teamsPageSlice = createSlice({
     },
     setPageSize: (state, action) => {
       state.pageSize = action.payload;
+      state.page = 1;
     },
   },
   extraReducers: (builder) => {

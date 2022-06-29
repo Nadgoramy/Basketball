@@ -7,6 +7,10 @@ justify-content: space-between;
 margin-bottom: 32px;
 column-gap: 24px;
 
+/*&>div{
+  flex: 0 1 365px;
+}*/
+
 @media(max-width: ${({theme})=> theme.mobile}){
   flex-direction: column;  
   margin-bottom: 16px;  

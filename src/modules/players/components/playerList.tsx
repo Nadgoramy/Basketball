@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { actions } from "modules/players/actions";
 import { playersActions } from "modules/players/hooks/playersPageSlice"
 import { PlayerCard } from "./playerCard";
 import { PlayerDto, PlayerDtoPageResult } from "api/Dto/playerDto";
@@ -10,7 +9,8 @@ import {
   getIsFetching,
   getPageSize,
   getPlayers,
-  getTeamIds
+  getTeamIds,
+  getTeamsOptions
 } from "modules/players/selectors";
 import Preloader from "common/components/preloader";
 import { Link, useNavigate } from "react-router-dom";
@@ -26,9 +26,8 @@ import Search from "common/components/Search/Search";
 import { StyledMultiSelect } from "common/components/StyledMultiSelect";
 import { StyledPaginateContainer } from "common/components/Pagination/StyledPaginate";
 import ReactPaginate from "react-paginate";
-import { OptionType, requestTeamOptions } from "../helpers/playerHelper";
 import { EmptyListScreen } from "modules/interface/EmptyListScreen";
-import { StyledSelect } from "common/components/StyledSelect";
+import { OptionTypeValueNumber, StyledSelect } from "common/components/StyledSelect";
 import {useAppDispatch, useAppSelector} from "core/redux/store"
 import { getTeamOptions } from "../hooks/teamOptionSlice";
 
@@ -46,51 +45,15 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
   const itemsCount = useAppSelector(getCount);
   const teamIds = useAppSelector(getTeamIds);
 
-  const [teamNames, setTeamNames] = useState<OptionType[] | undefined>(
-    undefined
-  );
-  
+  const teamNames = useAppSelector(getTeamsOptions)
 
-   /*const updatePlayersTeamNames = (
-    list: PlayerDtoPageResult
-  ): PlayerDtoPageResult => {
-    if (!teamNames) return list;
-    list.data.forEach((element) => {
-      element.teamName = teamNames.find((t) => t.value == element.team)?.label;
-    });
-    return list;
-  };
-
- const requestPlayers = () => {
-    dispatch(actions.startRequest());
-    let promise = PlayerService.getPlayers(
-      filter,
-      teamIds,
-      currentPage,
-      pageSize
-    );
-    if (promise)
-      promise
-        .then((res) => {
-          dispatch(
-            actions.gotPlayers(
-              updatePlayersTeamNames(res as PlayerDtoPageResult)
-            )
-          );
-        })
-        .catch((err) => {
-          dispatch(actions.finishRequest());
-        });
-  };*/
-
-  /*useEffect(() => {
-    //requestTeamOptions(setTeamNames);
-    dispatch(getTeamOptions)
+  useEffect(() => {
+    dispatch(getTeamOptions())
   }, []);
-*/
+
   useEffect(() => {
     dispatch(playersActions.getPlayersPage({filter: filter,
-      teamIds: teamIds,   page: currentPage, pageSize: pageSize}))
+      teamFilter: teamIds,   page: currentPage, pageSize: pageSize}))
   }, [filter, teamIds, currentPage, pageSize]);
 
   
@@ -103,7 +66,7 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
   const updateCurrentPage = (n: number) => {
     dispatch(playersActions.setPageNumber(n));
   };
-  const updateTeamFilter = (evn: OptionType[]) => {
+  const updateTeamFilter = (evn: OptionTypeValueNumber[]) => {
     if (!evn) dispatch(playersActions.setTeamFilter(null))
     else {
       let teamRequest: number[] = [];
@@ -135,7 +98,7 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
             classNamePrefix="Select"
             options={teamNames}
             isMulti
-            onChange={(e: any) => updateTeamFilter(e as OptionType[])}
+            onChange={(e: any) => updateTeamFilter(e as OptionTypeValueNumber[])}
           />
         </HeaderFlex>
         <StyledButton mode="add" onClick={()=>navigate("edit/0")}>Add +</StyledButton>
@@ -162,6 +125,7 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
             }}
             containerClassName="pagination"
             activeClassName="active"
+            forcePage={currentPage-1}
           />
         </StyledPaginateContainer>
         <StyledSelect            

@@ -2,11 +2,15 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PositionDto } from "api/Dto/positionDto";
 import PlayerService from "api/players/playerService";
 import { OptionTypeValueNumber, OptionTypeValueString } from "common/components/StyledSelect";
+import { AppStateType } from "core/redux/configureStore";
 
 export const getPositions = createAsyncThunk(
   `position/getOptions`,
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState }) => {
     try {
+      let state = (getState() as AppStateType).positions;
+      if(state.list.length>0 ) return state.list;
+      
       let responce = await PlayerService.getPositions();
       if (!responce) {
         rejectWithValue("Unauthorized user");

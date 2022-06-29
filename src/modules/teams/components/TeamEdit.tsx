@@ -1,32 +1,32 @@
 import { NewTeamDto, TeamDto } from "api/Dto/teamDto";
 import ImageService from "api/imageServise";
-import TeamService from "api/teams/teamService";
 import DragDropFile from "common/components/DragDropFile";
 import { StyledFlex } from "common/components/Flex";
 import { StyledLink } from "common/components/Link/styledLink";
 import { AppStateType } from "core/redux/configureStore";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Input from "common/components/Input/Input";
-import { actions } from "../teamReducer";
 import { errorActions } from "core/redux/errorSlice";
 import {
   StyledHeaderContainer,
   StyledMainContainer,
 } from "modules/interface/StyledEditComponents";
-import * as Info from "modules/interface/InfoComponents";
 import { StyledButton } from "common/components/Button/Button.styled";
-import { requestTeam } from "../helpers/teamHelper";
+import { useAppDispatch, useAppSelector } from "core/redux/store";
+import { addTeam, getTeam, teamActions, updateTeam } from "../hooks/teamSlice";
+import { StyledFlexRow } from "modules/interface/EditComponents";
 
 const TeamEdit = () => {
-  const team = useSelector((state: AppStateType) => state.team.team);
+  const team = useAppSelector((state: AppStateType) => state.team.team);
+  const operationSecceded = useAppSelector((state: AppStateType) => state.team.operationSucceded);
   const [initialState, setInitialState] = useState<TeamDto | null>();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   let { id } = useParams();
   const [file, setFile] = useState(null);
+  const [currentImageUrl, setCurrentImageUrl] = useState<string| undefined>(undefined);
   const {
     register,
     handleSubmit,
@@ -36,19 +36,34 @@ const TeamEdit = () => {
     setValue
   } = useForm<TeamDto>();
 
+  const error = useAppSelector((store) => store.player.error);
   useEffect(() => {
-    if (!id) dispatch(actions.setTeam(new TeamDto()));
-    else {
-      let teamId = parseInt(id);
-      if (teamId > 0) requestTeam(teamId, dispatch, navigate);
+    console.log(error);
+    dispatch(errorActions.setErrorMessage(error));
+  }, [error]);
+  dispatch(errorActions.setErrorMessage("Test error"));
+
+  useEffect(() => {
+    if (id  && parseInt(id)>0) {
+       dispatch(getTeam(parseInt(id)));
+    }   
+    else{
+      dispatch(teamActions.setTeam({} as TeamDto));
     }
-  }, [id]);
+  }, []);
   useEffect(()=>{
     setInitialState(team)
     setFormValues(team)
+    setCurrentImageUrl(team?.imageUrl)
   },[team])
+
+  useEffect(()=>{
+    if(operationSecceded) redirect()
+  },[operationSecceded])
+
   function setFormValues(team: TeamDto | null) {
     reset({
+      id: team?.id,
       name: team?.name,
       division: team?.division,
       conference: team?.conference,
@@ -56,55 +71,46 @@ const TeamEdit = () => {
       imageUrl: team?.imageUrl
     })
   }
-  const baseUrl = process.env.REACT_APP_IMAGEURL;
+  
   const handleFiles = (file: File) => {    
+    removeImageIfNeeded()
     ImageService.saveImage(file)?.then((url: string) => {
-      dispatch(actions.setTeamImage(baseUrl+url));
+      dispatch(teamActions.setTeamImage(url));
       console.log(url);
+      setCurrentImageUrl(url)
     }).catch(e=>dispatch(errorActions.setErrorMessage(e.message)));
   };
 
-  const removeImageOnServer=(url:string)=>{
-    ImageService.deleteImage(url)?.then((url: string) => {
-      console.log("Removed image url:"+ url)
-    });
-  }
-
+  
   const onSubmit = (data: TeamDto) => {
     if(!isDirty) return
     console.log(data);
     let teamId=parseInt(id??"0")
     if (teamId) {
-      TeamService.updateTeam(data)!
-        .then((response: TeamDto) => {
-          dispatch(actions.setTeam(response))
-          if(initialState) removeImageOnServer(initialState.imageUrl)
-        })
-        .catch((err: any) => dispatch(errorActions.setErrorMessage(err.message)));
+      dispatch(updateTeam(data))      
     } else{
-      let newTeam={
-        name:data.name, 
-        division:data.division,
-        conference: data.conference,
-        imageUrl: data.imageUrl,
-        foundationYear: data.foundationYear
-
-      } as NewTeamDto
-      TeamService.addTeam(newTeam)!
-        .then((response: TeamDto) => {
-          dispatch(actions.setTeam(response as TeamDto))
-          navigate("/teams")
-        })
-        .catch((err: any) => {
-          dispatch(errorActions.setErrorMessage(err.message))
-        });
+      dispatch(addTeam(data))
       }
+      redirect()
   };
   const onCancel=()=>{    
-    if(getValues("imageUrl") != initialState?.imageUrl) {
-      removeImageOnServer(getValues("imageUrl"))
-    }
-    setFormValues(initialState as TeamDto)
+    removeImageIfNeeded()
+    redirect()
+  }
+  const removeImageIfNeeded=()=>{
+    if(id=="0" && currentImageUrl) removeImageOnServer(currentImageUrl)
+    if(currentImageUrl && initialState?.imageUrl && currentImageUrl != initialState.imageUrl)
+      removeImageOnServer(currentImageUrl)
+  }  
+  const removeImageOnServer=(url:string)=>{
+    ImageService.deleteImage(url)?.then((url: string) => {
+      console.log("Removed image url:"+ url)
+    });
+  }
+  const redirect=()=>{
+    if (id && parseInt(id) > 0) {
+      navigate("/teams/" + id);
+    } else navigate("/teams");
   }
 
   return (
@@ -118,7 +124,7 @@ const TeamEdit = () => {
         </StyledHeaderContainer>
         <StyledMainContainer>
           <div>
-            <DragDropFile handleFiles={handleFiles} url={team?.imageUrl} />
+            <DragDropFile handleFiles={handleFiles} url={currentImageUrl} />
           </div>
           <div>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -168,10 +174,12 @@ const TeamEdit = () => {
                   error={errors.foundationYear?.message}
                 />
               </div>
-              <StyledFlex>
+              <StyledFlexRow>
               <StyledButton mode="cancel" type="button" onClick={onCancel}>Cancel</StyledButton>
                 <StyledButton type="submit">Save</StyledButton>
-              </StyledFlex>
+              </StyledFlexRow>
+              <Input type="hidden" {...register("imageUrl")} />
+              <Input type="hidden" {...register("id")} />
             </form>
           </div>
         </StyledMainContainer>

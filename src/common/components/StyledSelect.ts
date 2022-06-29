@@ -2,9 +2,6 @@ import styled from "styled-components";
 import ReactSelect, { Props } from "react-select";
 
 export const StyledSelect = styled(ReactSelect)`
-.error{
-  border: 0.5px solid ${({ theme }) => theme.colors.red};
-}
   .Select__control {
     min-height: 40px;
     min-width: 88px;
@@ -18,6 +15,10 @@ export const StyledSelect = styled(ReactSelect)`
     }
   }
   
+  .error{
+    border: 0.5px solid ${({ theme }) => theme.colors.red};
+  }
+
   .Select__indicator Select__dropdown-indicator {
     border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
   }

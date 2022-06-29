@@ -72,6 +72,9 @@ const playerSlice = createSlice({
         },
         setPlayerPhoto:(state, action)=>{
             state.player.avatarUrl = action.payload
+        },
+        setPlayerBirthday:(state, action)=>{
+            state.player.birthday = action.payload
         }
     },
     extraReducers:(builder) => {
@@ -80,6 +83,8 @@ const playerSlice = createSlice({
         })
         .addCase(getPlayer.fulfilled, (state, action) => {
             state.isFetching=false;
+            let player = action.payload as PlayerDto;
+            if(typeof player.birthday == "string") player.birthday = new Date(player.birthday)
             state.player = action.payload ? action.payload : {} as PlayerDto ;
         })
         .addCase(getPlayer.rejected, (state, action) => {

@@ -13,7 +13,7 @@ div{
     width: 482px;
     height: 320px;
     margin: 48px 37px;
-    bakground-image: url(${( props ) => props.mode == "team" ? noteamPng : noplayerPng});
+    background-image: url(${( props ) => props.mode == "team" ? noteamPng : noplayerPng});
     background-repeat: no-repeat;
     background-size: contain;
 

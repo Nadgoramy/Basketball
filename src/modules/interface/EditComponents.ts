@@ -16,6 +16,10 @@ export const StyledFlexRow = styled.div<PropsType>`
     @media (max-width: ${({ theme }) => theme.mobile}) {
       width: 100%;
     }
+  }  
+  &>button{
+    width:50%;
+    margin-top: 32px;
   }
  
 `;

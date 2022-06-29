@@ -1,11 +1,9 @@
 import React from "react";
 import { DetailedHTMLProps, forwardRef, InputHTMLAttributes, LegacyRef, ReactNode, Ref } from "react";
 import styled, { ThemedStyledProps } from "styled-components";
+import { ErrorInputSpan } from "../ErrorInputSpan";
 import { StyledInputContaner } from "../StyledInputContainer";
 
-
-//type ThemeProps<P> = ThemedStyledProps<P, DefaultTheme>;
-//type InputProps = ThemeProps<IInputProps> & ReactInputProps;
 type ReactInputProps = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 
 export type InputProps = {
@@ -29,7 +27,7 @@ const Input = React.forwardRef<HTMLInputElement, React.PropsWithChildren<InputPr
         >
         {children}
         </input>
-        {error && <span >{error}</span>}
+        {error && <ErrorInputSpan >{error}</ErrorInputSpan>}
         {icon && <div><img src={icon}/></div>}
     </StyledInputContaner>
   );

@@ -3,18 +3,19 @@ import { imagePost, post } from "./baseRequest";
 
 const API_URL = "image/";
 
-function ab2str(buf: ArrayBuffer) {
+/*function ab2str(buf: ArrayBuffer) {
   return new TextDecoder().decode(buf);
-}
+}*/
 const saveImage = async (file:File ) => {    
-  let buff = await file.text();
+  let buff = await file.arrayBuffer();
     let currentUser = AuthService.getCurrentUser();
     if(!currentUser) return null;  
     let formData = new FormData();
-    formData.set("file",buff);
+    formData.append("file", file);
     return imagePost(API_URL + "SaveImage", formData, currentUser.token)
-      .then((response) => {          
-      return response;
+      .then((response) => {  
+        const baseUrl = process.env.REACT_APP_IMAGEURL;        
+      return baseUrl+response;
     })
 }
 

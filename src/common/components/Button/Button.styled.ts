@@ -52,7 +52,7 @@ const getWidth=(props: PropsType)=>{
 }
 
 export const StyledButton = styled.button<PropsType>`
-    
+    min-width: 104px;
     width: ${(props: PropsType) => getWidth(props)};
     height: 40px;
 

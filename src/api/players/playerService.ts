@@ -18,7 +18,7 @@ const getPositions = () => {
     })
 }
 
-const getPlayers = (name: string, teamIds: number[]|null, page: number, pageSize: number) => {
+const getPlayers = (name: string ="", page: number =1, pageSize: number,teamIds: number[]|null) => {
   let currentUser = AuthService.getCurrentUser();
   if(!currentUser) return;
   let requestParams = "?Name="+name+"&Page="+page+"&PageSize="+pageSize ;

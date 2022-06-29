@@ -13,6 +13,8 @@ export const StyledInputContaner = styled.div<InputProps>`
   height: 40px;
   outline-style: none;
   ${(props: any) => (props.width ? "width: " + props.width + ";" : "")}
+  font: ${({ theme }) => theme.font};
+  
 
   input {
     position: absolute;
@@ -20,7 +22,8 @@ export const StyledInputContaner = styled.div<InputProps>`
     right: 0;
     height: 40px;
     width: -moz-available;
-    padding: 0;    
+    padding: 0; 
+    padding-left: 12px;   
 
     border-radius: 4px;
     border-width: 0;

@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-import { actions } from "modules/teams/actions";
-import { useSelector, useDispatch } from "react-redux";
 import * as selectors from "modules/teams/selectors";
 import Preloader from "common/components/preloader";
 import PageSizeSelector from "common/components/PageSizeSelector/PageSizeSelector";
@@ -13,51 +11,53 @@ import { StyledFooter, StyledGrid, StyledHeader, StyledMainContainer } from "mod
 import { StyledPaginateContainer } from "common/components/Pagination/StyledPaginate";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
-
+import { teamsActions } from "../hooks/teamsPageSlice";
+import { useAppDispatch, useAppSelector } from "core/redux/store";
+import { EmptyListScreen } from "modules/interface/EmptyListScreen";
+import { OptionTypeValueNumber, StyledSelect } from "common/components/StyledSelect";
 
 
 type PropsType = {};
 export const TeamsList: React.FunctionComponent<PropsType> = (
   props: PropsType
 ) => {
-  const dispatch = useDispatch();
-  const teams = useSelector(selectors.getTeams);
-  const currentPage = useSelector(selectors.getCurrentPage);
-  const filter = useSelector(selectors.getFilter);
-  const pageSize = useSelector(selectors.getPageSize);
-  const isFetching = useSelector(selectors.getIsFetching);
-  const itemsCount = useSelector(selectors.getCount);
+  const dispatch = useAppDispatch();
+  const teams = useAppSelector(selectors.getTeams);
+  const currentPage: number = useAppSelector(selectors.getCurrentPage);
+  const filter = useAppSelector(selectors.getFilter);
+  const pageSize = useAppSelector(selectors.getPageSize);
+  const isFetching = useAppSelector(selectors.getIsFetching);
+  const itemsCount = useAppSelector(selectors.getCount);
   const navigate = useNavigate();
-
-  const requestTeams = () => {
-    dispatch(actions.startRequest());
-    let promise = TeamService.getTeams(filter, currentPage, pageSize);
-    if (promise)
-      promise
-        .then((res) => {
-          dispatch(actions.gotTeams(res as TeamDtoPageResult));
-          console.log(res);
-        })
-        .catch((err) => {
-          dispatch(actions.finishRequest());
-        });
-  };
-
+ 
   useEffect(() => {
-    requestTeams();
+    dispatch(teamsActions.getTeamsPage({ filter: filter, page: currentPage, pageSize: pageSize }))
   }, [filter, currentPage, pageSize]);
 
-  const handlePageSizeSelectorClick = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    dispatch(actions.setPageSize(parseInt(event.target.value)));
-  };
   const updateFilterValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(actions.setTeamsFilter(e.target.value));
+    dispatch(teamsActions.setFilter(e.target.value));
   };
   const updateCurrentPage = (n: number) => {
-    dispatch(actions.setCurrentPage(n));
+    dispatch(teamsActions.setPageNumber(n));
   };
+  const handlePageSizeSelect = (a: any, b: any ) => {
+    dispatch(teamsActions.setPageSize(a.value));
+  };
+
+  const pageSizeOptions=[
+    {
+      label:"6",
+      value:6 
+    },
+    {
+      label:"12",
+      value: 12
+    },
+    {
+      label:"24",
+      value: 24
+    }
+  ]
 
   return (
     <StyledMainContainer direction="column">
@@ -67,7 +67,7 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
       </StyledHeader>
       {isFetching && <Preloader />}
       <StyledGrid>
-        {!teams && <div className="emptyList"></div>}
+        {!teams && <EmptyListScreen mode="team"/>}
         {teams && teams.map((p: TeamDto) => <TeamCard team={p} key={p.id} />)}
       </StyledGrid>
       <StyledFooter>
@@ -87,9 +87,17 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
             }}
             containerClassName="pagination"
             activeClassName="active"
+            forcePage={currentPage-1}
           />
         </StyledPaginateContainer>
-        <PageSizeSelector onChange={handlePageSizeSelectorClick} />
+        <StyledSelect            
+            classNamePrefix="Select"
+            options={pageSizeOptions}     
+            defaultValue={pageSizeOptions[0]}                
+            onChange={handlePageSizeSelect}
+            menuPlacement="auto"
+            value={pageSizeOptions.filter(({value}) => value === pageSize)}            
+          />
       </StyledFooter>
     </StyledMainContainer>
   );

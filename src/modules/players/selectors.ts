@@ -27,3 +27,6 @@ export const getCount=(state: AppStateType) => {
 export const getTeamIds=(state: AppStateType) => {       
     return state.players.teamFilter;
 }
+export const getTeamsOptions=(state:AppStateType)=>{
+    return state.teamOptions.options;
+}

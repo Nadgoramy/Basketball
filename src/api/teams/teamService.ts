@@ -40,7 +40,7 @@ const getTeam = (id: number) => {
   const updateTeam = (team: TeamDto) => {
     let currentUser = AuthService.getCurrentUser();
     if(!currentUser) return;
-    return put(API_URL + "update", { team },  currentUser.token)
+    return put(API_URL + "update",  team ,  currentUser.token)
   };
 
   const deleteTeam = (id: number) => {

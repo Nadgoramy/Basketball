@@ -1,26 +1,21 @@
 import { PlayerDto } from "./playerDto";
 
-export  class TeamDto{
-    id: number =0;
-    imageUrl: string ="";
-    name: string = "";
-    foundationYear: number = 0;
-    division: string ="";
-    conference: string = "";
-    players: PlayerDto[] = [];
+export interface TeamDto extends NewTeamDto {
+  id: number;
+  players: PlayerDto[];
 }
 
-export class NewTeamDto{
-    name:	string = "";
-    foundationYear:	number =0;
-    division: string  = "";    
-    conference:	string = "";    
-    imageUrl: string = "";    
-    }
+export interface NewTeamDto {
+  name: string;
+  foundationYear: number;
+  division: string;
+  conference: string;
+  imageUrl: string;
+}
 
-export class TeamDtoPageResult{
-    data:	TeamDto[] =[];
-    count:	number = 0;
-    page:	number = 1;
-    size:	number = 6;
-    }
+export interface TeamDtoPageResult {
+  data: TeamDto[];
+  count: number;
+  page: number;
+  size: number;
+}
