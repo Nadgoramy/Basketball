@@ -1,7 +1,7 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PositionDto } from "api/Dto/positionDto";
 import PlayerService from "api/players/playerService";
-import { OptionTypeValueNumber, OptionTypeValueString } from "common/components/StyledSelect";
+import { OptionTypeValueString } from "common/components/StyledSelect";
 import { AppStateType } from "core/redux/configureStore";
 
 export const getPositions = createAsyncThunk(

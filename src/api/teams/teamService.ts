@@ -9,20 +9,14 @@ const getTeams = (name: string, page: number, pageSize: number) => {
   let currentUser = AuthService.getCurrentUser();
   if(!currentUser) return;
   let requestParams = "?Name="+name+"&Page="+page+"&PageSize="+pageSize;  
-  return get(API_URL + "getteams"+requestParams,  currentUser.token)
-    .then((response) => {      
-      return response;
-    });
+  return get(API_URL + "getteams"+requestParams,  currentUser.token);
 };
 
 const getTeam = (id: number) => {
     let currentUser = AuthService.getCurrentUser();
     console.log("trying to get team by id");
     if(!currentUser) return;
-    return get(API_URL + "get?id=" + id,  currentUser.token)
-      .then((response) => {        
-        return response;
-      });
+    return get(API_URL + "get?id=" + id,  currentUser.token);
   };
 
 
@@ -31,10 +25,7 @@ const getTeam = (id: number) => {
     if(!currentUser) return new Promise((resolve, reject) => {
       throw new Error("Unauthorize exception");
     })
-    return post<NewTeamDto>(API_URL + "add", team , currentUser.token)
-      .then((response) => {        
-        return response;
-      });
+    return post<NewTeamDto>(API_URL + "add", team , currentUser.token);
   };
 
   const updateTeam = (team: TeamDto) => {
@@ -46,10 +37,7 @@ const getTeam = (id: number) => {
   const deleteTeam = (id: number) => {
     let currentUser = AuthService.getCurrentUser();
     if(!currentUser) return;
-    return remove(API_URL + "delete?id=" + id,  currentUser.token)
-      .then((response) => {        
-        return response;
-      });
+    return remove(API_URL + "delete?id=" + id,  currentUser.token);
   };
 
 

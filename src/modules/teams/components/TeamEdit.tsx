@@ -41,7 +41,6 @@ const TeamEdit = () => {
     console.log(error);
     dispatch(errorActions.setErrorMessage(error));
   }, [error]);
-  dispatch(errorActions.setErrorMessage("Test error"));
 
   useEffect(() => {
     if (id  && parseInt(id)>0) {
@@ -90,8 +89,7 @@ const TeamEdit = () => {
       dispatch(updateTeam(data))      
     } else{
       dispatch(addTeam(data))
-      }
-      redirect()
+      }     
   };
   const onCancel=()=>{    
     removeImageIfNeeded()

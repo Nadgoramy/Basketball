@@ -7,10 +7,12 @@ import {
   useParams,  
 } from "react-router-dom";
 import * as Info from "modules/interface/InfoComponents"
-import { DeleteLink, EditLink} from "common/components/Link/editLink";
+import { EditLink} from "common/components/Link/editLink";
 import { StyledLink } from "common/components/Link/styledLink";
 import { getPlayer, deletePlayer } from "../hooks/playerSlice";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
+import { DeleteButton } from "common/components/Button/deleteButton";
+import { errorActions } from "core/redux/errorSlice";
 
 type PlayerInfoPtopType = React.HTMLAttributes<HTMLElement> & {};
 
@@ -28,6 +30,12 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
     let playerId = parseInt(id);
     dispatch(getPlayer(playerId));
   }, [id]);
+
+  const error = useAppSelector((store) => store.player.error);
+  useEffect(() => {
+    dispatch(errorActions.setErrorMessage(error));
+  }, [error]);
+
 
   let navigate = useNavigate();
   const routeChange = (id: number) => {
@@ -61,7 +69,7 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
               </div>
               <StyledFlex >              
                 <EditLink to={"/players/edit/"+id}/>
-                <DeleteLink onClick={handleDeleteClick} to="#0"/>
+                <DeleteButton onClick={handleDeleteClick} />
               </StyledFlex>
             </Info.StyledHeaderContainer>
             <Info.StyledMainContainer>

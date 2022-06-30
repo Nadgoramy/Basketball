@@ -58,6 +58,7 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
   const positionOptions = useAppSelector((store) => store.positions.options);
   const teamOptions = useAppSelector((store) => store.teamOptions.options);
   const player = useAppSelector((state: AppStateType) => state.player.player);
+  const operationSecceded = useAppSelector((state: AppStateType) => state.team.operationSucceded);
   const [initialState, setInitialState] = useState<PlayerDto | null>();
   const {
     register,
@@ -98,11 +99,17 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
     setCurrentAvatarUrl(player?.avatarUrl)
   }, [player]);
 
+  useEffect(()=>{
+    if(operationSecceded) redirect()
+  },[operationSecceded])
+
   const handleChange = (file: any) => {
     setFile(file);
   };
 
   const handleFiles = (file: File) => {
+    removeImageIfNeeded()
+
     ImageService.saveImage(file)?.then((url: string) => {
       //dispatch(playerActions.setPlayerPhoto(url));
       setValue("avatarUrl", url)
@@ -115,14 +122,11 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
       navigate("/players/" + id);
     } else navigate("/players");
   }
-  const onCancel = () => {
-    let currentAvatarUrl = getValues("avatarUrl");
-    if (currentAvatarUrl && currentAvatarUrl != initialState?.avatarUrl) {
-      removeImageOnServer(currentAvatarUrl);
-    }
-    
-    redirect()
-  };
+  const removeImageIfNeeded=()=>{
+    if(id=="0" && currentAvatarUrl) removeImageOnServer(currentAvatarUrl)
+    if(currentAvatarUrl && initialState?.avatarUrl && currentAvatarUrl != initialState.avatarUrl)
+      removeImageOnServer(currentAvatarUrl)
+  }  
   const removeImageOnServer = (url: string) => {
     ImageService.deleteImage(url)?.then((url: string) => {
       console.log("Removed image url:" + url);
@@ -140,6 +144,8 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
       team: player?.team
     });
   }
+
+
   const onSubmit = (data: any) => {
     let updatedPlayer = {
       id: id,
@@ -158,7 +164,9 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
     if (id && parseInt(id) > 0)
       dispatch(updatePlayer(updatedPlayer as PlayerDto));
     else dispatch(addPlayer(updatedPlayer as PlayerDto));
-
+  };
+  const onCancel = () => {    
+    removeImageIfNeeded()    
     redirect()
   };
   const values = watch();

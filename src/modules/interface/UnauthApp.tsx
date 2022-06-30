@@ -96,8 +96,6 @@ useEffect(() => {
   setIsRegisterPage(location.pathname !== "/");
 }, [location]);
 
-
-
   return (   
       <StyledContainer>
         <StyledLoginContainer>

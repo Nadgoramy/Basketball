@@ -13,11 +13,13 @@ import PlayerEdit from "modules/players/components/playerEdit";
 import { PlayerInfo } from "modules/players/components/PlayerInfo";
 import { PlayerList } from "modules/players/components/playerList";
 import ErrorPopUp from "common/components/ErrorPopUp";
-import { useAppSelector } from "core/redux/store";
+import { useAppDispatch, useAppSelector } from "core/redux/store";
 
 function App() {
   const user = AuthService.getCurrentUser();
   const userFromStore = useAppSelector((state: AppStateType) => state.user);
+  const dispatch = useAppDispatch()
+  if(!userFromStore.name && user) dispatch({type:"SET_USER", name:user.name, avatarUrl: user.avatarUrl, token: user.token})
   const error = useAppSelector((state: AppStateType)=> state.error.message)
   console.log(user);
   if(user && window.location.pathname=="/") window.location.pathname="/teams"

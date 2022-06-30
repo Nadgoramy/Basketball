@@ -9,10 +9,11 @@ export const getTeam = createAsyncThunk(
   async (id: number, { rejectWithValue }) => {
     try {
       const responce = await TeamService.getTeam(id);
-      if (responce) {
+      if (responce && (responce as TeamDto).id) {
         const teamPlayers = await PlayerService.getPlayers("",  1, 100,[id]);
         responce.players = (teamPlayers as PlayerDtoPageResult).data;
       }
+      else throw new Error("Team not found")
       return responce as TeamDto;
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -84,10 +85,12 @@ const teamSlice = createSlice({
       .addCase(getTeam.fulfilled, (state, action) => {
         state.isFetching = false;
         state.team = action.payload ? action.payload : ({} as TeamDto);
+        state.operationSucceded=false;
+        state.error=undefined
       })
       .addCase(getTeam.rejected, (state, action) => {
         state.isFetching = false;
-        state.error = action.error.message;
+        state.error = action.error.message+" :"+(action.payload as string);
       })
       .addCase(updateTeam.pending, (state, action) => {
         state.isFetching = true;
@@ -96,10 +99,11 @@ const teamSlice = createSlice({
         state.isFetching = false;
         state.team = action.payload;
         state.operationSucceded=true;
+        state.error=undefined
       })
       .addCase(updateTeam.rejected, (state, action) => {
         state.isFetching = false;
-        state.error = action.error.message;
+        state.error = action.error.message+" :"+(action.payload as string);
       })
       .addCase(deleteTeam.pending, (state, action) => {
         state.isFetching = true;
@@ -108,10 +112,11 @@ const teamSlice = createSlice({
         state.isFetching = false;
         state.team = action.payload;
         state.operationSucceded=true;
+        state.error=undefined
       })
       .addCase(deleteTeam.rejected, (state, action) => {
         state.isFetching = false;
-        state.error = action.error.message;
+        state.error = action.error.message+" :"+(action.payload as string);
       })
       .addCase(addTeam.pending, (state, action) => {
         state.isFetching = true;
@@ -120,10 +125,11 @@ const teamSlice = createSlice({
         state.isFetching = false;
         state.team = action.payload;
         state.operationSucceded = true;
+        state.error=undefined
       })
       .addCase(addTeam.rejected, (state, action) => {
         state.isFetching = false;
-        state.error = action.error.message;
+        state.error = action.error.message+" :"+(action.payload as string);
       });
   },
 });

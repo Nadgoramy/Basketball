@@ -6,6 +6,7 @@ display: flex;
 right: 0;
 top: 0;
 height: 40px;
+z-index:1000;
 
 background: ${({theme})=> theme.colors.light_red};
 border-radius: 4px;

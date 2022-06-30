@@ -1,12 +1,15 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AppStateType } from "core/redux/configureStore";
 import { StyledFlex } from "common/components/Flex";
 import * as Info from "modules/interface/InfoComponents";
-import { DeleteLink, EditLink } from "common/components/Link/editLink";
+import { EditLink } from "common/components/Link/editLink";
 import { StyledLink } from "common/components/Link/styledLink";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
-import { getTeam } from "../hooks/teamSlice";
+import { deleteTeam, getTeam } from "../hooks/teamSlice";
+import { StyledDeleteButton, DeleteButton } from "common/components/Button/deleteButton";
+import { errorActions } from "core/redux/errorSlice";
+import ErrorPopUp from "common/components/ErrorPopUp";
 
 type PropTypes = {};
 export const TeamInfo: React.FunctionComponent<PropTypes> = (
@@ -22,6 +25,12 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
     requestTeam(teamId);
   }, [id]);
 
+  const error = useAppSelector((store) => store.team.error);
+  useEffect(() => {
+    dispatch(errorActions.setErrorMessage(error));
+    console.log(error)
+  }, [error]);
+
   const requestTeam = (teamId: number) => {
     dispatch(getTeam(teamId));
   };
@@ -35,9 +44,14 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
   const handleDeleteClick = (e: any) => {
     if (!id) return;
     let teamId = parseInt(id);
-    if (window.confirm("Are you sure?")) dispatch(getTeam(teamId));
+    if (window.confirm("Are you sure?")) dispatch(deleteTeam(teamId));
   };
-
+  const navigate = useNavigate()
+  const operationSecceded = useAppSelector((state: AppStateType) => state.team.operationSucceded);
+  useEffect(()=>{
+    if(operationSecceded) navigate("/teams");
+  },[operationSecceded])
+  
   return (
     <StyledFlex direction="column">
       <Info.StyledContainer>
@@ -52,7 +66,7 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
               </span>
               <StyledFlex>
                 <EditLink to={"/teams/edit/" + id} />
-                <DeleteLink onClick={handleDeleteClick} to={"#"} />
+                <DeleteButton onClick={handleDeleteClick} />
               </StyledFlex>
             </Info.StyledHeaderContainer>
             <Info.StyledMainContainer>
@@ -124,6 +138,8 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
           </Info.StyledTeamListContainer>
         </Info.StyledContainer>
       )}
+     
     </StyledFlex>
   );
 };
+// {error && <ErrorPopUp errorMessage={error} />}
