@@ -14,7 +14,9 @@ export const StyledSelect = styled(ReactSelect)`
       width: 100%;
     }
   }
-  
+  &:invalid{
+    border: 0.5px solid ${({ theme }) => theme.colors.red};
+  }
   .error{
     border: 0.5px solid ${({ theme }) => theme.colors.red};
   }

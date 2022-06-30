@@ -28,7 +28,6 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
   const error = useAppSelector((store) => store.team.error);
   useEffect(() => {
     dispatch(errorActions.setErrorMessage(error));
-    console.log(error)
   }, [error]);
 
   const requestTeam = (teamId: number) => {
@@ -142,4 +141,3 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
     </StyledFlex>
   );
 };
-// {error && <ErrorPopUp errorMessage={error} />}

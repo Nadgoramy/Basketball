@@ -134,6 +134,7 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
   };
   function setFormValues(player: PlayerDto | null) {
     reset({
+      id: player?.id,
       name: player?.name,
       birthday: player?.birthday,
       height: player?.height,
@@ -147,7 +148,9 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
 
 
   const onSubmit = (data: any) => {
-    let updatedPlayer = {
+    if(!isDirty) {redirect(); return}
+
+    /*let updatedPlayer = {
       id: id,
       name: data.name,
       birthday: data.birthday,
@@ -159,11 +162,12 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
       position:
         typeof data.position == "string" ? data.position : data.position?.value,
     };
-    console.log(JSON.stringify(updatedPlayer, null, 4));
-
+    console.log(JSON.stringify(updatedPlayer, null, 4));    
+*/
+    //data.birthday= data.birthday.toISOString();
     if (id && parseInt(id) > 0)
-      dispatch(updatePlayer(updatedPlayer as PlayerDto));
-    else dispatch(addPlayer(updatedPlayer as PlayerDto));
+      dispatch(updatePlayer(data as PlayerDto));
+    else dispatch(addPlayer(data as PlayerDto));
   };
   const onCancel = () => {    
     removeImageIfNeeded()    
@@ -217,11 +221,10 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
                       className={errors.position?"error":""}
                       id={name}
                       options={positionOptions}
-                      defaultValue={undefined}
                       menuPlacement="auto"
                       onChange={onChange}
                       onBlur={onBlur}
-                      value={value}
+                      value={positionOptions? positionOptions.find(o=>o.value == value): undefined}
                       ref={ref}
                     />
                   )}                  
@@ -247,11 +250,10 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
                     <StyledSelect
                       classNamePrefix="Select" 
                       options={teamOptions}
-                      defaultValue={undefined}
                       menuPlacement="auto"
                       onChange={onChange}
                       onBlur={onBlur}                      
-                      value={value}
+                      value={teamOptions? teamOptions.find(o=>o.value == value):undefined}
                       ref={ref}
                     />
                   )}

@@ -88,7 +88,7 @@ const playerSlice = createSlice({
         let player = action.payload as PlayerDto;
         if (typeof player.birthday == "string")
           player.birthday = new Date(player.birthday);
-        state.player = action.payload ? action.payload : ({} as PlayerDto);
+        state.player = player;//action.payload ? action.payload : ({} as PlayerDto);
         state.operationSucceded = false;
         state.error = undefined
       })
@@ -101,7 +101,11 @@ const playerSlice = createSlice({
       })
       .addCase(updatePlayer.fulfilled, (state, action) => {
         state.isFetching = false;
-        state.player = action.payload;
+
+        let player = action.payload as PlayerDto;
+        if (typeof player.birthday == "string")
+          player.birthday = new Date(player.birthday);
+        state.player = player;
         state.operationSucceded = true;
         state.error =undefined
       })
@@ -114,7 +118,12 @@ const playerSlice = createSlice({
       })
       .addCase(deletePlayer.fulfilled, (state, action) => {
         state.isFetching = false;
-        state.player = action.payload;
+        
+        let player = action.payload as PlayerDto;
+        if (typeof player.birthday == "string")
+          player.birthday = new Date(player.birthday);
+        state.player = player;
+
         state.operationSucceded = true;
         state.error = undefined
       })
@@ -127,7 +136,12 @@ const playerSlice = createSlice({
       })
       .addCase(addPlayer.fulfilled, (state, action) => {
         state.isFetching = false;
-        state.player = action.payload;
+        
+        let player = action.payload as PlayerDto;
+        if (typeof player.birthday == "string")
+          player.birthday = new Date(player.birthday);
+        state.player = player;
+
         state.operationSucceded = true;
         state.error = undefined
       })
