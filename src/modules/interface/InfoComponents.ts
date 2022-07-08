@@ -2,11 +2,11 @@ import styled from "styled-components";
 
 
 export const StyledContainer = styled.div`
-/*max-width: 1140px;*/
 flex:1;
 
-@media (max-width: ${({ theme }) => theme.mobile}) {
-  max-width: ${({ theme }) => theme.mobile};
+@media (max-width: ${({ theme }) => theme.mobile}) { 
+  margin: 16px 12px 0 12px;
+
 }
 `;
 export const StyledHeaderContainer = styled.div`
@@ -17,11 +17,11 @@ border-radius: 10px 10px 0px 0px;
 color: ${({ theme }) => theme.colors.red};
 
 display: flex;
-flex-direction: row;
 justify-content: space-between;
 
 height: 69px;
-padding: 24px 32px;
+padding: 24px;
+align-items: center;
 @media (max-width: ${({ theme }) => theme.mobile}) {
   height: 48px;
   padding: 12px 16px;
@@ -35,6 +35,19 @@ a{
   }
 }
 `;
+
+export const StyledHeaderButtonContainer=styled.div`
+display: flex;
+
+
+&>*{
+  flex: 0 0 24px;
+}
+
+`
+
+
+
 export const StyledMainContainer = styled.div`
 background: linear-gradient(276.45deg, #707070 0%, #393939 100.28%);
 border-radius: 0px 0px 10px 10px ;

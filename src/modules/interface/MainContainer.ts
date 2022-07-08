@@ -1,16 +1,36 @@
 import styled from "styled-components";
 
-const MainContainer = styled.div`    
-    /*max-width: 1145px;*/
-    margin: 80px 0 0 140px;
+export const MainContainer = styled.div`  
+    //margin: 80px 0 0 140px;
     background: ${({ theme }) => theme.colors.lightest_grey1};    
-    padding: 32px 80px 0 80px;
-    height:100%;
+    //padding: 32px 80px 0 80px;
+    padding: 112px 80px 0 220px;
+    //height:100%;
+    height: calc(100vh - 112px);
+    position: realtive;
 
     @media (max-width: ${({ theme }) => theme.mobile}) {
-        margin: 62px 0 0 0;
+        margin: 62px 0 0 0;        
         padding: 0;
         width: 100%;
+        height: calc(100vh - 62px);
+
+        &::-webkit-scrollbar {
+            display: none;
+            -webkit-appearance: none;
+            }
+        -ms-overflow-style: none;
+        scrollbar-width: none;
     }
 `
-export default MainContainer;
+
+export const FullScreenContainer = styled.div`   
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    bottom:0;
+    right:0;
+    left:0;
+    
+`

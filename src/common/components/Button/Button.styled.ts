@@ -91,5 +91,9 @@ export const StyledButton = styled.button<PropsType>`
         border:${(props: PropsType) => getBorderByMode(props.theme, props.mode)};
         background-color: ${(props: PropsType) => getBackgroundColorByMode(props.theme, props.mode, "disabled")};
     }
+
+    #plus{
+        font-size: 18px
+    }
 `
 

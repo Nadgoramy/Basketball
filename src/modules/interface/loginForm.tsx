@@ -1,22 +1,22 @@
-import React, { Component, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import AuthService from "api/authService";
 import { StyledButton } from "common/components/Button/Button.styled";
 import Input from "common/components/Input/Input";
 import styled from "styled-components";
 import PasswordInput from "common/components/PasswordInput";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
 import { AppStateType } from "core/redux/configureStore";
+import { useAppDispatch, useAppSelector } from "core/redux/store";
+import { errorActions } from "core/redux/errorSlice";
+import { login } from "core/redux/userSlice";
+import { LoginFormDto } from "api/Dto/userDto";
 
 const StyledLoginContainer = styled.div`
-  margin: 226px 120px 0 120px;
+  margin: 340px 120px 0 120px;
   display: flex;
   flex-direction: column;
   @media (max-width: ${({ theme }) => theme.mobile}) {
-    margin: 226px 24px 0 24px;
+    margin: 115px 24px 0 24px;
   }
 
   h4 {
@@ -36,18 +36,33 @@ const StyledLoginContainer = styled.div`
     margin-bottom: 24px;
 
     p {
+      height: 18px;
       font-weight: 500;
       font-size: 14px;
       line-height: 24px;
       color: ${({ theme }) => theme.colors.grey};
       margin: 0 0 8px 0;
+
+      @media (max-width: ${({ theme }) => theme.mobile}) {
+        font-size: 17px;
+        line-height: 25px;
+      }
     }
     button {
       height: 40px;
     }
   }
 
+  button {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
   nav {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 24px;
     text-align: center;
     position: relative;
     color: ${({ theme }) => theme.colors.grey};
@@ -58,63 +73,66 @@ const StyledLoginContainer = styled.div`
   }
 `;
 
-type UserLoginForm = {
+/**type UserLoginForm = {
   login: string;
   password: string;
-};
+};*/
 type PropsType = {
-  setError: (msg: string) => void;
+  setError?: (msg: string) => void;
 };
 type StateType = {
   login: string;
   password: string;
   msg: string;
 };
-const LoginForm: React.FC<PropsType> = (posts) => {
-  const globalSetError = posts.setError
+const LoginForm: React.FC<PropsType> = (props) => {
+  const globalSetError = props.setError;
   const {
     register,
     handleSubmit,
     formState: { errors },
     getValues,
-    setError
-  } = useForm<UserLoginForm>();
-  const dispatch = useDispatch();
-  const currentUser = useSelector((state:AppStateType) => state.user)
+    setError,
+  } = useForm<LoginFormDto>();
+  const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(
+    (state: AppStateType) => state.user.currentUser
+  );
+  const isLoggedIn = useAppSelector(
+    (state: AppStateType) => state.user.isLoggedIn
+  );
+  const error = useAppSelector((state: AppStateType) => state.user.error);
   const navigate = useNavigate();
 
-useEffect(()=>{
-  if(currentUser.token) navigate("/teams")
-},
-[currentUser])
+  useEffect(() => {
+    //if(currentUser && currentUser.token) navigate("/teams")
+  }, [currentUser]);
 
-  const onSubmit = (data: UserLoginForm) => {
-    console.log(data);
-    AuthService.login(data.login, data.password)
-      .then((user) => {
-        localStorage.setItem("user", JSON.stringify(user));
-        dispatch({
-          type: "SET_USER",
-          name: user.name,
-          avatarUrl: user.avatarUrl,
-          token: user.token,
-        });
-        navigate("/teams")
-      })
-      .catch((err) => {
-        if (err.status == 401) globalSetError("User with the specified username / password was not found.");
-        else globalSetError(err.message);
-        setError("password", { type: "custom" , message: "Wrong password. Please, try again."})
-        setTimeout(() => {
-          globalSetError("");
-        }, 15000);
+  useEffect(() => {
+    if (isLoggedIn) {
+      dispatch(errorActions.clearErrorMessage());
+      navigate("/teams");
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (error) {
+      dispatch(errorActions.setErrorMessage(error));
+      setError("password", {
+        type: "custom",
+        message: "Wrong password. Please, try again.",
       });
+    }
+  }, [error]);
+
+  const onSubmit = (data: LoginFormDto) => {
+    dispatch(login(data));
   };
 
   return (
     <StyledLoginContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h4>Sing Up</h4>
+        <h4>Sign In</h4>
         <div>
           <p>Login:</p>
           <Input
@@ -137,12 +155,12 @@ useEffect(()=>{
         </div>
 
         <div>
-          <StyledButton type="submit">Sing Up</StyledButton>
+          <StyledButton type="submit">Sign In</StyledButton>
         </div>
       </form>
 
       <nav>
-        <span>Not a member yet?</span>
+        <span>Not a member yet? </span>
         <a href="/register">Sing up</a>
       </nav>
     </StyledLoginContainer>

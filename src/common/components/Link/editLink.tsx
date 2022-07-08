@@ -58,5 +58,6 @@ export const StyledDeleteLink = styled(Link)`
     background-image: url("${( props: EditLinkinterface ) => deletSvg}");
     background-repeat: no-repeat;
     background-size: contain;
+    display:inline-block;
   }
 `;

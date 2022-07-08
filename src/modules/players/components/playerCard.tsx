@@ -20,7 +20,7 @@ export const PlayerCard: React.FunctionComponent<PlayerCardPtopType> = (props : 
       <CardComponents.StyledPlayerImageContainer url={props.player.avatarUrl}/>
       <CardComponents.StyledFooter>
         <h4>
-          {props.player.name}<span>#{props.player.number}</span>
+          {props.player.name}<span> &nbsp;#{props.player.number}</span>
         </h4>
         <span>{props.player.teamName}</span>
       </CardComponents.StyledFooter>

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const ErrorInputSpan = styled.span`
-    position: absolute;
+    position: relative;
     top: 42px;
     font-style: normal;
     font-weight: 500;

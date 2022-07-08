@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import AuthService from "api/authService";
@@ -6,9 +6,9 @@ import Input from "common/components/Input/Input";
 import { StyledButton } from "common/components/Button/Button.styled";
 import Checkbox from "common/components/Checkbox";
 import { useLocation } from "react-router-dom";
-import ErrorPopUp from "common/components/ErrorPopUp";
 import PasswordInput from "common/components/PasswordInput";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "core/redux/store";
+import { errorActions } from "core/redux/errorSlice";
 
 const StyledFormContainer = styled.div`
   margin: 226px 120px 0 120px;
@@ -72,7 +72,7 @@ const initialValue: UserSubmitForm = {
   acceptTerms: false,
 };
 interface RegProps {
-  setError: (msg: string) => void;
+  setError?: (msg: string) => void;
 }
 const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
   const {
@@ -88,7 +88,7 @@ const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
     /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})$/
   );
   const simplePasswordPatern = RegExp(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onSubmit = (data: UserSubmitForm) => {
     console.log(data);
@@ -107,12 +107,14 @@ const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
       })
       .catch((err) => {
         console.error(err);
-        if (err.status == 409) setError("User with such login already exists");
-        else setError(err);
-
-        setTimeout(() => {
-          setError("");
-        }, 15000);
+        if (err.status == 409) {
+          dispatch(errorActions.setErrorMessage("User with such login already exists"))
+          //setError("User with such login already exists");
+        }
+        else {
+          dispatch(errorActions.setErrorMessage(err.message))
+          //setError(err);
+        }       
       });
   };
 

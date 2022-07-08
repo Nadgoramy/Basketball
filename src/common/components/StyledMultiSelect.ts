@@ -6,7 +6,8 @@ import styled from "styled-components";
 export const StyledMultiSelect = styled(ReactSelect)`
   .Select__control {
     min-height: 40px;
-    min-width: 364px;
+    min-width: 164px;
+    max-width: 364px;
     background: ${({ theme }) => theme.colors.white};
     border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
     border-radius: 4px;
@@ -14,6 +15,8 @@ export const StyledMultiSelect = styled(ReactSelect)`
 
     @media (max-width: ${({ theme }) => theme.mobile}) {
       width: 100%;
+      min-width: 0;
+      max-width: 100%;
     }
   }
 

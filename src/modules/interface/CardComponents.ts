@@ -39,8 +39,9 @@ export const StyledPlayerImageContainer = styled.div<PhotoPropsType>`
   background-size: contain;
 
   @media (max-width: ${({ theme }) => theme.mobile}) {    
-    width: 121.5px;
-    height:120px;
+    width: 140px;
+    background-position: center;
+    height:93px;
     margin: 11px auto 0 auto;
   }
 
@@ -73,7 +74,7 @@ export const StyledFooter = styled.div`
   color: ${({ theme }) => theme.colors.white};
   text-align: center;
   @media (max-width: ${({ theme }) => theme.mobile}) {
-    height: 86px;
+    height: 76px;
   }
 
   span {
@@ -84,26 +85,79 @@ export const StyledFooter = styled.div`
     color: ${({ theme }) => theme.colors.light_grey};
     @media (max-width: ${({ theme }) => theme.mobile}) {
       font-size: 13px;
-    line-height: 18px;
+      line-height: 18px;
     }
   }
   h4 {
-    font-weight: 500;
+    margin-top: 20px;
+    margin-bottom: 12px;
+    font-weight: 600;
     font-size: 18px;
-    line-height: 25px;
+    line-height: 22px;
     color: ${({ theme }) => theme.colors.white};
-    margin-bottom: 8px;
+    
     @media (max-width: ${({ theme }) => theme.mobile}) {
       font-size: 15px;
-    line-height: 24px;
+      line-height: 24px;
+      font-weight: 500;
+      margin-top: 14px;
+      margin-bottom: 0px;
     }
 
     span {
       color: ${({ theme }) => theme.colors.red};
-      font-weight: 500;
-      font-size: 18px;
-      line-height: 25px;
+      font-weight: 600;
+    font-size: 18px;
+    line-height: 22px;
       margin-bottom: 8px;
     }
+  }
+`;
+
+export const StyledTeamFooter = styled.div`
+  position: absolute;
+  height: 100px;
+  bottom: 0;
+  width: 100%;
+  background: ${({ theme }) => theme.colors.dark_grey};
+  border-radius: 0px 0px 4px 4px;
+  color: ${({ theme }) => theme.colors.white};
+  text-align: center;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: ${({ theme }) => theme.mobile}) {
+    height: 94px;
+  }
+
+  span {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+    color: ${({ theme }) => theme.colors.light_grey};
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      font-size: 13px;
+      line-height: 18px;
+    }
+  }
+  h4 {
+    margin-top: 0px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 22px;
+    color: ${({ theme }) => theme.colors.white};
+    
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      font-size: 15px;
+      line-height: 24px;
+      font-weight: 500;
+      margin-top: 0px;
+      margin-bottom: 4px;
+    }    
   }
 `;

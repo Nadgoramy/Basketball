@@ -1,6 +1,5 @@
 import { AppStateType } from "core/redux/configureStore";
 import React, { HTMLAttributes } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import teamImg from "asserts/images/group_person.svg";
@@ -9,6 +8,8 @@ import teamImgActive from "asserts/images/group_person_active.svg";
 import playerImgActive from "asserts/images/person_active.svg";
 import noUserImg from "asserts/images/profile.svg";
 import SingoutImg from "asserts/images/singout.svg";
+import { useAppDispatch, useAppSelector } from "core/redux/store";
+import { userActions } from "core/redux/userSlice";
 
 const menu = [
   {
@@ -91,7 +92,7 @@ const NavContainer = styled.div`
 `;
 
 const NavBarLink = styled(Link)`
-  padding: 36px 50px;
+  padding: 30px 50px 0 50px;
   display: inline-block;
   color: ${({ theme }) => theme.colors.light_grey};
   text-decoration: none;
@@ -110,8 +111,8 @@ const NavBarLink = styled(Link)`
   }
   label {
     font-weight: 500;
-    font-size: 15px;
-    line-height: 24px;
+    font-size: 12px;
+    line-height: 150%;
     @media (max-width: ${({ theme }) => theme.mobile}) {
       position: relative;
       top: -8px;
@@ -147,8 +148,8 @@ const StyledLogOut = styled(Link)`
   }
   label {
     font-weight: 500;
-    font-size: 15px;
-    line-height: 24px;
+    font-size: 12px;
+    line-height: 150%;
     @media (max-width: ${({ theme }) => theme.mobile}) {
       position: relative;
       top: -8px;
@@ -170,18 +171,19 @@ interface SideBarProps {
   activeItem: "team" | "player";
 }
 const SideBar = (props: SideBarProps) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const nav = useNavigate();
 
-  const singout = () => {
-    localStorage.removeItem("user");
-    dispatch({ type: "REMOVE_USER" });
+  const singout = () => {    
+    dispatch(userActions.removeUser());
   };
 
-  const userFromStore = useSelector((state: AppStateType) => state.user);
+  const userFromStore = useAppSelector((state: AppStateType) => state.user.currentUser);
   console.log(props.isOpen);
   console.log(props.activeItem)
   const itemIsActive=(item: any)=>item.link.indexOf(props.activeItem)>0
+
+  if(userFromStore)
   return (
     <StyledSideBar show={props.isOpen}>
       <UserProfile>
@@ -212,6 +214,8 @@ const SideBar = (props: SideBarProps) => {
       </StyledLogOut>
     </StyledSideBar>
   );
+
+  else return <></>
 };
 
 export default SideBar;

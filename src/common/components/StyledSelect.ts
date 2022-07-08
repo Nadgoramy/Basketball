@@ -12,20 +12,72 @@ export const StyledSelect = styled(ReactSelect)`
 
     @media (max-width: ${({ theme }) => theme.mobile}) {
       width: 100%;
+      ${( props )=> props.className && props.className.indexOf("pagesizeSelector")>=0 && `
+          min-height: 28px;
+          min-width: 60px;
+          width: 60px;
+          height: 28px;
+        `
+      }
     }
   }
+  .pagesizeSelector {
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      min-height: 28px;
+      height: 28px;
+      width: 60px;
+    }
+  }
+.pagesizeSelector .Select__control{
+  @media (max-width: ${({ theme }) => theme.mobile}) {
+    min-height: 28px;
+    min-width: 60px;
+    height: 28px;
+    width: 60px;
+  }
+}
+
   &:invalid{
     border: 0.5px solid ${({ theme }) => theme.colors.red};
   }
   .error{
     border: 0.5px solid ${({ theme }) => theme.colors.red};
   }
-
-  .Select__indicator Select__dropdown-indicator {
-    border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
+ 
+  .Select__indicator {
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      ${( props )=> props.className && props.className.indexOf("pagesizeSelector")>=0 && `          
+        width: 24px;
+        height: 28px;
+        padding: 6px 4px;  
+        `
+      }
+    }
   }
-  .Select__value-container
-    Select__value-container--has-value {
+
+  .Select__input-container{
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      ${( props )=> props.className && props.className.indexOf("pagesizeSelector")>=0 && `          
+      font-weight: 500;
+      font-size: 15px;
+      line-height: 24px;
+      margin: 0;
+      padding: 0;
+        `
+      }
+    }
+  }
+
+
+  .Select__value-container {
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      ${( props )=> props.className && props.className.indexOf("pagesizeSelector")>=0 && ` 
+      padding: 2px 2px;
+      text-align: center;
+}
+        `
+      }
+    }
   }
   .Select__control:hover {
     border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};

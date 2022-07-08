@@ -22,10 +22,10 @@ export const TeamCard: React.FunctionComponent<PropsType> = (
   return (
     <CardComponents.StyledContainer key={props.team.id} onClick={()=> routeChange(props.team.id)}>
       <CardComponents.StyledTeamImageContainer url={props.team.imageUrl} />
-      <CardComponents.StyledFooter>
+      <CardComponents.StyledTeamFooter>
         <h4>{props.team.name}</h4>
         <span>Year of foundation: {props.team.foundationYear}</span>
-      </CardComponents.StyledFooter>
+      </CardComponents.StyledTeamFooter>
     </CardComponents.StyledContainer>
   );
 };

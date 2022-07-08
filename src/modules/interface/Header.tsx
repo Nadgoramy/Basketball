@@ -1,9 +1,8 @@
-import React from "react";
 import styled from "styled-components";
 import logo from "asserts/images/logo.svg";
-import { useSelector } from "react-redux";
 import { AppStateType } from "core/redux/configureStore";
 import noUserImg from "asserts/images/profile.svg";
+import { useAppSelector } from "core/redux/store";
 
 const StyledHeader = styled.header`
   /*max-width:1440px;*/
@@ -33,23 +32,27 @@ const Nav = styled.nav`
 
 const Logo = styled.img`
   margin: 16px 51px;
+  width: 191px;
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
-    margin-bottom: 40px;
+    margin: 14px auto;
+    width: 137px;
   }
 `;
 const OpenLinkButton = styled.button`
   width: 24px;
-  margin: 19px 12px;
+  //margin: 19px 12px;
   border: none;
   cursor: pointer;
   background: none;
 
   position: absolute;
   top: 0px;
-  left: 0px;
+  left: 12px;
 
   font-size: 36px;
+  font-weight: 800;
+  padding: 0;
 
   @media (min-width: ${({ theme }) => theme.mobile}) {
     display: none;
@@ -81,7 +84,7 @@ img{
 `;
 
 const Header = (props: any) => {
-  const userFromStore = useSelector((state: AppStateType) => state.user);
+  const userFromStore = useAppSelector((state: AppStateType) => state.user.currentUser);
 
   return (
     <StyledHeader>
@@ -91,11 +94,11 @@ const Header = (props: any) => {
         </OpenLinkButton>
         <Logo src={logo} />
         <UserPrifile>
-          <label>{userFromStore.name}</label>
+          <label>{userFromStore?.name}</label>
           <img
             src={
-              //userFromStore.avatarUrl >"" ? userFromStore.avatarUrl : "assserts/images/profile.svg"
-              noUserImg
+              userFromStore && userFromStore.avatarUrl >"" ? userFromStore?.avatarUrl : noUserImg
+              //noUserImg
             }
           />
         </UserPrifile>

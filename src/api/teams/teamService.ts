@@ -16,7 +16,7 @@ const getTeam = (id: number) => {
     let currentUser = AuthService.getCurrentUser();
     console.log("trying to get team by id");
     if(!currentUser) return;
-    return get(API_URL + "get?id=" + id,  currentUser.token);
+    return get(API_URL + "get?id=" + id,  currentUser.token) 
   };
 
 

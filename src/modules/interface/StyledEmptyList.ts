@@ -5,9 +5,10 @@ import noplayerPng from "asserts/images/noPlayer.png"
 
 export const NoTeamStyled  = styled.div<EmptyListScreenPtopType>`
 display: flex;
+flex: 1 0 auto;
 flex-direction: column;
 align-items: center;
-margin: 100px auto 100px auto;
+margin: 100px auto 0 auto;
 
 div{
     width: 482px;
@@ -16,6 +17,7 @@ div{
     background-image: url(${( props ) => props.mode == "team" ? noteamPng : noplayerPng});
     background-repeat: no-repeat;
     background-size: contain;
+    background-position-x: center;
 
     @media (max-width: ${({ theme }) => theme.mobile}) {
         width: 339px;

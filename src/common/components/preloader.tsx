@@ -1,13 +1,37 @@
-import React from 'react';
-import img from 'asserts/images/loading.svg'
+import React from "react";
+import img from "asserts/images/loading.svg";
+import styled from "styled-components";
 
-type PropsType = {
-}
+const StyledOverlay = styled.div`
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index:100;
+  
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
 
-let Preloader: React.FC = () => {    
-    return <div  style={ { backgroundColor: 'white' } }>
+  div {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+  }
+  img {
+    width: 200px;
+  }
+`;
+
+type PropsType = {};
+
+let Preloader: React.FC = () => {
+  return (
+    <StyledOverlay>
+      <div>
         <img src={img} />
-    </div>
-}
+      </div>
+    </StyledOverlay>
+  );
+};
 
 export default Preloader;

@@ -1,4 +1,4 @@
-import { NewTeamDto, TeamDto } from "api/Dto/teamDto";
+import { TeamDto } from "api/Dto/teamDto";
 import ImageService from "api/imageServise";
 import DragDropFile from "common/components/DragDropFile";
 import { StyledFlex } from "common/components/Flex";
@@ -14,15 +14,16 @@ import {
   StyledMainContainer,
 } from "modules/interface/StyledEditComponents";
 import { StyledButton } from "common/components/Button/Button.styled";
-import { useAppDispatch, useAppSelector } from "core/redux/store";
+import { AppDispatch, useAppDispatch, useAppSelector } from "core/redux/store";
 import { addTeam, getTeam, teamActions, updateTeam } from "../hooks/teamSlice";
 import { StyledFlexRow } from "modules/interface/EditComponents";
+import { useDispatch } from "react-redux";
 
 const TeamEdit = () => {
   const team = useAppSelector((state: AppStateType) => state.team.team);
   const operationSecceded = useAppSelector((state: AppStateType) => state.team.operationSucceded);
   const [initialState, setInitialState] = useState<TeamDto | null>();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch<AppDispatch>();// useAppDispatch();
   const navigate = useNavigate();
   let { id } = useParams();
   const [file, setFile] = useState(null);

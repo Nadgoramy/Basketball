@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import AuthService from "api/authService";
 import { TeamDto, TeamDtoPageResult } from "api/Dto/teamDto";
 import TeamService from "api/teams/teamService";
+import { AppStateType } from "core/redux/configureStore";
+import { userActions } from "core/redux/userSlice";
 
 interface IParams {
   filter: string;
@@ -9,8 +12,8 @@ interface IParams {
 }
 export const getTeamsPage = createAsyncThunk(
   `teamsPage/getTeams`,
-  async (params: IParams, { rejectWithValue }) => {
-    try {
+  async (params: IParams, { rejectWithValue ,dispatch, getState }) => {
+    try {      
       let { page, pageSize, filter } = params;
       const responce = await TeamService.getTeams(
         filter,
@@ -21,6 +24,9 @@ export const getTeamsPage = createAsyncThunk(
       let teamsPage = responce as TeamDtoPageResult;
       return teamsPage;
     } catch (error: any) {
+      if(error.message.indexOf("Failed to fetch") >= 0) {
+        dispatch(userActions.removeUser())
+      }
       return rejectWithValue(error.message);
     }
   }

@@ -22,6 +22,13 @@ export const getPositions = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
+  },{
+    condition: (_, { getState, extra }) => {
+      const { positions } = getState() as AppStateType      
+      if (positions.isFetching) {        
+        return false
+      }
+    },
   }
 );
 

@@ -16,16 +16,7 @@ const login = (login: string, password:string) => {
   return post(API_URL + "signin", {
       login,
       password,
-    })
-    /*.then((response) => {      
-      if (response.token) {        
-        localStorage.setItem("user", JSON.stringify(response));
-      }
-      return response;
-    })
-    .catch (err =>{
-      err.status == 401 ? throwError("User not found") : console.log(err)
-    });*/
+    })    
 };
 
 const change = (username: string, avatarUrl: string) => {

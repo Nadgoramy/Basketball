@@ -1,8 +1,9 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { TeamDto } from "api/Dto/teamDto";
 import TeamService from "api/teams/teamService";
 import { OptionTypeValueNumber } from "common/components/StyledSelect";
-import { useAppSelector } from "core/redux/store";
+import { AppStateType } from "core/redux/configureStore";
+import { userActions } from "core/redux/userSlice";
 
 export async function LoadTeamOptions(){
   const totalCountResponce = await TeamService.getTeams("", 1, 1);
@@ -17,16 +18,29 @@ export async function LoadTeamOptions(){
     return  options
   } else throw new Error("No team found");
 }
+
 export const getTeamOptions = createAsyncThunk(
   `teamOptions/getOptions`,
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState, dispatch }) => {
     try {
-      //let teamOptions = useAppSelector(store => store.teamOptions)
-      //if(teamOptions.options.length>0) return teamOptions
+      const state = getState() as AppStateType;
+      if(state.teamOptions.options.length>0) return state.teamOptions.options 
+
       return LoadTeamOptions()
       
     } catch (error: any) {
+      if(error.message.indexOf("Failed to fetch") >= 0) {        
+        dispatch(userActions.removeUser)
+      }
       return rejectWithValue(error.message);
+    }
+  },
+  {
+    condition: (_, { getState, extra }) => {
+      const { teamOptions } = getState() as AppStateType      
+      if (teamOptions.isFetching) {        
+        return false
+      }
     }
   }
 );

@@ -3,6 +3,7 @@ import { AppStateType, configureStore } from "./configureStore";
 
 
 export const store = configureStore();
-type AppDispatch = typeof store.dispatch
+
+export type AppDispatch = typeof store.dispatch
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<AppStateType> = useSelector

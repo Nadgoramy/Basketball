@@ -30,3 +30,6 @@ export const getTeamIds=(state: AppStateType) => {
 export const getTeamsOptions=(state:AppStateType)=>{
     return state.teamOptions.options;
 }
+export const getError=(state: AppStateType)=>{
+    return state.players.error
+}

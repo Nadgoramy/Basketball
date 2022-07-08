@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { NewPlayerDto, PlayerDto } from "api/Dto/playerDto";
 import PlayerService from "api/players/playerService";
-import { AppStateType } from "core/redux/configureStore";
-import { getPositions } from "./positionSlice";
+import { userActions } from "core/redux/userSlice";
 
 export const getPlayer = createAsyncThunk(
   `player/getPlayer`,
-  async (id: number, { rejectWithValue }) => {
+  async (id: number, { rejectWithValue, dispatch }) => {
     try {
       const responce = await PlayerService.getPlayer(id);
       if (responce && (responce as PlayerDto).id) {
@@ -14,39 +13,51 @@ export const getPlayer = createAsyncThunk(
       }
       else throw new Error("Player not found")
     } catch (error: any) {
+      if(error.message.indexOf("Failed to fetch") >= 0) {        
+        dispatch(userActions.removeUser)
+      }
       return rejectWithValue(error.message);
     }
   }
 );
 export const updatePlayer = createAsyncThunk(
   `player/updatePlayer`,
-  async (params: PlayerDto, { rejectWithValue }) => {
+  async (params: PlayerDto, { rejectWithValue, dispatch }) => {
     try {
       const responce = await PlayerService.updatePlayer(params);
       return responce as PlayerDto;
     } catch (error: any) {
+      if(error.message.indexOf("Failed to fetch") >= 0) {        
+        dispatch(userActions.removeUser)
+      }
       return rejectWithValue(error.message);
     }
   }
 );
 export const deletePlayer = createAsyncThunk(
   `player/deletePlayer`,
-  async (id: number, { rejectWithValue }) => {
+  async (id: number, { rejectWithValue, dispatch }) => {
     try {
       const responce = await PlayerService.deletePlayer(id);
       return responce as PlayerDto;
     } catch (error: any) {
+      if(error.message.indexOf("Failed to fetch") >= 0) {        
+        dispatch(userActions.removeUser)
+      }
       return rejectWithValue(error.message);
     }
   }
 );
 export const addPlayer = createAsyncThunk(
   `player/addPlayer`,
-  async (player: NewPlayerDto, { rejectWithValue }) => {
+  async (player: NewPlayerDto, { rejectWithValue, dispatch }) => {
     try {
       const responce = await PlayerService.addPlayer(player);
       return responce as PlayerDto;
     } catch (error: any) {
+      if(error.message.indexOf("Failed to fetch") >= 0) {        
+        dispatch(userActions.removeUser)
+      }
       return rejectWithValue(error.message);
     }
   }

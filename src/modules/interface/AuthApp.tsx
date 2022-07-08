@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import SideBar from "modules/interface/SideBar";
 import Header from "./Header";
-import MainContainer from "./MainContainer";
+import {MainContainer, FullScreenContainer} from "./MainContainer";
 import { AppStateType } from "core/redux/configureStore";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import ErrorPopUp from "common/components/ErrorPopUp";
@@ -17,23 +17,28 @@ const AuthApp: React.FunctionComponent<AuthProps> = (props: AuthProps) => {
     (store: AppStateType) => store.error.message
   );
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const toggleMobileSideBar = () => {
     setMobileSideBarOpen(!mobileSideBarOpen);
   };
   const location = useLocation();
   let path = location.pathname;
   let isTeamPage: boolean = path.includes("/team");
-
-  useEffect(() => {
-    if (globalError > "") {
-      setTimeout(() => {
-        dispatch(errorActions.clearErrorMessage());
-      }, 15000);
+useEffect(() => {
+    
+    if(globalError && globalError.indexOf("Failed to fetch") >= 0) {        
+      navigate("/")
     }
   }, [globalError]);
 
+  const user = useAppSelector((state: AppStateType)=> state.user.currentUser)
+  if (!user) {
+    return <Navigate to='/' />;
+  }
+
+  
   return (
-    <div>
+    <FullScreenContainer>
       <Header toggleMobileSideBar={toggleMobileSideBar} />
       <SideBar
         isOpen={mobileSideBarOpen}
@@ -44,7 +49,7 @@ const AuthApp: React.FunctionComponent<AuthProps> = (props: AuthProps) => {
         <Outlet />
       </MainContainer>
       {globalError && <ErrorPopUp errorMessage={globalError} />}
-    </div>
+    </FullScreenContainer>
   );
 };
 export default AuthApp;

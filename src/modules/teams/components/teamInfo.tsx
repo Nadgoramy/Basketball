@@ -43,7 +43,10 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
   const handleDeleteClick = (e: any) => {
     if (!id) return;
     let teamId = parseInt(id);
-    if (window.confirm("Are you sure?")) dispatch(deleteTeam(teamId));
+    if(team.players.length>0){window.alert("Team has players. Please remove them first")}
+    else {
+      if (window.confirm("Are you sure?")) dispatch(deleteTeam(teamId));
+    }
   };
   const navigate = useNavigate()
   const operationSecceded = useAppSelector((state: AppStateType) => state.team.operationSucceded);

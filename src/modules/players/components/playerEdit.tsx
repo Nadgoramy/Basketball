@@ -1,7 +1,7 @@
 import { StyledFlex } from "common/components/Flex";
 import { AppStateType } from "core/redux/configureStore";
-import { SelectHTMLAttributes, SyntheticEvent, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import {  useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 //import { playerActions } from "../actions";
 import {
   playerActions,
@@ -149,22 +149,7 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
 
   const onSubmit = (data: any) => {
     if(!isDirty) {redirect(); return}
-
-    /*let updatedPlayer = {
-      id: id,
-      name: data.name,
-      birthday: data.birthday,
-      height: data.height,
-      weight: data.weight,
-      avatarUrl: data.avatarUrl,
-      number: data.number,
-      team: typeof data.team == "number" ? data.team : data.team?.value,
-      position:
-        typeof data.position == "string" ? data.position : data.position?.value,
-    };
-    console.log(JSON.stringify(updatedPlayer, null, 4));    
-*/
-    //data.birthday= data.birthday.toISOString();
+    
     if (id && parseInt(id) > 0)
       dispatch(updatePlayer(data as PlayerDto));
     else dispatch(addPlayer(data as PlayerDto));
@@ -222,7 +207,7 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
                       id={name}
                       options={positionOptions}
                       menuPlacement="auto"
-                      onChange={onChange}
+                      onChange={(newValue, action)=>{onChange((newValue as OptionTypeValueString).value)}}
                       onBlur={onBlur}
                       value={positionOptions? positionOptions.find(o=>o.value == value): undefined}
                       ref={ref}
@@ -251,7 +236,7 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
                       classNamePrefix="Select" 
                       options={teamOptions}
                       menuPlacement="auto"
-                      onChange={onChange}
+                      onChange={(newValue, action)=>{onChange((newValue as OptionTypeValueNumber).value)}}
                       onBlur={onBlur}                      
                       value={teamOptions? teamOptions.find(o=>o.value == value):undefined}
                       ref={ref}

@@ -3,21 +3,36 @@ import styled from "styled-components";
 
 export const StyledPaginateContainer = styled.div`
   display:flex;
-  flex-direction: row;
+  width: 100%;
 
   .pagination {
     color: ${({ theme }) => theme.colors.grey};
     list-style-type: none;
     cursor: pointer;
-
+    padding-inline-start: 0;    
+    display: flex;
+    width: 100%;
+    text-align: center;
+    
     li {
-      display:inline-block;
+      display: list-item;
       padding: 10px 16px 6px 16px;
-      margin-right: 10px;      
+      margin-right: 10px; 
+      font-size: 14px;
+    line-height: 24px;
+      @media (max-width: ${({ theme }) => theme.mobile}) {
+        padding: 2px 9px;
+        font-size: 15px;
+      }     
 
       a{
         width: 40px;
         height: 40px;
+
+        @media (max-width: ${({ theme }) => theme.mobile}) {
+          width: 28px;
+        height: 28px;
+        }
       }
     }   
   }

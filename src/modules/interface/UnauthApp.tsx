@@ -3,10 +3,14 @@ import LoginForm from "./loginForm";
 import loginWebPageImg from "asserts/images/loginWebPage.svg";
 import registerPageImg from "asserts/images/registerWebPage.svg"
 import styled from "styled-components";
-import { BrowserRouter, Outlet, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import RegistrationForm from "./RegistrationForm";
 import ErrorPopUp from "common/components/ErrorPopUp";
 import { PageNotFound } from "./PageNotFound";
+import LoginPage from "./LoginPage";
+import RegistrationPage from "./RegistrationPage";
+import { useAppSelector } from "core/redux/store";
+import { AppStateType } from "core/redux/configureStore";
 
 const StyledContainer = styled.div`
    {
@@ -36,79 +40,29 @@ const StyledLoginContainer = styled.div`
 `;
 
 
-const StyledLoginImageContainer = styled.div`
-  position: absolute;
-  margin: 305px 114px;
-  width: 605px;
-  height: 1024px;
-  left: 606px;
-  top: 0px;
-  background: #f5fbff;
-  background-image: url("${(props)=>loginWebPageImg }");
-  background-repeat: no-repeat;
-  background-size: contain;
 
-  @media (max-width: ${({ theme }) => theme.mobile}) {
-    dispplay: none;
-    position: relative;
-    width: 100%px;
-    width: 1px;
-    height: 1px;
-    left: 0px;
-    top: 0px;
-  }
-  img {
-    margin: 306px 114px;
-  }
-`;
-const StyledRegisterImageContainer = styled.div`
-  position: absolute;
-  margin: 305px 87px;
-  width: 660px;
-  height: 1024px;
-  left: 606px;
-  top: 0px;
-  background: #f5fbff;
-  background-image: url("${(props) => registerPageImg }");
-  background-repeat: no-repeat;
-  background-size: contain;
-  
-
-  @media (max-width: ${({ theme }) => theme.mobile}) {
-    dispplay: none;
-    position: relative;
-    width: 100%px;
-    width: 1px;
-    height: 1px;
-    left: 0px;
-    top: 0px;
-  }
-  img {
-    margin: 306px 114px;
-  }
-`;
 
 const UnauthApp : React.FunctionComponent = ()=>{
-const location = useLocation();
-const [isRegisterPage, setIsRegisterPage] = useState(false);
-const [error, setError] = useState("");
-useEffect(() => {
-  setIsRegisterPage(location.pathname !== "/");
-}, [location]);
+
+  const location = useLocation();
+  const error = useAppSelector(store => store.error.message)
+  const user = useAppSelector((state: AppStateType)=> state.user.currentUser)
+  if (user) {
+    return <Navigate to='/teams' />;
+  }
 
   return (   
       <StyledContainer>
         <StyledLoginContainer>
         <Routes>            
-              <Route path="/" element={<LoginForm setError={setError} />} />
+              <Route path="/" element={<LoginPage/>} />
               <Route
                 path="/register"
-                element={<RegistrationForm setError={setError} />}
+                element={<RegistrationPage />}
               />            
             <Route path="*" element={<PageNotFound />} />
           </Routes>       
         </StyledLoginContainer>
-        { isRegisterPage ? <StyledRegisterImageContainer /> : <StyledLoginImageContainer /> }
         {error && <ErrorPopUp errorMessage={error} />}
       </StyledContainer>
   );

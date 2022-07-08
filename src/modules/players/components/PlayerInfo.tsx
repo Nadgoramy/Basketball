@@ -13,6 +13,7 @@ import { getPlayer, deletePlayer } from "../hooks/playerSlice";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { DeleteButton } from "common/components/Button/deleteButton";
 import { errorActions } from "core/redux/errorSlice";
+import { userActions } from "core/redux/userSlice";
 
 type PlayerInfoPtopType = React.HTMLAttributes<HTMLElement> & {};
 
@@ -34,6 +35,10 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
   const error = useAppSelector((store) => store.player.error);
   useEffect(() => {
     dispatch(errorActions.setErrorMessage(error));
+
+    if(error && error.indexOf("Failed to fetch") >= 0) {        
+      dispatch(userActions.removeUser)
+    }
   }, [error]);
 
 
@@ -67,10 +72,10 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
                 <span> / </span>
                 <span>{player.name}</span>
               </div>
-              <StyledFlex >              
+              <StyledHeaderButtonContainer>              
                 <EditLink to={"/players/edit/"+id}/>
                 <DeleteButton onClick={handleDeleteClick} />
-              </StyledFlex>
+              </StyledHeaderButtonContainer>
             </Info.StyledHeaderContainer>
             <Info.StyledMainContainer>
               <Info.StyledPhotoContainer url={player.avatarUrl}>

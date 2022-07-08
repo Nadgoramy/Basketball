@@ -5,8 +5,13 @@ import React, { ForwardedRef, LegacyRef, Ref } from "react";
 
 const StyledContainer = styled.div`
 &>div{
-  min-width:366px;
-
+  min-width:150px;
+  max-width:364px;
+  @media (max-width: ${({ theme }) => theme.mobile}) {
+    width: 100%;
+    min-width: 0;
+    max-width:100%;
+  }
 }
 
 input:active {
@@ -40,7 +45,7 @@ const StyledSearch = styled(Input)`
   outline-width: 0;
  
   .search-container{
-    min-width: 366px;
+    min-width: 364px;
   }
   
   &:active {
