@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import deleteSvg from "asserts/icons/delete_rounded.svg";
 import { ButtonHTMLAttributes, DetailedHTMLProps, DOMAttributes, HtmlHTMLAttributes, MouseEventHandler } from "react";
-import deletSvg from "asserts/icons/delete_rounded.svg";
+import deletSvg from "asserts/icons/delete.svg";
 
 type ReactButtonProps = DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -28,6 +28,8 @@ export const StyledDeleteButton = styled.button`
   border: none;
   box-shadow: none;
   outline: 0;
+  padding: 0;
+  background: transparent;
 
   &>div{
     width: 24px;

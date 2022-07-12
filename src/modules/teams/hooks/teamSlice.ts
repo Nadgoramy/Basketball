@@ -78,13 +78,13 @@ export const addTeam = createAsyncThunk(
 interface StateType {
   team: TeamDto;
   isFetching: boolean;
-  error: string | undefined;
+  error?: string ;
   operationSucceded:boolean
 }
 const initialState: StateType = {
   team: {} as TeamDto,
   isFetching: false,
-  error: "" as string | undefined,
+  error: "",
   operationSucceded: false
 };
 const teamSlice = createSlice({

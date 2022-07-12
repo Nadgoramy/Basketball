@@ -5,7 +5,9 @@ import svg from "asserts/icons/addPhoto.svg";
 const StyledFileUploader = styled.div<PropsType>`    
 /*margin: 0 auto;*/
 margin: 48px auto;
-
+@media(max-width: ${({ theme }) => theme.mobile}){
+margin: 32px auto 40px auto;
+}
     input{
         display: none;
     }
@@ -17,18 +19,21 @@ margin: 48px auto;
         border: none;
         opacity: 0.5;
         border-radius: 10px;
-        width: 336px;
+        //width: 336px;
+        max-width:336px;
         height: 261px;
         background-color: ${({ theme }) => theme.colors.light_grey};
 
         background-image: url('${( props ) => props.url}'); 
         background-repeat: no-repeat;
         background-size: contain; 
+        background-position: center;
         margin: 0 auto;      
         
         @media (max-width: ${({ theme }) => theme.mobile}) {
             width: 185px;
             height: 144px;
+            //margin: 48px auto;
         }
     }
     div.img{
@@ -39,6 +44,7 @@ margin: 48px auto;
         background-color: transparent;
         background-repeat: no-repeat;
         background-size: contain;
+        background-position: center;
 
     }
     #drag-file-element {

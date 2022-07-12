@@ -156,7 +156,7 @@ const CustomCalendarContainer = (props: any) => {
 };
 
 interface CustomDatePickerProps extends ReactDatePickerProps{
-  error:string | undefined
+  error? :string 
 }
 
 const BirthdayCalendarInput = (props: CustomDatePickerProps, ref: any) => {

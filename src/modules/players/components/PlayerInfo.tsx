@@ -72,18 +72,16 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
                 <span> / </span>
                 <span>{player.name}</span>
               </div>
-              <StyledHeaderButtonContainer>              
+              <Info.StyledHeaderButtonContainer>              
                 <EditLink to={"/players/edit/"+id}/>
                 <DeleteButton onClick={handleDeleteClick} />
-              </StyledHeaderButtonContainer>
+              </Info.StyledHeaderButtonContainer>
             </Info.StyledHeaderContainer>
             <Info.StyledMainContainer>
-              <Info.StyledPhotoContainer url={player.avatarUrl}>
-                
-              </Info.StyledPhotoContainer>
-              <Info.StyledDescriptionContainer>
+              <Info.StyledPhotoContainer url={player.avatarUrl} />                
+              <Info.StyledDescriptionContainerPlayer>
                 <h2>
-                  {player.name} <span>#{player.number}</span>
+                  {player.name} <span>&nbsp;#{player.number}</span>
                 </h2>
                 <Info.StyledDescriptionRow>
                   <div>
@@ -111,7 +109,7 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
                     <p>{getAge(player.birthday)}</p>
                   </div>
                 </Info.StyledDescriptionRow>
-              </Info.StyledDescriptionContainer>
+              </Info.StyledDescriptionContainerPlayer>
             </Info.StyledMainContainer>
           </div>
         )}

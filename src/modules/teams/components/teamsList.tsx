@@ -78,9 +78,11 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
           </StyledTeamGrid>
         </StyledGridContainer>
       )}
+
+{Math.ceil(itemsCount / pageSize)>0 &&
       <StyledFooter>
         <div id="footerFlex">
-          <StyledPaginateContainer>
+          <StyledPaginateContainer>            
             <ReactPaginate
               previousLabel="<"
               nextLabel=">"
@@ -96,7 +98,7 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
               containerClassName="pagination"
               activeClassName="active"
               forcePage={currentPage - 1}
-            />
+            />            
           </StyledPaginateContainer>
           <StyledSelect
             classNamePrefix="Select"            
@@ -109,6 +111,7 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
           />
         </div>
       </StyledFooter>
+}
     </StyledMainContainer>
   );
 };

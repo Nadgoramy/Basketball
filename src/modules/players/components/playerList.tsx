@@ -61,7 +61,7 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
   }, []);
 
   useEffect(() => {
-    //if(error?.toLowerCase().indexOf("unauthorize")) navigate
+    
   }, [error]);
 
 useEffect(()=>{
@@ -124,9 +124,11 @@ useEffect(()=>{
           players.map((p: PlayerDto) => <PlayerCard player={p} key={p.id} />)}
       </StyledGrid>
       </StyledGridContainer>
-      <StyledFooter>
+
+      {Math.ceil(itemsCount / pageSize)>0 &&
+      <StyledFooter>        
       <div id="footerFlex">
-        <StyledPaginateContainer>
+        <StyledPaginateContainer>       
           <ReactPaginate
             previousLabel="<"
             nextLabel=">"
@@ -155,6 +157,7 @@ useEffect(()=>{
         />
         </div>
       </StyledFooter>
+    }
     </StyledMainContainer>
   );
 };

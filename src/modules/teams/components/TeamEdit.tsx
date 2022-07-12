@@ -177,8 +177,8 @@ const TeamEdit = () => {
               <StyledButton mode="cancel" type="button" onClick={onCancel}>Cancel</StyledButton>
                 <StyledButton type="submit">Save</StyledButton>
               </StyledFlexRow>
-              <Input type="hidden" {...register("imageUrl")} />
-              <Input type="hidden" {...register("id")} />
+              <input type="hidden" {...register("imageUrl")} />
+              <input type="hidden" {...register("id")} />
             </form>
           </div>
         </StyledMainContainer>

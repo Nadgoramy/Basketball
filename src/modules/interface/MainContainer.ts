@@ -1,11 +1,8 @@
 import styled from "styled-components";
 
 export const MainContainer = styled.div`  
-    //margin: 80px 0 0 140px;
-    background: ${({ theme }) => theme.colors.lightest_grey1};    
-    //padding: 32px 80px 0 80px;
+    background: ${({ theme }) => theme.colors.lightest_grey1};   
     padding: 112px 80px 0 220px;
-    //height:100%;
     height: calc(100vh - 112px);
     position: realtive;
 

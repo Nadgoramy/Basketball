@@ -16,6 +16,7 @@ import ImageService from "api/imageServise";
 import { StyledLink } from "common/components/Link/styledLink";
 import { Controller, useForm } from "react-hook-form";
 import {
+  StyledEditContainer,
   StyledHeaderContainer,
   StyledMainContainer,
 } from "modules/interface/StyledEditComponents";
@@ -160,7 +161,7 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
   };
   const values = watch();
   return (
-    <StyledFlex>
+    <StyledEditContainer>
       <StyledFlexAutoDiv>
         <StyledHeaderContainer>
           <span className="headerText">
@@ -311,15 +312,15 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
                 <StyledButton mode="cancel" type="button" onClick={onCancel}>
                   Cancel
                 </StyledButton>
-                <StyledButton type="submit">Save</StyledButton>
+                <StyledButton type="submit" disabled={!isDirty}>Save</StyledButton>
               </StyledFlexRow>
-              <Input type="hidden" {...register("avatarUrl")} />
-              <Input type="hidden" {...register("id")} />
+              <input type="hidden" {...register("avatarUrl")} />
+              <input type="hidden" {...register("id")} />
             </form>
           </div>
         </StyledMainContainer>
       </StyledFlexAutoDiv>
-    </StyledFlex>
+    </StyledEditContainer>
   );
 };
 

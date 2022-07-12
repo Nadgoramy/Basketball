@@ -66,13 +66,13 @@ export const addPlayer = createAsyncThunk(
 interface StateType {
   player: PlayerDto;
   isFetching: boolean;
-  error: string | undefined;
+  error?: string ;
   operationSucceded: boolean;
 }
 const initialState: StateType = {
   player: {} as PlayerDto,
   isFetching: false,
-  error: "" as string | undefined,
+  error: "" ,
   operationSucceded: false,
 };
 const playerSlice = createSlice({

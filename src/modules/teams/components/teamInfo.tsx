@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppStateType } from "core/redux/configureStore";
-import { StyledFlex } from "common/components/Flex";
+import { StyledFlex, StyledFlexRow } from "common/components/Flex";
 import * as Info from "modules/interface/InfoComponents";
 import { EditLink } from "common/components/Link/editLink";
 import { StyledLink } from "common/components/Link/styledLink";
@@ -66,10 +66,10 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
                 <span> / </span>
                 <span>{team.name}</span>
               </span>
-              <StyledFlex>
+              <Info.StyledHeaderButtonContainer>
                 <EditLink to={"/teams/edit/" + id} />
                 <DeleteButton onClick={handleDeleteClick} />
-              </StyledFlex>
+              </Info.StyledHeaderButtonContainer>
             </Info.StyledHeaderContainer>
             <Info.StyledMainContainer>
               <Info.StyledLogoContainer
@@ -78,21 +78,23 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
               <Info.StyledDescriptionContainer>
                 <h2>{team.name}</h2>
                 <Info.StyledDescriptionRow>
+                  <Info.StyledDescriptionColumn>
                   <div>
                     <label>Year of foundation</label>
                     <p>{team.foundationYear}</p>
                   </div>
                   <div>
-                    <label>Division</label>
-                    <p>{team.division}</p>
-                  </div>
-                </Info.StyledDescriptionRow>
-                <Info.StyledDescriptionRow>
-                  <div>
                     <label>Conference</label>
                     <p>{team.conference}</p>
                   </div>
-                </Info.StyledDescriptionRow>
+                  </Info.StyledDescriptionColumn>
+                  <Info.StyledDescriptionColumn>
+                  <div>
+                    <label>Division</label>
+                    <p>{team.division}</p>
+                  </div>
+                  </Info.StyledDescriptionColumn>
+                </Info.StyledDescriptionRow>                
               </Info.StyledDescriptionContainer>
             </Info.StyledMainContainer>
           </div>
@@ -120,15 +122,15 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
                   <tr key={index}>
                     <td>{p.number}</td>
                     <td>
-                      <StyledFlex direction="row">
+                      <StyledFlexRow justify="flex-start">
                         <Info.StyledPhotoInList
                           url={p.avatarUrl}
                         ></Info.StyledPhotoInList>
-                        <StyledFlex direction="column">
+                        <div className="playerDescription">
                           <label>{p.name}</label>
-                          <span>{p.position}</span>
-                        </StyledFlex>
-                      </StyledFlex>
+                          <p>{p.position}</p>
+                        </div>
+                      </StyledFlexRow>
                     </td>
                     <td className="hide">{p.height}</td>
                     <td className="hide">{p.weight}</td>

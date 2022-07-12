@@ -1,17 +1,17 @@
 export interface NewPlayerDto {
-  name: string | undefined;
-  number: number | undefined;
-  height: number | undefined;
-  birthday: Date | undefined;
-  weight: number | undefined;
-  position: string | undefined;
-  team: number | undefined;
-  avatarUrl: string | undefined;
+  name?: string ;
+  number?: number ;
+  height?: number ;
+  birthday?: Date ;
+  weight?: number ;
+  position?: string ;
+  team?: number ;
+  avatarUrl?: string ;
 }
 
 export interface PlayerDto extends NewPlayerDto {
-  id: number | undefined;
-  teamName: string | undefined;
+  id?: number ;
+  teamName?: string ;
 }
 
 export interface PlayerDtoPageResult {

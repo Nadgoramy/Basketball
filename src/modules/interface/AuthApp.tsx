@@ -24,8 +24,7 @@ const AuthApp: React.FunctionComponent<AuthProps> = (props: AuthProps) => {
   const location = useLocation();
   let path = location.pathname;
   let isTeamPage: boolean = path.includes("/team");
-useEffect(() => {
-    
+useEffect(() => {    
     if(globalError && globalError.indexOf("Failed to fetch") >= 0) {        
       navigate("/")
     }

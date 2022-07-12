@@ -53,7 +53,7 @@ export const StyledPlayerImageContainer = styled.div<PhotoPropsType>`
 `;
 
 type ImgType = {
-  url: string | undefined;
+  url: string ;
 };
 export const StyledImageDiv = styled.div<ImgType>`
   background-image: linear-gradient(red, yellow);

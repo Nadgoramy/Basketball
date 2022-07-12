@@ -43,6 +43,7 @@ const getColorByMode = (theme: DefaultTheme, mode?:string, state?:string )=>{
         if(state ==="disabled") return theme.colors.lightest_grey
         return theme.colors.grey
     }
+    else if(state ==="disabled") return theme.colors.lightest_grey
     return theme.colors.white;
 }
 const getWidth=(props: PropsType)=>{

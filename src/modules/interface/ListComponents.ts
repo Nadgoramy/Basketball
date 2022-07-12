@@ -95,11 +95,10 @@ min-height: calc(100vh - 112px);
 
 export const HeaderFlex = styled.div`
   display: flex;
-  align-items: "stretch";
-  justify-content: "stretch";
+  align-items: stretch;
+  justify-content: stretch;
   margin: 0;
   column-gap: 24px;
-  //max-width: 1010px;
   flex: 1 1 auto;
 
   &>*{
