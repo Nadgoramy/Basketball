@@ -14,7 +14,7 @@ import styled, { ThemedStyledProps } from "styled-components";
 const StyledInput = styled.div`
   position: relative;
   outline-style: none;
-  ${(props: InputProps) => (props.width ? "width: " + props.width + ";" : "")}
+  ${(props: any) => (props.width ? "width: " + props.width + ";" : "")}
 
   input[type="checkbox"] {
     clip: rect(0 0 0 0);
@@ -35,12 +35,13 @@ const StyledInput = styled.div`
 
   .checkbox {
     display: inline-block;
-    height: 12px;
-    width: 12px;
+    margin-left: 2px;
+    height: 10px;
+    width: 10px;
     background: #fff;
     border: 1px solid;
     border-radius: 2px;
-    margin-right: 10px;
+    margin-right: 8px;
     border-color: ${({ theme }) => theme.colors.grey};
   }
 
@@ -93,36 +94,39 @@ export type InputProps = {
   label?: string;
   error?: string;
   width?: string;
+  initialValue: boolean;
   value?: string;
-  ChangeHandler?: () => void;
+  //ChangeHandler?: () => void;
 } & ReactInputProps;
 
 const Checkbox = React.forwardRef((props: InputProps, ref: LegacyRef<HTMLInputElement>) => {
-  const { children, label, error, value, ChangeHandler, disabled, ...rest } = props;
+  const { children, label, error, initialValue = false, disabled, onChange, value,  ...rest } = props;
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [checked, setChecked] = useState(value == "true" || false);
+  const [checked, setChecked] = useState(initialValue );
+  //console.log(checked)
+  
   const handleClick = () => {
     if (disabled) return
-    setChecked(!checked);
+
+    setChecked(!checked);        
   };
   return (
     <StyledInput
-      onClick={() => !disabled && handleClick()}
+      onClick={()=>handleClick()}
       className={disabled ? "chb--disabled" : ""}
     >
-      <label
-        className={`${error ? "label--error" : ""} ${disabled ? "label--dasabled" : ""}`}
-        onClick={(e) => {
-          !disabled && e.preventDefault();
-          handleClick()
-        }}
-      >
+      <label className={`${error ? "label--error" : ""} ${disabled ? "label--dasabled" : ""}`}>
         <input
           ref={ref}
           type="checkbox"
           checked={checked}
-          onChange={() => handleClick()}
+          onChange={(e)=>{
+            e.preventDefault();
+            setChecked(!e.target.checked); 
+            if(onChange) onChange(e);
+          }}
+          value={checked? "true" : "false"}
           {...rest}
         >
           {children}
@@ -148,3 +152,9 @@ const Checkbox = React.forwardRef((props: InputProps, ref: LegacyRef<HTMLInputEl
 )
 
 export default Checkbox;
+/*onClick={(e) => {
+  !disabled && e.preventDefault();
+  handleClick()
+}}
+
+*/

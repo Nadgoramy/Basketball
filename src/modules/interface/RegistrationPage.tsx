@@ -2,18 +2,16 @@ import styled from "styled-components";
 import RegistrationForm from "./RegistrationForm"
 import registerPageImg from "asserts/images/registerWebPage.svg"
 
-const StyledRegisterImageContainer = styled.div`
-  position: absolute;
-  margin: 305px 87px;
-  width: 660px;
-  height: 1024px;
-  left: 606px;
-  top: 0px;
+const StyledRegisterImageContainer = styled.div`  
+  flex: 1 1 834px;
+  height: 414px;
+  margin: auto;  
+
   background: #f5fbff;
   background-image: url("${(props) => registerPageImg }");
   background-repeat: no-repeat;
   background-size: contain;
-  
+  background-position: center;
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
     dispplay: none;
@@ -24,9 +22,7 @@ const StyledRegisterImageContainer = styled.div`
     left: 0px;
     top: 0px;
   }
-  img {
-    margin: 306px 114px;
-  }
+  
 `;
 
 const RegistrationPage = ()=>{

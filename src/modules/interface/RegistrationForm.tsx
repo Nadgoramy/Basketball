@@ -1,21 +1,28 @@
-import React from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 import styled from "styled-components";
 import AuthService from "api/authService";
 import Input from "common/components/Input/Input";
 import { StyledButton } from "common/components/Button/Button.styled";
 import Checkbox from "common/components/Checkbox";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import PasswordInput from "common/components/PasswordInput";
-import { useAppDispatch } from "core/redux/store";
+import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { errorActions } from "core/redux/errorSlice";
+import { register as userRegister } from "core/redux/userSlice";
+import { RegisterFormDto } from "api/Dto/userDto";
+import { AppStateType } from "core/redux/configureStore";
 
 const StyledFormContainer = styled.div`
-  margin: 226px 120px 0 120px;
   display: flex;
-  flex-direction: column;
+  margin: auto;
+  flex: 1 1 606px;
+  justify-content: center;
   @media (max-width: ${({ theme }) => theme.mobile}) {
-    margin: 226px 24px 0 24px;
+    margin: 0 24px 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   h4 {
@@ -31,8 +38,18 @@ const StyledFormContainer = styled.div`
       text-align: center;
     }
   }
+
+  form {
+    width: 365px;
+    margin: auto 24px;
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      width: 100%;
+      margin: auto;
+    }
+  }
+
   div {
-    margin-bottom: 24px;
+    margin-bottom: 18px;
 
     p {
       font-weight: 500;
@@ -57,13 +74,10 @@ const StyledFormContainer = styled.div`
   }
 `;
 
-type UserSubmitForm = {
-  userName: string;
-  login: string;
-  password: string;
+interface UserSubmitForm extends RegisterFormDto {
   confirmPassword: string;
   acceptTerms: boolean;
-};
+}
 const initialValue: UserSubmitForm = {
   userName: "",
   login: "",
@@ -81,49 +95,43 @@ const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
     reset,
     formState: { errors },
     getValues,
+    setValue,
   } = useForm<UserSubmitForm>();
 
-  const location = useLocation();
+  const navigate = useNavigate();
   const passwordPatern = RegExp(
     /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})$/
   );
   const simplePasswordPatern = RegExp(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/);
   const dispatch = useAppDispatch();
+  const error = useAppSelector((store: AppStateType) => store.user.error);
+  const isLoggedIn = useAppSelector(
+    (store: AppStateType) => store.user.isLoggedIn
+  );
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (error) {
+      dispatch(errorActions.setErrorMessage(error));
+    }
+  }, [error]);
 
   const onSubmit = (data: UserSubmitForm) => {
     console.log(data);
-    AuthService.register(data.userName, data.login, data.password)
-      .then((response) => {
-        if (response.token) {
-          localStorage.setItem("user", JSON.stringify(response));
-          dispatch({
-            type: "SET_USER",
-            name: response.name,
-            avatarUrl: response.avatarUrl,
-            token: response.token,
-          });
-          location.pathname = "/";
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        if (err.status == 409) {
-          dispatch(errorActions.setErrorMessage("User with such login already exists"))
-          //setError("User with such login already exists");
-        }
-        else {
-          dispatch(errorActions.setErrorMessage(err.message))
-          //setError(err);
-        }       
-      });
+    dispatch(userRegister(data));
   };
 
   return (
     <StyledFormContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h4>Sing Up</h4>
+        <h4>Sign Up</h4>
         <div>
-          <p>User name:</p>
+          <p>Name:</p>
           <Input
             {...register("userName", {
               required: "User name is required",
@@ -181,23 +189,28 @@ const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
         </div>
         <div>
           <Checkbox
-            label="Accept Terms"
             {...register("acceptTerms", {
-              validate: {
-                positive: (value) => value || "Do you agree with terms?",
-              },
+              required: "Do you agree with terms?",
             })}
+            label="I accept the agreement"
+            initialValue={getValues("acceptTerms")}
+            onChange={(e) => {
+              e.preventDefault();
+              setValue("acceptTerms", !e.target.checked, {
+                shouldValidate: true,
+              });              
+            }}
             error={errors.acceptTerms?.message}
           />
         </div>
         <div>
           <StyledButton type="submit">Sing Up</StyledButton>
         </div>
+        <nav>
+          <span>Already a member? </span>
+          <a href="/">Sing ip</a>
+        </nav>
       </form>
-      <nav>
-        <span>Already a member? </span>
-        <a href="/">Sing ip</a>
-      </nav>
     </StyledFormContainer>
   );
 };

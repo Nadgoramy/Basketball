@@ -12,11 +12,13 @@ import { login } from "core/redux/userSlice";
 import { LoginFormDto } from "api/Dto/userDto";
 
 const StyledLoginContainer = styled.div`
-  margin: 340px 120px 0 120px;
-  display: flex;
-  flex-direction: column;
+  margin: auto;  
+  flex: 1 1 606px;
   @media (max-width: ${({ theme }) => theme.mobile}) {
-    margin: 115px 24px 0 24px;
+    margin: 0 24px 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   h4 {
@@ -32,6 +34,16 @@ const StyledLoginContainer = styled.div`
       text-align: center;
     }
   }
+
+form{
+    width: 365px;
+    margin: auto;
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      width: 100%;
+      margin: auto;
+    } 
+}
+
   div {
     margin-bottom: 24px;
 
@@ -73,10 +85,7 @@ const StyledLoginContainer = styled.div`
   }
 `;
 
-/**type UserLoginForm = {
-  login: string;
-  password: string;
-};*/
+
 type PropsType = {
   setError?: (msg: string) => void;
 };
@@ -103,10 +112,6 @@ const LoginForm: React.FC<PropsType> = (props) => {
   );
   const error = useAppSelector((state: AppStateType) => state.user.error);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    //if(currentUser && currentUser.token) navigate("/teams")
-  }, [currentUser]);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -157,12 +162,13 @@ const LoginForm: React.FC<PropsType> = (props) => {
         <div>
           <StyledButton type="submit">Sign In</StyledButton>
         </div>
-      </form>
+      
 
       <nav>
         <span>Not a member yet? </span>
         <a href="/register">Sing up</a>
       </nav>
+      </form>
     </StyledLoginContainer>
   );
 };

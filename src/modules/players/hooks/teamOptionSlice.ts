@@ -9,12 +9,16 @@ export async function LoadTeamOptions(){
   const totalCountResponce = await TeamService.getTeams("", 1, 1);
 
   if (totalCountResponce && totalCountResponce.count>0) {
-    const responce = await TeamService.getTeams("", 1, totalCountResponce.count);
-
+    let iteration=0;
     let options = new Array<OptionTypeValueNumber>();
+    do{
+      iteration++;
+    const responce = await TeamService.getTeams("", iteration, 25);    
     responce.data.map((t: TeamDto) =>
     options.push({ label: t.name, value: t.id })
     );
+    }while(options.length < totalCountResponce.count)
+
     return  options
   } else throw new Error("No team found");
 }

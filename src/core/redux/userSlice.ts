@@ -19,8 +19,15 @@ export const register = createAsyncThunk(
     `user/register`,
     async (params : RegisterFormDto, { rejectWithValue }) => {
       try {
-        const responce = await AuthService.register(params.userName, params.login, params.password) 
-        return responce             
+        return AuthService.register(params.userName, params.login, params.password)
+          .then(responce => {            
+            return responce    
+          }) .catch(err=>{
+            if (err.status == 409) {
+              rejectWithValue("User with such login already exists")
+            }
+          })
+                 
       } catch (error : any) {
         return rejectWithValue(error.message);
       }

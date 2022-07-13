@@ -76,8 +76,23 @@ const teamsPageSlice = createSlice({
       })
       .addCase(getTeamsPage.fulfilled, (state, action) => {
         state.isFetching = false;
-        state.pageItems = action.payload?.data;
         state.count = action.payload?.count;
+
+        let existingIds = state.pageItems.map((x) => x.id);        
+        if (action.payload && existingIds.length > 0) {
+          let newIds= action.payload.data.map(x=> x.id);
+          let newDataContainsPrevious = existingIds.every(id => newIds.indexOf(id)>=0);
+          if (newDataContainsPrevious) {
+            let newPlayers = action.payload.data.filter(
+              (x) => existingIds.indexOf(x.id) == -1
+            );
+            state.pageItems = new Array<TeamDto>().concat(state.pageItems, newPlayers);
+          } else {
+            state.pageItems = action.payload.data;
+          }
+        } else {
+          state.pageItems = action.payload.data;
+        }
       })
       .addCase(getTeamsPage.rejected, (state, action) => {
         state.isFetching = false;

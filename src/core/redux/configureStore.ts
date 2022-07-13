@@ -12,6 +12,7 @@ export const configureStore = ()=> {
   return createStore(
     rootReducer,
     composeWithDevTools(
+      
     applyMiddleware(
       thunkMiddleware,
       //loggerMiddleware

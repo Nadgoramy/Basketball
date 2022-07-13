@@ -1,8 +1,6 @@
-import { StyledFlex } from "common/components/Flex";
 import { AppStateType } from "core/redux/configureStore";
 import {  useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-//import { playerActions } from "../actions";
 import {
   playerActions,
   getPlayer,
@@ -36,8 +34,9 @@ import {
 } from "modules/interface/EditComponents";
 import { errorActions } from "core/redux/errorSlice";
 import { useNavigate } from "react-router-dom";
-import BirthdayCalendarInput, { StyledCalendar } from "common/components/BirthdayCalendarInput";
+import BirthdayCalendarInput from "common/components/BirthdayCalendarInput";
 import { ErrorInputSpan } from "common/components/ErrorInputSpan";
+import Preloader from "common/components/preloader";
 
 interface PropTypeInterface {}
 type PlayerForm = {
@@ -60,6 +59,7 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
   const teamOptions = useAppSelector((store) => store.teamOptions.options);
   const player = useAppSelector((state: AppStateType) => state.player.player);
   const operationSecceded = useAppSelector((state: AppStateType) => state.team.operationSucceded);
+  const isFetching = useAppSelector(store => store.player.isFetching)
   const [initialState, setInitialState] = useState<PlayerDto | null>();
   const {
     register,
@@ -112,7 +112,6 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
     removeImageIfNeeded()
 
     ImageService.saveImage(file)?.then((url: string) => {
-      //dispatch(playerActions.setPlayerPhoto(url));
       setValue("avatarUrl", url)
       setCurrentAvatarUrl(url)
       console.log(url);
@@ -162,6 +161,7 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
   const values = watch();
   return (
     <StyledEditContainer>
+      {isFetching && <Preloader/>}
       <StyledFlexAutoDiv>
         <StyledHeaderContainer>
           <span className="headerText">
@@ -312,7 +312,7 @@ const PlayerEdit: React.FunctionComponent<PropTypeInterface> = (
                 <StyledButton mode="cancel" type="button" onClick={onCancel}>
                   Cancel
                 </StyledButton>
-                <StyledButton type="submit" disabled={!isDirty}>Save</StyledButton>
+                <StyledButton type="submit">Save</StyledButton>
               </StyledFlexRow>
               <input type="hidden" {...register("avatarUrl")} />
               <input type="hidden" {...register("id")} />
