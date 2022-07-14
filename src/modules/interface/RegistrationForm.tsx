@@ -5,7 +5,7 @@ import AuthService from "api/authService";
 import Input from "common/components/Input/Input";
 import { StyledButton } from "common/components/Button/Button.styled";
 import Checkbox from "common/components/Checkbox";
-import { useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import PasswordInput from "common/components/PasswordInput";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { errorActions } from "core/redux/errorSlice";
@@ -208,7 +208,8 @@ const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
         </div>
         <nav>
           <span>Already a member? </span>
-          <a href="/">Sing ip</a>
+          <NavLink to="/">Sing in</NavLink>
+          
         </nav>
       </form>
     </StyledFormContainer>

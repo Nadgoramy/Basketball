@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { StyledButton } from "common/components/Button/Button.styled";
 import Input from "common/components/Input/Input";
 import styled from "styled-components";
@@ -166,7 +166,8 @@ const LoginForm: React.FC<PropsType> = (props) => {
 
       <nav>
         <span>Not a member yet? </span>
-        <a href="/register">Sing up</a>
+        <NavLink to="/register">Sing up</NavLink>
+        
       </nav>
       </form>
     </StyledLoginContainer>

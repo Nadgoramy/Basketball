@@ -16,8 +16,8 @@ export const getPlayer = createAsyncThunk(
         return responce as PlayerDto;
       } else throw new Error("Player not found");
     } catch (error: any) {
-      if (error.message.indexOf("fetch") >= 0) {
-        dispatch(userActions.removeUser);
+      if(error.status == 401) {
+        dispatch(userActions.removeUser(null))
       }
       return rejectWithValue(error.message);
     }
@@ -38,8 +38,8 @@ export const updatePlayer = createAsyncThunk(
       const responce = await PlayerService.updatePlayer(params);
       return responce as PlayerDto;
     } catch (error: any) {
-      if (error.message.indexOf("Failed to fetch") >= 0) {
-        dispatch(userActions.removeUser);
+      if(error.status == 401) {
+        dispatch(userActions.removeUser(null))
       }
       return rejectWithValue(error.message);
     }
@@ -52,8 +52,8 @@ export const deletePlayer = createAsyncThunk(
       const responce = await PlayerService.deletePlayer(id);
       return responce as PlayerDto;
     } catch (error: any) {
-      if (error.message.indexOf("Failed to fetch") >= 0) {
-        dispatch(userActions.removeUser);
+      if(error.status == 401) {
+        dispatch(userActions.removeUser(null))
       }
       return rejectWithValue(error.message);
     }
@@ -66,8 +66,8 @@ export const addPlayer = createAsyncThunk(
       const responce = await PlayerService.addPlayer(player);
       return responce as PlayerDto;
     } catch (error: any) {
-      if (error.message.indexOf("Failed to fetch") >= 0) {
-        dispatch(userActions.removeUser);
+      if(error.status == 401) {
+        dispatch(userActions.removeUser(null))
       }
       return rejectWithValue(error.message);
     }
