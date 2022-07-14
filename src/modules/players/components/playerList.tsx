@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { playersActions } from "modules/players/hooks/playersPageSlice";
 import { PlayerCard } from "./playerCard";
-import { PlayerDto, PlayerDtoPageResult } from "api/Dto/playerDto";
+import { PlayerDto } from "api/Dto/playerDto";
 import {
   getCount,
   getCurrentPage,
@@ -15,8 +15,7 @@ import {
 } from "modules/players/selectors";
 import Preloader from "common/components/preloader";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  HeaderFlex,
+import {  
   StyledFooter,
   StyledGrid,
   StyledGridContainer,
@@ -36,6 +35,7 @@ import {
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { getTeamOptions } from "../hooks/teamOptionSlice";
 import { pageSizeOptions } from "common/helpers/pageSizeOptions";
+import { errorActions } from "core/redux/errorSlice";
 
 type PropsType = {};
 export const PlayerList: React.FunctionComponent<PropsType> = (
@@ -45,7 +45,7 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
   const dispatch = useAppDispatch();
   const players = useAppSelector(getPlayers);
   const currentPage = useAppSelector(getCurrentPage);
-  const [filter, setFilter] = useState(""); //useAppSelector(getFilter);
+  const filter = useAppSelector(getFilter);
   const pageSize = useAppSelector(getPageSize);
   const isFetching = useAppSelector(getIsFetching);
   const itemsCount = useAppSelector(getCount);
@@ -53,15 +53,14 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
   const error = useAppSelector(getError);
 
   const teamNames = useAppSelector(getTeamsOptions);
-
-  useEffect(() => {
-    dispatch(getTeamOptions());
+  dispatch(getTeamOptions());
+  /*useEffect(() => {
     dispatch(playersActions.setFilter(""));
     dispatch(playersActions.setTeamFilter([]));
-  }, []);
-
+  }, []);*/
+  
   useEffect(() => {
-    
+    dispatch(errorActions.setErrorMessage(error))
   }, [error]);
 
 useEffect(()=>{
@@ -85,8 +84,7 @@ useEffect(()=>{
     dispatch(playersActions.setPageSize(a.value));
   };
   const updateFilterValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //dispatch(playersActions.setFilter(e.target.value));
-    setFilter(e.target.value);
+    dispatch(playersActions.setFilter(e.target.value));
   };
   const updateCurrentPage = (n: number) => {
     dispatch(playersActions.setPageNumber(n));
@@ -107,7 +105,8 @@ useEffect(()=>{
           <StyledMultiSelect
             classNamePrefix="Select"
             options={teamNames}
-            isMulti
+            isMulti            
+            value={teamNames.filter(obj => teamIds.includes(obj.value))} 
             onChange={(e: any) =>
               updateTeamFilter(e as OptionTypeValueNumber[])
             }

@@ -55,7 +55,8 @@ const request = async (url: string, data: IRequestBaseBody, token: string | unde
   throw { isCustomError: true, status: response.status };
 }
 catch(error: any){
-  throw { isCustomError: true, status: error.status, message: error.message};
+  if(data.method == "GET") throw { isCustomError: true, status: 401, message: error.message};
+  else throw { isCustomError: true, status: error.status, message: error.message};
 }
 
 };

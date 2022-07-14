@@ -53,10 +53,12 @@ const userSlice = createSlice({
   reducers: {
     setUser:(state, action) => {
       state.currentUser = action.payload;
+      state.isLoggedIn = true;
     },
-    removeUser:(state, action) => {
+    removeUser:(state, _) => {
       state.currentUser = undefined;
       localStorage.removeItem("user");
+      state.isLoggedIn = false;
     },
   },
   extraReducers: (builder) => {

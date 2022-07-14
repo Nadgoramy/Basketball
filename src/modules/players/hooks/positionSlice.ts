@@ -3,13 +3,14 @@ import { PositionDto } from "api/Dto/positionDto";
 import PlayerService from "api/players/playerService";
 import { OptionTypeValueString } from "common/components/StyledSelect";
 import { AppStateType } from "core/redux/configureStore";
+import { userActions } from "core/redux/userSlice";
 
 export const getPositions = createAsyncThunk(
   `position/getOptions`,
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue, getState , dispatch}) => {
     try {
-      let state = (getState() as AppStateType).positions;
-      if(state.list.length>0 ) return state.list;
+      let list = (getState() as AppStateType).positions.list;
+      if(list.length>0 ) return list;
       
       let responce = await PlayerService.getPositions();
       if (!responce) {
@@ -20,6 +21,9 @@ export const getPositions = createAsyncThunk(
         return responce;
       } else throw new Error("No position found");
     } catch (error: any) {
+      if(error.status == 401) {
+        dispatch(userActions.removeUser(null))
+      }
       return rejectWithValue(error.message);
     }
   },{

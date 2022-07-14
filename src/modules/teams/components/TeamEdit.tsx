@@ -48,7 +48,7 @@ const TeamEdit = () => {
        dispatch(getTeam(parseInt(id)));
     }   
     else{
-      dispatch(teamActions.setTeam({} as TeamDto));
+      dispatch(teamActions.setTeam(emptyTeam));
     }
   }, []);
   useEffect(()=>{
@@ -60,6 +60,16 @@ const TeamEdit = () => {
   useEffect(()=>{
     if(operationSecceded) redirect()
   },[operationSecceded])
+
+  const emptyTeam: TeamDto = {
+    name: "",
+    division: "",
+    conference: "",
+    foundationYear: 2000,
+    imageUrl: "",
+    id: 0,
+    players: []
+  };
 
   function setFormValues(team: TeamDto | null) {
     reset({
@@ -107,9 +117,9 @@ const TeamEdit = () => {
     });
   }
   const redirect=()=>{
-    if (id && parseInt(id) > 0) {
+    /*if (id && parseInt(id) > 0) {
       navigate("/teams/" + id);
-    } else navigate("/teams");
+    } else navigate("/teams");*/
   }
 
   return (

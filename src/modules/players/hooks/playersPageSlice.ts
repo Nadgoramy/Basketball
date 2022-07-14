@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import AuthService from "api/authService";
 import { PlayerDto, PlayerDtoPageResult } from "api/Dto/playerDto";
 import PlayerService from "api/players/playerService";
 import { OptionTypeValueNumber } from "common/components/StyledSelect";
@@ -12,12 +11,13 @@ interface IParams {
   page: number;
   pageSize: number;
 }
+
 export const getPlayersPage = createAsyncThunk(
   `playersPage/getPlayers`,
   async (params: IParams, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { page, pageSize, filter, teamFilter } = params; 
-      const {teamOptions} = getState() as AppStateType
+      const { page, pageSize, filter, teamFilter } = params;
+      const { teamOptions } = getState() as AppStateType;
       const responce = await PlayerService.getPlayers(
         filter,
         page,
@@ -26,14 +26,19 @@ export const getPlayersPage = createAsyncThunk(
       );
 
       let playerPage = responce as PlayerDtoPageResult;
-        if(teamOptions.options){
-          playerPage.data.forEach(x=>x.teamName = teamOptions.options.find(to=>to.value == x.team)?.label)
-        }
+      if (teamOptions.options) {
+        playerPage.data.forEach(
+          (x) =>
+            (x.teamName = teamOptions.options.find(
+              (to) => to.value == x.team
+            )?.label)
+        );
+      }
 
       return playerPage;
     } catch (error: any) {
-      if (error.message.indexOf("Failed to fetch") >= 0) {
-        dispatch(userActions.removeUser);
+      if(error.status == 401) {
+        dispatch(userActions.removeUser(null))
       }
       return rejectWithValue(error.message);
     }
@@ -45,7 +50,7 @@ export const getPlayersPage = createAsyncThunk(
         return false;
       }
     },
-  }
+  } //)
 );
 
 type StateType = {
@@ -93,12 +98,12 @@ const playersPageSlice = createSlice({
       state.teamFilter = action.payload;
       state.page = 1;
     },
-    setPlayerTeamName: (state, action) => {      
-        let options = action.payload as OptionTypeValueNumber[];
-        if(state.pageItems && options){
-          state.pageItems.forEach(
+    setPlayerTeamName: (state, action) => {
+      let options = action.payload as OptionTypeValueNumber[];
+      if (state.pageItems && options) {
+        state.pageItems.forEach(
           (item) =>
-            (item.teamName = options.find(t => t.value == item.team)?.label)
+            (item.teamName = options.find((t) => t.value == item.team)?.label)
         );
       }
     },
@@ -110,7 +115,22 @@ const playersPageSlice = createSlice({
       })
       .addCase(getPlayersPage.fulfilled, (state, action) => {
         state.isFetching = false;
-        state.pageItems = action.payload?.data;
+
+        let existingIds = state.pageItems.map((x) => x.id);        
+        if (action.payload && existingIds.length > 0) {
+          let newIds= action.payload.data.map(x=> x.id);
+          let newDataContainsPrevious = existingIds.every(id => newIds.indexOf(id)>=0);
+          if (newDataContainsPrevious) {
+            let newPlayers = action.payload.data.filter(
+              (x) => existingIds.indexOf(x.id) == -1
+            );
+            state.pageItems = new Array<PlayerDto>().concat(state.pageItems, newPlayers);
+          } else {
+            state.pageItems = action.payload.data;
+          }
+        } else {
+          state.pageItems = action.payload.data;
+        }
         state.count = action.payload?.count;
         state.error = undefined;
       })

@@ -51,7 +51,7 @@ export const StyledGrid = styled.div`
 display: flex;
 flex-wrap: wrap;
 gap: 24px;
-&>* {
+&>div {
   flex: 0 1 365px;
   height: 380px;
   @media (max-width: ${({ theme }) => theme.mobile}) {
@@ -87,6 +87,7 @@ export const StyledMainContainer= styled(StyledFlex)`
 margin: 0;
 padding: 0;
 min-height: calc(100vh - 112px);
+position: relative;
 @media (max-width: ${({ theme }) => theme.mobile}) {
   padding: 16px 12px 0 12px;
   min-height: calc(100vh - 72px);

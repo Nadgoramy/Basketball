@@ -35,9 +35,9 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
   const itemsCount = useAppSelector(selectors.getCount);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  /*useEffect(() => {
     dispatch(teamsActions.setFilter(""));
-  }, []);
+  }, []);*/
 
   useEffect(() => {
     dispatch(
@@ -62,17 +62,18 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
   return (
     <StyledMainContainer direction="column">
       <StyledHeader>
-        <Search onChange={(evt) => updateFilterValue(evt)} />
+        <Search onChange={(evt) => updateFilterValue(evt)} value={filter}/>
         <StyledButton mode="add" onClick={() => navigate("edit/0")}>
           Add &nbsp;<span id="plus">&nbsp;+</span>
         </StyledButton>
       </StyledHeader>
+      {isFetching && <Preloader />}
       {!teams || teams.length == 0 ? (
         <EmptyListScreen mode="team" />
       ) : (
         <StyledGridContainer>
           <StyledTeamGrid>
-            {isFetching && <Preloader />}
+            
             {teams &&
               teams.map((p: TeamDto) => <TeamCard team={p} key={p.id} />)}
           </StyledTeamGrid>

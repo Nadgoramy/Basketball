@@ -1,6 +1,6 @@
 import { AppStateType } from "core/redux/configureStore";
-import React, { HTMLAttributes } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { HTMLAttributes, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import teamImg from "asserts/images/group_person.svg";
 import playerImg from "asserts/images/person.svg";
@@ -10,6 +10,7 @@ import noUserImg from "asserts/images/profile.svg";
 import SingoutImg from "asserts/images/singout.svg";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { userActions } from "core/redux/userSlice";
+import { errorActions } from "core/redux/errorSlice";
 
 const menu = [
   {
@@ -172,15 +173,21 @@ interface SideBarProps {
 }
 const SideBar = (props: SideBarProps) => {
   const dispatch = useAppDispatch();
-  const nav = useNavigate();
-
+  const navigate = useNavigate();
+  const isLoggedIn = useAppSelector(
+    (state: AppStateType) => state.user.isLoggedIn
+  );
+  useEffect(() => {
+    if (!isLoggedIn) {
+      dispatch(errorActions.clearErrorMessage());
+      navigate("/");
+    }
+  }, [isLoggedIn]);
   const singout = () => {    
     dispatch(userActions.removeUser());
   };
-
-  const userFromStore = useAppSelector((state: AppStateType) => state.user.currentUser);
-  console.log(props.isOpen);
-  console.log(props.activeItem)
+  
+  const userFromStore = useAppSelector((state: AppStateType) => state.user.currentUser);  
   const itemIsActive=(item: any)=>item.link.indexOf(props.activeItem)>0
 
   if(userFromStore)

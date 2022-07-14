@@ -7,7 +7,6 @@ import { PositionDto } from 'api/Dto/positionDto';
 const API_URL = "player/";
 
 const getPositions = () => {
-  console.log("getting positions");
   let currentUser = AuthService.getCurrentUser();
   if(!currentUser) return null;
   return get(API_URL + "getpositions", currentUser.token)
@@ -22,17 +21,15 @@ const getPlayers = (name: string ="", page: number =1, pageSize: number,teamIds:
   let currentUser = AuthService.getCurrentUser();
   if(!currentUser) return;
   let requestParams = "?Name="+name+"&Page="+page+"&PageSize="+pageSize ;
-  if(teamIds) teamIds.forEach(tId => requestParams+="&TeamIds="+tId);  //TeamIds=1907&TeamIds=1908
-  console.log(requestParams);
+  if(teamIds) teamIds.forEach(tId => requestParams+="&TeamIds="+tId);  
   return get(API_URL + "getplayers"+requestParams,  currentUser.token)
-    .then((response) => {    
+    .then((response) => {        
       let result : PlayerDtoPageResult = response;
       return result;        
     })
   }
 
 const getPlayer = (id: number) => {
-  console.log("getting player");
     let currentUser = AuthService.getCurrentUser();
     if(!currentUser) return null;
     return get(API_URL + "get?id=" + id,  currentUser.token)

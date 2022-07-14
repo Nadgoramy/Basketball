@@ -60,6 +60,7 @@ const teamsPageSlice = createSlice({
     },
     setFilter: (state, action) => {
       state.filter = action.payload;
+      state.page = 1;
     },
     setPageNumber: (state, action) => {
       state.page = action.payload;

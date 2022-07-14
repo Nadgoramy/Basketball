@@ -261,7 +261,8 @@ label{
 `;
 
 export const StyledTeamListContainer = styled.div`
-border-radius: 0px 0px 10px 10px;
+  margin-bottom: 24px;
+  border-radius: 0px 0px 10px 10px;
   border: 0.5px solid ${({ theme }) => theme.colors.light_grey};
   @media (max-width: ${({ theme }) => theme.mobile}) {
     border-radius: 0;

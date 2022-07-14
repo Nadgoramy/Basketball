@@ -1,23 +1,34 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { NewPlayerDto, PlayerDto } from "api/Dto/playerDto";
 import PlayerService from "api/players/playerService";
+import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 
 export const getPlayer = createAsyncThunk(
   `player/getPlayer`,
-  async (id: number, { rejectWithValue, dispatch }) => {
+  async (id: number, { rejectWithValue, dispatch, getState }) => {
     try {
+      let currentPlayer = (getState() as AppStateType).player.player;
+      if (id == currentPlayer.id) return currentPlayer;
+
       const responce = await PlayerService.getPlayer(id);
       if (responce && (responce as PlayerDto).id) {
         return responce as PlayerDto;
-      }
-      else throw new Error("Player not found")
+      } else throw new Error("Player not found");
     } catch (error: any) {
-      if(error.message.indexOf("Failed to fetch") >= 0) {        
-        dispatch(userActions.removeUser)
+      if (error.message.indexOf("fetch") >= 0) {
+        dispatch(userActions.removeUser);
       }
       return rejectWithValue(error.message);
     }
+  },
+  {
+    condition: (_, { getState, extra }) => {
+      const { player } = getState() as AppStateType;
+      if (player.isFetching) {
+        return false;
+      }
+    },
   }
 );
 export const updatePlayer = createAsyncThunk(
@@ -27,8 +38,8 @@ export const updatePlayer = createAsyncThunk(
       const responce = await PlayerService.updatePlayer(params);
       return responce as PlayerDto;
     } catch (error: any) {
-      if(error.message.indexOf("Failed to fetch") >= 0) {        
-        dispatch(userActions.removeUser)
+      if (error.message.indexOf("Failed to fetch") >= 0) {
+        dispatch(userActions.removeUser);
       }
       return rejectWithValue(error.message);
     }
@@ -41,8 +52,8 @@ export const deletePlayer = createAsyncThunk(
       const responce = await PlayerService.deletePlayer(id);
       return responce as PlayerDto;
     } catch (error: any) {
-      if(error.message.indexOf("Failed to fetch") >= 0) {        
-        dispatch(userActions.removeUser)
+      if (error.message.indexOf("Failed to fetch") >= 0) {
+        dispatch(userActions.removeUser);
       }
       return rejectWithValue(error.message);
     }
@@ -55,8 +66,8 @@ export const addPlayer = createAsyncThunk(
       const responce = await PlayerService.addPlayer(player);
       return responce as PlayerDto;
     } catch (error: any) {
-      if(error.message.indexOf("Failed to fetch") >= 0) {        
-        dispatch(userActions.removeUser)
+      if (error.message.indexOf("Failed to fetch") >= 0) {
+        dispatch(userActions.removeUser);
       }
       return rejectWithValue(error.message);
     }
@@ -66,13 +77,13 @@ export const addPlayer = createAsyncThunk(
 interface StateType {
   player: PlayerDto;
   isFetching: boolean;
-  error?: string ;
+  error?: string;
   operationSucceded: boolean;
 }
 const initialState: StateType = {
   player: {} as PlayerDto,
   isFetching: false,
-  error: "" ,
+  error: "",
   operationSucceded: false,
 };
 const playerSlice = createSlice({
@@ -99,13 +110,13 @@ const playerSlice = createSlice({
         let player = action.payload as PlayerDto;
         if (typeof player.birthday == "string")
           player.birthday = new Date(player.birthday);
-        state.player = player;//action.payload ? action.payload : ({} as PlayerDto);
+        state.player = player; //action.payload ? action.payload : ({} as PlayerDto);
         state.operationSucceded = false;
-        state.error = undefined
+        state.error = undefined;
       })
       .addCase(getPlayer.rejected, (state, action) => {
         state.isFetching = false;
-        state.error = action.error.message+" :"+(action.payload as string);
+        state.error = action.error.message + " :" + (action.payload as string);
       })
       .addCase(updatePlayer.pending, (state, action) => {
         state.isFetching = true;
@@ -118,47 +129,47 @@ const playerSlice = createSlice({
           player.birthday = new Date(player.birthday);
         state.player = player;
         state.operationSucceded = true;
-        state.error =undefined
+        state.error = undefined;
       })
       .addCase(updatePlayer.rejected, (state, action) => {
         state.isFetching = false;
-        state.error = action.error.message+" :"+(action.payload as string);
+        state.error = action.error.message + " :" + (action.payload as string);
       })
       .addCase(deletePlayer.pending, (state, action) => {
         state.isFetching = true;
       })
       .addCase(deletePlayer.fulfilled, (state, action) => {
         state.isFetching = false;
-        
+
         let player = action.payload as PlayerDto;
         if (typeof player.birthday == "string")
           player.birthday = new Date(player.birthday);
         state.player = player;
 
         state.operationSucceded = true;
-        state.error = undefined
+        state.error = undefined;
       })
       .addCase(deletePlayer.rejected, (state, action) => {
         state.isFetching = false;
-        state.error = action.error.message+" :"+(action.payload as string);
+        state.error = action.error.message + " :" + (action.payload as string);
       })
       .addCase(addPlayer.pending, (state, action) => {
         state.isFetching = true;
       })
       .addCase(addPlayer.fulfilled, (state, action) => {
         state.isFetching = false;
-        
+
         let player = action.payload as PlayerDto;
         if (typeof player.birthday == "string")
           player.birthday = new Date(player.birthday);
         state.player = player;
 
         state.operationSucceded = true;
-        state.error = undefined
+        state.error = undefined;
       })
       .addCase(addPlayer.rejected, (state, action) => {
         state.isFetching = false;
-        state.error = action.error.message+" :"+(action.payload as string);
+        state.error = action.error.message + " :" + (action.payload as string);
       });
   },
 });

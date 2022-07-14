@@ -33,8 +33,8 @@ export const getTeamOptions = createAsyncThunk(
       return LoadTeamOptions()
       
     } catch (error: any) {
-      if(error.message.indexOf("Failed to fetch") >= 0) {        
-        dispatch(userActions.removeUser)
+      if(error.status == 401) {
+        dispatch(userActions.removeUser(null))
       }
       return rejectWithValue(error.message);
     }

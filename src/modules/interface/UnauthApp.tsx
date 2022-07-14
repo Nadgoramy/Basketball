@@ -54,7 +54,7 @@ const UnauthApp : React.FunctionComponent = ()=>{
   const error = useAppSelector(store => store.error.message)
   const user = useAppSelector((state: AppStateType)=> state.user.currentUser)
   if (user) {
-    return <Navigate to='/teams' />;
+    return <Navigate to='/teams' replace/>;
   }
 
   return (   

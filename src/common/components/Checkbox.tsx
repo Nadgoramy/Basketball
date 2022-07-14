@@ -95,8 +95,7 @@ export type InputProps = {
   error?: string;
   width?: string;
   initialValue: boolean;
-  value?: string;
-  //ChangeHandler?: () => void;
+  value?: string;  
 } & ReactInputProps;
 
 const Checkbox = React.forwardRef((props: InputProps, ref: LegacyRef<HTMLInputElement>) => {
@@ -104,7 +103,6 @@ const Checkbox = React.forwardRef((props: InputProps, ref: LegacyRef<HTMLInputEl
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [checked, setChecked] = useState(initialValue );
-  //console.log(checked)
   
   const handleClick = () => {
     if (disabled) return
@@ -152,9 +150,3 @@ const Checkbox = React.forwardRef((props: InputProps, ref: LegacyRef<HTMLInputEl
 )
 
 export default Checkbox;
-/*onClick={(e) => {
-  !disabled && e.preventDefault();
-  handleClick()
-}}
-
-*/

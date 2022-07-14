@@ -3,6 +3,7 @@ import { PlayerDtoPageResult } from "api/Dto/playerDto";
 import { NewTeamDto, TeamDto } from "api/Dto/teamDto";
 import PlayerService from "api/players/playerService";
 import TeamService from "api/teams/teamService";
+import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 
 export const getTeam = createAsyncThunk(
@@ -17,8 +18,8 @@ export const getTeam = createAsyncThunk(
       else throw new Error("Team not found")
       return responce as TeamDto;
     } catch (error: any) {
-      if(error.message.indexOf("Failed to fetch") >= 0) {        
-        dispatch(userActions.removeUser())
+      if(error.status == 401) {
+        dispatch(userActions.removeUser(null))
       }
       return rejectWithValue(error.message);
     }
@@ -39,8 +40,8 @@ export const updateTeam = createAsyncThunk(
       const responce = await TeamService.updateTeam(params);
       return responce as TeamDto;
     } catch (error: any) {
-      if(error.message.indexOf("Failed to fetch") >= 0) {        
-        dispatch(userActions.removeUser())
+      if(error.status == 401) {
+        dispatch(userActions.removeUser(null))
       }
       return rejectWithValue(error.message);
     }
@@ -53,8 +54,8 @@ export const deleteTeam = createAsyncThunk(
       const responce = await TeamService.deleteTeam(id);
       return responce as TeamDto;
     } catch (error: any) {
-      if(error.message.indexOf("Failed to fetch") >= 0) {        
-        dispatch(userActions.removeUser())
+      if(error.status == 401) {
+        dispatch(userActions.removeUser(null))
       }
       return rejectWithValue(error.message);
     }
@@ -67,8 +68,8 @@ export const addTeam = createAsyncThunk(
       const responce = await TeamService.addTeam(player);
       return responce as TeamDto;
     } catch (error: any) {
-      if(error.message.indexOf("Failed to fetch") >= 0) {        
-        dispatch(userActions.removeUser())
+      if(error.status == 401) {
+        dispatch(userActions.removeUser(null))
       }
       return rejectWithValue(error.message);
     }
