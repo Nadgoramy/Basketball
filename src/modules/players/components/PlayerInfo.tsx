@@ -26,7 +26,6 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
   let { id } = useParams();
 
   useEffect(() => {
-    console.log(params);
     if (!id) return;
     let playerId = parseInt(id);
     dispatch(getPlayer(playerId));
@@ -37,7 +36,7 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
     dispatch(errorActions.setErrorMessage(error));
 
     if(error && error.indexOf("Failed to fetch") >= 0) {        
-      dispatch(userActions.removeUser)
+      dispatch(userActions.removeUser())
     }
   }, [error]);
 
@@ -50,7 +49,7 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
 
   const getAge = (birthday: Date | undefined) => {
     if (!birthday) return "";
-    let age = new Date(Date.now() - new Date(birthday).getTime());
+    let age = new Date(Date.now() - birthday.valueOf());
     return Math.abs(age.getUTCFullYear() - 1970);
   };
 

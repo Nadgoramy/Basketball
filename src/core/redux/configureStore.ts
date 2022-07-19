@@ -6,19 +6,23 @@ import { Action, ThunkAction } from '@reduxjs/toolkit';
 //import { createLogger } from 'redux-logger';
 //const loggerMiddleware = createLogger();
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { configureStore } from '@reduxjs/toolkit'
 
+export const customConfigureStore = ()=> {
+  return configureStore({
+    reducer: rootReducer,
 
-export const configureStore = ()=> {
-  return createStore(
-    rootReducer,
-    composeWithDevTools(
-      
-    applyMiddleware(
-      thunkMiddleware,
-      //loggerMiddleware
-    )
-  )
-  )
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+      serializableCheck: {
+          ignoredActions: ['TYPE'],
+          ignoredActionPaths: ['payload.birthday','meta.arg.birthday','payload.players'],
+          ignoredPaths: ['player.player.birthday','team.team.players']
+      }
+  }).prepend(thunkMiddleware),
+      // prepend and concat calls can be chained
+      //.concat(logger),
+   
+    })
 }
 
 type RootReducerType = typeof rootReducer;

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { NewPlayerDto, PlayerDto } from "api/Dto/playerDto";
+import { NewPlayerDto, PlayerDto } from "api/dto/playerDto";
 import PlayerService from "api/players/playerService";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
@@ -17,7 +17,7 @@ export const getPlayer = createAsyncThunk(
       } else throw new Error("Player not found");
     } catch (error: any) {
       if(error.status == 401) {
-        dispatch(userActions.removeUser(null))
+        dispatch(userActions.removeUser())
       }
       return rejectWithValue(error.message);
     }
@@ -39,7 +39,7 @@ export const updatePlayer = createAsyncThunk(
       return responce as PlayerDto;
     } catch (error: any) {
       if(error.status == 401) {
-        dispatch(userActions.removeUser(null))
+        dispatch(userActions.removeUser())
       }
       return rejectWithValue(error.message);
     }
@@ -53,7 +53,7 @@ export const deletePlayer = createAsyncThunk(
       return responce as PlayerDto;
     } catch (error: any) {
       if(error.status == 401) {
-        dispatch(userActions.removeUser(null))
+        dispatch(userActions.removeUser())
       }
       return rejectWithValue(error.message);
     }
@@ -67,7 +67,7 @@ export const addPlayer = createAsyncThunk(
       return responce as PlayerDto;
     } catch (error: any) {
       if(error.status == 401) {
-        dispatch(userActions.removeUser(null))
+        dispatch(userActions.removeUser())
       }
       return rejectWithValue(error.message);
     }
@@ -110,7 +110,7 @@ const playerSlice = createSlice({
         let player = action.payload as PlayerDto;
         if (typeof player.birthday == "string")
           player.birthday = new Date(player.birthday);
-        state.player = player; //action.payload ? action.payload : ({} as PlayerDto);
+        state.player = player;
         state.operationSucceded = false;
         state.error = undefined;
       })

@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { TeamDto } from "api/Dto/teamDto";
-import TeamService from "api/teams/teamService";
+import { TeamDto } from "api/dto/teamDto";
+import TeamService from "api/requests/teamService";
 import { OptionTypeValueNumber } from "common/components/StyledSelect";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 
-export async function LoadTeamOptions(){
+async function LoadTeamOptions(){
   const totalCountResponce = await TeamService.getTeams("", 1, 1);
 
   if (totalCountResponce && totalCountResponce.count>0) {
@@ -34,7 +34,7 @@ export const getTeamOptions = createAsyncThunk(
       
     } catch (error: any) {
       if(error.status == 401) {
-        dispatch(userActions.removeUser(null))
+        dispatch(userActions.removeUser())
       }
       return rejectWithValue(error.message);
     }
@@ -70,7 +70,7 @@ const teamOptionSlice = createSlice({
       .addCase(getTeamOptions.pending, (state, action) => {
         state.isFetching = true;
       })
-      .addCase(getTeamOptions.fulfilled, (state, action: any) => {
+      .addCase(getTeamOptions.fulfilled, (state, action) => {
         state.isFetching = false;
         if (action.payload) {
           state.options = action.payload;

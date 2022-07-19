@@ -9,10 +9,10 @@ import { AppStateType } from "core/redux/configureStore";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { errorActions } from "core/redux/errorSlice";
 import { login } from "core/redux/userSlice";
-import { LoginFormDto } from "api/Dto/userDto";
+import { LoginFormDto } from "api/dto/userDto";
 
 const StyledLoginContainer = styled.div`
-  margin: auto;  
+  margin: auto;
   flex: 1 1 606px;
   @media (max-width: ${({ theme }) => theme.mobile}) {
     margin: 0 24px 0 24px;
@@ -35,14 +35,14 @@ const StyledLoginContainer = styled.div`
     }
   }
 
-form{
+  form {
     width: 365px;
     margin: auto;
     @media (max-width: ${({ theme }) => theme.mobile}) {
       width: 100%;
       margin: auto;
-    } 
-}
+    }
+  }
 
   div {
     margin-bottom: 24px;
@@ -84,7 +84,6 @@ form{
     }
   }
 `;
-
 
 type PropsType = {
   setError?: (msg: string) => void;
@@ -131,7 +130,7 @@ const LoginForm: React.FC<PropsType> = (props) => {
   }, [error]);
 
   const onSubmit = (data: LoginFormDto) => {
-    dispatch(login(data));
+    dispatch(login(data) as any);
   };
 
   return (
@@ -158,17 +157,13 @@ const LoginForm: React.FC<PropsType> = (props) => {
             error={errors.password?.message}
           />
         </div>
-
         <div>
           <StyledButton type="submit">Sign In</StyledButton>
         </div>
-      
-
-      <nav>
-        <span>Not a member yet? </span>
-        <NavLink to="/register">Sing up</NavLink>
-        
-      </nav>
+        <nav>
+          <span>Not a member yet? </span>
+          <NavLink to="/register">Sing up</NavLink>
+        </nav>
       </form>
     </StyledLoginContainer>
   );

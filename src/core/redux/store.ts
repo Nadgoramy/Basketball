@@ -1,5 +1,5 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { AppStateType, configureStore } from "./configureStore";
+import { AppStateType, customConfigureStore as configureStore } from "./configureStore";
 
 
 export const store = configureStore();

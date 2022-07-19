@@ -7,10 +7,10 @@ import {
   updatePlayer,
   addPlayer,
 } from "../hooks/playerSlice";
-import { PlayerDto } from "api/Dto/playerDto";
+import { PlayerDto } from "api/dto/playerDto";
 import Input from "common/components/Input/Input";
 import DragDropFile from "common/components/DragDropFile";
-import ImageService from "api/imageServise";
+import ImageService from "api/requests/imageServise";
 import { StyledLink } from "common/components/Link/styledLink";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -70,7 +70,7 @@ const PlayerEdit: React.FunctionComponent = () => {
     height: 0,
     weight: 0,
     number: 0,
-    birthday: new Date(),
+    birthday: undefined,
   };
 
   const error = useAppSelector((store) => store.player.error);
@@ -141,7 +141,7 @@ const PlayerEdit: React.FunctionComponent = () => {
     reset({
       id: player?.id,
       name: player?.name,
-      birthday: player?.birthday,
+      birthday: player?.birthday ,
       height: player?.height,
       weight: player?.weight,
       avatarUrl: player?.avatarUrl,
@@ -299,12 +299,7 @@ const PlayerEdit: React.FunctionComponent = () => {
                     control={control}
                     name="birthday"
                     rules={{
-                      required: "Birthday is required",
-                      validate: (value) => {
-                        if (!value || value.valueOf() > Date.now()) {
-                          return "Please provide correct date";
-                        }
-                      },
+                      required: "Birthday is required",                      
                     }}
                     render={({
                       field: { onChange, onBlur, value, name, ref },

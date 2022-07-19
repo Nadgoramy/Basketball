@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import styled from "styled-components";
-import AuthService from "api/authService";
 import Input from "common/components/Input/Input";
 import { StyledButton } from "common/components/Button/Button.styled";
 import Checkbox from "common/components/Checkbox";
@@ -10,7 +9,7 @@ import PasswordInput from "common/components/PasswordInput";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { errorActions } from "core/redux/errorSlice";
 import { register as userRegister } from "core/redux/userSlice";
-import { RegisterFormDto } from "api/Dto/userDto";
+import { RegisterFormDto } from "api/dto/userDto";
 import { AppStateType } from "core/redux/configureStore";
 
 const StyledFormContainer = styled.div`
@@ -121,8 +120,7 @@ const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
     }
   }, [error]);
 
-  const onSubmit = (data: UserSubmitForm) => {
-    console.log(data);
+  const onSubmit = (data: UserSubmitForm) => {    
     dispatch(userRegister(data));
   };
 

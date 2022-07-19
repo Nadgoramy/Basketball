@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import { PlayerDto } from "api/Dto/playerDto";
+import { PlayerDto } from "api/dto/playerDto";
 import * as CardComponents from "modules/interface/CardComponents";
 import { Link, useNavigate } from "react-router-dom";
 

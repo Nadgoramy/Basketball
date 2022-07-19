@@ -2,7 +2,7 @@ export interface NewPlayerDto {
   name?: string ;
   number?: number ;
   height?: number ;
-  birthday?: Date ;
+  birthday?: Date;
   weight?: number ;
   position?: string ;
   team?: number ;

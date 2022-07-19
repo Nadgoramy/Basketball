@@ -1,7 +1,7 @@
 import {get, post, remove, put} from 'api/baseRequest';
-import AuthService from 'api/authService';
-import {NewPlayerDto, PlayerDto, PlayerDtoPageResult} from 'api/Dto/playerDto';
-import { PositionDto } from 'api/Dto/positionDto';
+import AuthService from 'api/requests/authService';
+import {NewPlayerDto, PlayerDto, PlayerDtoPageResult} from 'api/dto/playerDto';
+import { PositionDto } from 'api/dto/positionDto';
 
 
 const API_URL = "player/";

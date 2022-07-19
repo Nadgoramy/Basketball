@@ -1,5 +1,5 @@
-import {post} from './baseRequest';
-import {AuthUserDto} from './AuthUserDto'
+import {post} from '../baseRequest';
+import {AuthUserDto} from '../dto/AuthUserDto'
 
 const API_URL = "auth/";
 const throwError =(msg: string) => { throw Error(msg);}

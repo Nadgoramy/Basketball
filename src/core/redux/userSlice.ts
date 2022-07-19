@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import AuthService from "api/authService";
-import { LoginFormDto, RegisterFormDto, UserDto } from "api/Dto/userDto";
+import AuthService from "api/requests/authService";
+import { LoginFormDto, RegisterFormDto, UserDto } from "api/dto/userDto";
 
 export const login = createAsyncThunk(
   `user/login`,
@@ -55,7 +55,7 @@ const userSlice = createSlice({
       state.currentUser = action.payload;
       state.isLoggedIn = true;
     },
-    removeUser:(state, _) => {
+    removeUser:(state) => {
       state.currentUser = undefined;
       localStorage.removeItem("user");
       state.isLoggedIn = false;

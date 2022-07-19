@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { PlayerDto, PlayerDtoPageResult } from "api/Dto/playerDto";
+import { PlayerDto, PlayerDtoPageResult } from "api/dto/playerDto";
 import PlayerService from "api/players/playerService";
 import { OptionTypeValueNumber } from "common/components/StyledSelect";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
+import { string } from "prop-types";
 
 interface IParams {
   filter: string;
@@ -18,27 +19,29 @@ export const getPlayersPage = createAsyncThunk(
     try {
       const { page, pageSize, filter, teamFilter } = params;
       const { teamOptions } = getState() as AppStateType;
-      const responce = await PlayerService.getPlayers(
+      const response = await PlayerService.getPlayers(
         filter,
         page,
         pageSize,
         teamFilter
       );
-
-      let playerPage = responce as PlayerDtoPageResult;
+      
+      let playerPage = response as PlayerDtoPageResult;
       if (teamOptions.options) {
         playerPage.data.forEach(
-          (x) =>
+          (x) =>{  
+            //if(typeof x.birthday == "string")x.birthday = new Date( x.birthday as string);
             (x.teamName = teamOptions.options.find(
               (to) => to.value == x.team
             )?.label)
+          }
         );
       }
 
       return playerPage;
     } catch (error: any) {
       if(error.status == 401) {
-        dispatch(userActions.removeUser(null))
+        dispatch(userActions.removeUser())
       }
       return rejectWithValue(error.message);
     }

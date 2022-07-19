@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import AuthService from "api/authService";
-import { TeamDto, TeamDtoPageResult } from "api/Dto/teamDto";
-import TeamService from "api/teams/teamService";
+import AuthService from "api/requests/authService";
+import { TeamDto, TeamDtoPageResult } from "api/dto/teamDto";
+import TeamService from "api/requests/teamService";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 
@@ -25,7 +25,7 @@ export const getTeamsPage = createAsyncThunk(
       return teamsPage;
     } catch (error: any) {
       if(error.status == 401) {
-        dispatch(userActions.removeUser(null))
+        dispatch(userActions.removeUser())
       }
       return rejectWithValue(error.message);
     }

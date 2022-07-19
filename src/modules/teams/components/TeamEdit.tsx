@@ -1,5 +1,5 @@
-import { TeamDto } from "api/Dto/teamDto";
-import ImageService from "api/imageServise";
+import { TeamDto } from "api/dto/teamDto";
+import ImageService from "api/requests/imageServise";
 import DragDropFile from "common/components/DragDropFile";
 import { StyledFlex } from "common/components/Flex";
 import { StyledLink } from "common/components/Link/styledLink";
@@ -39,7 +39,6 @@ const TeamEdit = () => {
 
   const error = useAppSelector((store) => store.player.error);
   useEffect(() => {
-    console.log(error);
     dispatch(errorActions.setErrorMessage(error));
   }, [error]);
 
@@ -94,7 +93,7 @@ const TeamEdit = () => {
   
   const onSubmit = (data: TeamDto) => {
     if(!isDirty) return
-    console.log(data);
+    
     let teamId=parseInt(id??"0")
     if (teamId) {
       dispatch(updateTeam(data))      

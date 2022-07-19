@@ -1,6 +1,6 @@
 import {get, post, remove, put} from '../baseRequest';
-import AuthService from '../authService';
-import { NewTeamDto, TeamDto } from 'api/Dto/teamDto';
+import AuthService from './authService';
+import { NewTeamDto, TeamDto } from 'api/dto/teamDto';
 
 const API_URL = "team/";
 
@@ -14,7 +14,6 @@ const getTeams = (name: string, page: number, pageSize: number) => {
 
 const getTeam = (id: number) => {
     let currentUser = AuthService.getCurrentUser();
-    console.log("trying to get team by id");
     if(!currentUser) return;
     return get(API_URL + "get?id=" + id,  currentUser.token) 
   };

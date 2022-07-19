@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { playersActions } from "modules/players/hooks/playersPageSlice";
 import { PlayerCard } from "./playerCard";
-import { PlayerDto } from "api/Dto/playerDto";
+import { PlayerDto } from "api/dto/playerDto";
 import {
   getCount,
   getCurrentPage,
@@ -53,11 +53,9 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
   const error = useAppSelector(getError);
 
   const teamNames = useAppSelector(getTeamsOptions);
-  dispatch(getTeamOptions());
-  /*useEffect(() => {
-    dispatch(playersActions.setFilter(""));
-    dispatch(playersActions.setTeamFilter([]));
-  }, []);*/
+  useEffect(() => {
+    dispatch(getTeamOptions())
+  }, []);
   
   useEffect(() => {
     dispatch(errorActions.setErrorMessage(error))
@@ -136,8 +134,7 @@ useEffect(()=>{
             pageCount={Math.ceil(itemsCount / pageSize)}
             marginPagesDisplayed={2}
             pageRangeDisplayed={5}
-            onPageChange={(pagination: any) => {
-              console.log(pagination);
+            onPageChange={(pagination: any) => {              
               updateCurrentPage(pagination.selected + 1);
             }}
             containerClassName="pagination"

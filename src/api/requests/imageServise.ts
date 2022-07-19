@@ -1,5 +1,5 @@
 import AuthService from "./authService";
-import { imagePost, post } from "./baseRequest";
+import { imagePost, post } from "../baseRequest";
 
 const API_URL = "image/";
 

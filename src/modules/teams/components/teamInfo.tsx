@@ -34,10 +34,10 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
     dispatch(getTeam(teamId));
   };
 
-  const getAge = (birthday: Date | undefined) => {
-    if (!birthday) return "";
-    let age = new Date(Date.now() - new Date(birthday).getTime());
-    return Math.abs(age.getUTCFullYear() - 1970);
+  const getAge = (birthday: Date | undefined): string => {
+    if (birthday === undefined) return "";
+    let age = new Date(Date.now() - birthday.valueOf());
+    return Math.abs(age.getUTCFullYear() - 1970).toString();
   };
 
   const handleDeleteClick = (e: any) => {
@@ -110,22 +110,23 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
             <table>
               <thead>
                 <tr>
+                  <th className="padding"></th>
                   <th>#</th>
                   <th>Player</th>
                   <th className="hide">Height</th>
                   <th className="hide">Weight</th>
                   <th className="hide">Age</th>
+                  <th className="padding"></th>
                 </tr>
               </thead>
               <tbody>
                 {team.players.map((p, index) => (
                   <tr key={index}>
+                    <td className="padding"></td>
                     <td>{p.number}</td>
                     <td>
                       <StyledFlexRow justify="flex-start">
-                        <Info.StyledPhotoInList
-                          url={p.avatarUrl}
-                        ></Info.StyledPhotoInList>
+                        <Info.StyledPhotoInList url={p.avatarUrl} />
                         <div className="playerDescription">
                           <label>{p.name}</label>
                           <p>{p.position}</p>
@@ -134,7 +135,7 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
                     </td>
                     <td className="hide">{p.height}</td>
                     <td className="hide">{p.weight}</td>
-                    <td className="hide">{getAge(p.birthday)}</td>
+                    <td className="hide">{getAge(p.birthday)}</td>                    
                   </tr>
                 ))}
               </tbody>

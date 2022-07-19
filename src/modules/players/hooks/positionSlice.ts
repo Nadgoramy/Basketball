@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { PositionDto } from "api/Dto/positionDto";
+import { PositionDto } from "api/dto/positionDto";
 import PlayerService from "api/players/playerService";
 import { OptionTypeValueString } from "common/components/StyledSelect";
 import { AppStateType } from "core/redux/configureStore";
@@ -22,7 +22,7 @@ export const getPositions = createAsyncThunk(
       } else throw new Error("No position found");
     } catch (error: any) {
       if(error.status == 401) {
-        dispatch(userActions.removeUser(null))
+        dispatch(userActions.removeUser())
       }
       return rejectWithValue(error.message);
     }

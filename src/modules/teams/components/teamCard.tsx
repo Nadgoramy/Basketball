@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import React from "react";
-import { TeamDto } from "api/Dto/teamDto";
+import { TeamDto } from "api/dto/teamDto";
 import * as CardComponents from "modules/interface/CardComponents"
 import { useNavigate } from "react-router-dom";
 

@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { PlayerDtoPageResult } from "api/Dto/playerDto";
-import { NewTeamDto, TeamDto } from "api/Dto/teamDto";
+import { PlayerDto, PlayerDtoPageResult } from "api/dto/playerDto";
+import { NewTeamDto, TeamDto } from "api/dto/teamDto";
 import PlayerService from "api/players/playerService";
-import TeamService from "api/teams/teamService";
+import TeamService from "api/requests/teamService";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 
@@ -14,12 +14,16 @@ export const getTeam = createAsyncThunk(
       if (responce && (responce as TeamDto).id) {
         const teamPlayers = await PlayerService.getPlayers("",  1, 100,[id]);
         responce.players = (teamPlayers as PlayerDtoPageResult).data;
+        responce.players.forEach((p : PlayerDto) => {
+          if (typeof p.birthday == "string")
+            p.birthday = new Date(p.birthday)
+        });
       }
       else throw new Error("Team not found")
       return responce as TeamDto;
     } catch (error: any) {
       if(error.status == 401) {
-        dispatch(userActions.removeUser(null))
+        dispatch(userActions.removeUser())
       }
       return rejectWithValue(error.message);
     }
@@ -41,7 +45,7 @@ export const updateTeam = createAsyncThunk(
       return responce as TeamDto;
     } catch (error: any) {
       if(error.status == 401) {
-        dispatch(userActions.removeUser(null))
+        dispatch(userActions.removeUser())
       }
       return rejectWithValue(error.message);
     }
@@ -55,7 +59,7 @@ export const deleteTeam = createAsyncThunk(
       return responce as TeamDto;
     } catch (error: any) {
       if(error.status == 401) {
-        dispatch(userActions.removeUser(null))
+        dispatch(userActions.removeUser())
       }
       return rejectWithValue(error.message);
     }
@@ -69,7 +73,7 @@ export const addTeam = createAsyncThunk(
       return responce as TeamDto;
     } catch (error: any) {
       if(error.status == 401) {
-        dispatch(userActions.removeUser(null))
+        dispatch(userActions.removeUser())
       }
       return rejectWithValue(error.message);
     }

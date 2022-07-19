@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import * as selectors from "modules/teams/selectors";
 import Preloader from "common/components/preloader";
-import { TeamDto } from "api/Dto/teamDto";
+import { TeamDto } from "api/dto/teamDto";
 import { TeamCard } from "modules/teams/components/teamCard";
 import Search from "common/components/Search/Search";
 import { StyledButton } from "common/components/Button/Button.styled";

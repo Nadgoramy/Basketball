@@ -1,10 +1,10 @@
 import UnauthApp from "modules/interface/UnauthApp";
-import AuthService from "api/authService";
+import AuthService from "api/requests/authService";
 import { AppStateType } from "core/redux/configureStore";
 import { ThemeProvider } from "styled-components";
 import AuthApp from "modules/interface/AuthApp";
 import { theme } from "DefaultTheme";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { PageNotFound } from "modules/interface/PageNotFound";
 import { TeamsList } from "modules/teams/components/teamsList";
 import TeamEdit from "modules/teams/components/TeamEdit";
@@ -15,6 +15,8 @@ import { PlayerList } from "modules/players/components/playerList";
 import ErrorPopUp from "common/components/ErrorPopUp";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { userActions } from "core/redux/userSlice";
+import { useEffect } from "react";
+import { errorActions } from "core/redux/errorSlice";
 
 function App() {
   const dispatch = useAppDispatch()
@@ -24,9 +26,6 @@ function App() {
   if(!userFromStorage && user) dispatch(userActions.setUser(user))
 
   const error = useAppSelector((state: AppStateType)=> state.error.message)
-
-  //if(userFromStorage && window.location.pathname == "/") window.location.pathname="/teams"
-  //if(!userFromStorage && (window.location.pathname != "/" && window.location.pathname != "/register")) window.location.pathname="/"
   
   return (
     <BrowserRouter>

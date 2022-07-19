@@ -49,8 +49,10 @@ a{
 export const StyledHeaderButtonContainer=styled.div`
 display: flex;
 gap: 14px;
+margin-right:8px;
 @media (max-width: ${({ theme }) => theme.mobile}) {
   gap: 10px;
+  margin-right:0px;
 }
 
 
@@ -114,13 +116,15 @@ export const StyledDescriptionContainer = styled.div`
 display: flex;
 flex: 1 1 400px;
 flex-direction: column;
-row-gap: 42px;
+row-gap: 40px;
 text-align: left;  
+margin-right: 60px;
 margin-bottom: 60px;
 
 @media (max-width: ${({ theme }) => theme.mobile}) {
   row-gap: 32px;
   text-align: center;
+  margin-right: 0px;
   margin-bottom: 38px;
   flex-basis: content;
 }
@@ -161,7 +165,8 @@ p {
   font-weight: 500;
   font-size: 18px;
   line-height: 25px;
-  margin: 8px;
+  //margin: 8px;
+  margin: 8px 0;
   color: ${({ theme }) => theme.colors.white};
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
@@ -198,7 +203,7 @@ text-align: left;
   text-align: center;
   row-gap: 24px;
 }
-div{
+&>div{
   flex: auto;  
   width: 50%;
   @media (max-width: ${({ theme }) => theme.mobile}) {
@@ -211,14 +216,14 @@ export const StyledDescriptionColumn = styled.div`
 display: flex;
 flex-direction: column;
 text-align: left;
-row-gap: 32px;
+gap: 44px;
 @media (max-width: ${({ theme }) => theme.mobile}) {
   text-align: center;
   gap: 24px;
 }
-div{
+&>div{
   flex: auto;
-  width: 50%;
+  width: 100%;
   @media (max-width: ${({ theme }) => theme.mobile}) {
     width: 100%;
 
@@ -276,7 +281,7 @@ table{
   tbody>tr{
     background: transparent;
     border-top: 0.5px solid ${({ theme }) => theme.colors.light_grey};
-    height: 55px;
+    height: 54px;
 
     td{
       padding:0;
@@ -301,8 +306,8 @@ table{
   }
   th {
     text-align: left;
-    height: 40px;
-    width:80px;
+    height: 36px;
+    width:11%;
     padding:0;
     font-weight: 500;
     font-size: 14px;
@@ -314,21 +319,28 @@ table{
       line-height: 24px;
     }
   }
-  tr th:nth-child(2){
-    width: 65%;
+  th.padding{
+    width: 30px;
+  }  
+  td.padding{
+    width: 30px;
+  }  
+  tr th:nth-child(3){
+    width: auto;
     @media (max-width: ${({ theme }) => theme.mobile}) {
       width: 85%;
     }
   }
-  tr th:nth-child(1){
-    text-align: center;
+  tr th:nth-child(2){
+    //text-align: center;
     @media (max-width: ${({ theme }) => theme.mobile}) {
       width: 15%;
     }
   }
-  tr td:nth-child(1){
-    text-align: center;
+  tr th:nth-child(6){    
+      width: 65px;
   }
+  
   
   .hide{
     display: table-cell;
@@ -348,7 +360,7 @@ export const StyledPhotoInList = styled.div<PhotoPropsType>`
   width: 52px;
   height: 38px;
   margin: 10px 0  8px 0;
-  background-image: url("${( props ) => props.url}");
+  background-image: url("${( props ) => props.url }");
   background-repeat: no-repeat;
   background-size: contain;
 `;
