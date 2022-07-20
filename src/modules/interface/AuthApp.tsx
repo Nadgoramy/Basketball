@@ -7,6 +7,7 @@ import { AppStateType } from "core/redux/configureStore";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import ErrorPopUp from "common/components/ErrorPopUp";
 import { errorActions } from "core/redux/errorSlice";
+import { userActions } from "core/redux/userSlice";
 
 type AuthProps = {};
 type AuthState = { mobileSideBarOpen: boolean };
@@ -16,8 +17,9 @@ const AuthApp: React.FunctionComponent<AuthProps> = (props: AuthProps) => {
   const globalError = useAppSelector(
     (store: AppStateType) => store.error.message
   );
+  const user = useAppSelector((state: AppStateType) => state.user.currentUser);
+
   
-  const navigate = useNavigate();
   const toggleMobileSideBar = () => {
     setMobileSideBarOpen(!mobileSideBarOpen);
   };
@@ -28,13 +30,23 @@ const AuthApp: React.FunctionComponent<AuthProps> = (props: AuthProps) => {
   
   useEffect(()=>{
     dispatch(errorActions.clearErrorMessage())
+
+    if (user) {
+      const decodedJwt = parseJwt(user.token);
+      if (!decodedJwt || decodedJwt.exp * 1000 < Date.now()) {
+        dispatch(userActions.removeUser())
+      }
+    }
   }, [location.pathname])
 
-  const user = useAppSelector((state: AppStateType) => state.user.currentUser);
-  /*if (!user) {
-    return <Navigate to="/" replace />;
-  }*/
-
+  const parseJwt = (token:string) => {
+    try {
+      return JSON.parse(atob(token.split(".")[1]));
+    } catch (e) {
+      return null;
+    }
+  };
+  
   return (
     <FullScreenContainer>
       <Header toggleMobileSideBar={toggleMobileSideBar} />

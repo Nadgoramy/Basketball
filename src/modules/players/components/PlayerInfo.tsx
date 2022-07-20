@@ -33,11 +33,7 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
 
   const error = useAppSelector((store) => store.player.error);
   useEffect(() => {
-    dispatch(errorActions.setErrorMessage(error));
-
-    if(error && error.indexOf("Failed to fetch") >= 0) {        
-      dispatch(userActions.removeUser())
-    }
+    dispatch(errorActions.setErrorMessage(error));    
   }, [error]);
 
 
