@@ -2,9 +2,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PlayerDto, PlayerDtoPageResult } from "api/dto/playerDto";
 import PlayerService from "api/players/playerService";
 import { OptionTypeValueNumber } from "common/components/StyledSelect";
+import { authorizationExpired } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
-import { string } from "prop-types";
 
 interface IParams {
   filter: string;
@@ -30,7 +30,7 @@ export const getPlayersPage = createAsyncThunk(
       if (teamOptions.options) {
         playerPage.data.forEach(
           (x) =>{  
-            //if(typeof x.birthday == "string")x.birthday = new Date( x.birthday as string);
+            //if(typeof x.birthday == "string") x.birthday = new Date( x.birthday as string);
             (x.teamName = teamOptions.options.find(
               (to) => to.value == x.team
             )?.label)
@@ -48,12 +48,11 @@ export const getPlayersPage = createAsyncThunk(
   },
   {
     condition: (_, { getState, extra }) => {
-      const { players } = getState() as AppStateType;
-      if (players.isFetching) {
-        return false;
-      }
+      const { players, user } = getState() as AppStateType;
+      if (players.isFetching) return false
+      if (authorizationExpired(user.currentUser))  return false
     },
-  } //)
+  } 
 );
 
 type StateType = {
@@ -121,7 +120,7 @@ const playersPageSlice = createSlice({
 
         let existingIds = state.pageItems.map((x) => x.id);        
         if (action.payload && existingIds.length > 0) {
-          let newIds= action.payload.data.map(x=> x.id);
+          let newIds = action.payload.data.map(x=> x.id);
           let newDataContainsPrevious = existingIds.every(id => newIds.indexOf(id)>=0);
           if (newDataContainsPrevious) {
             let newPlayers = action.payload.data.filter(

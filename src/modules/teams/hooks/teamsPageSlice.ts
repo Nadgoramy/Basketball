@@ -4,6 +4,7 @@ import { TeamDto, TeamDtoPageResult } from "api/dto/teamDto";
 import TeamService from "api/requests/teamService";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
+import { authorizationExpired } from "common/helpers/userCheck";
 
 interface IParams {
   filter: string;
@@ -29,6 +30,13 @@ export const getTeamsPage = createAsyncThunk(
       }
       return rejectWithValue(error.message);
     }
+  },
+  {
+    condition: (_, { getState, extra }) => {
+      const { teams, user } = getState() as AppStateType;
+      if (teams.isFetching) return false      
+      if (authorizationExpired(user.currentUser)) return false
+    },
   }
 );
 

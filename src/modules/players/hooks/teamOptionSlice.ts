@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { TeamDto } from "api/dto/teamDto";
 import TeamService from "api/requests/teamService";
 import { OptionTypeValueNumber } from "common/components/StyledSelect";
+import { authorizationExpired } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 
@@ -41,10 +42,9 @@ export const getTeamOptions = createAsyncThunk(
   },
   {
     condition: (_, { getState, extra }) => {
-      const { teamOptions } = getState() as AppStateType      
-      if (teamOptions.isFetching) {        
-        return false
-      }
+      const { teamOptions, user } = getState() as AppStateType      
+      if (teamOptions.isFetching) return false
+      if (authorizationExpired(user.currentUser)) return false
     }
   }
 );

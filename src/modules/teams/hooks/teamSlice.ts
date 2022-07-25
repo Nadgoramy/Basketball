@@ -3,6 +3,7 @@ import { PlayerDto, PlayerDtoPageResult } from "api/dto/playerDto";
 import { NewTeamDto, TeamDto } from "api/dto/teamDto";
 import PlayerService from "api/players/playerService";
 import TeamService from "api/requests/teamService";
+import { authorizationExpired } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 
@@ -30,10 +31,9 @@ export const getTeam = createAsyncThunk(
   },
   {
     condition: (_, { getState, extra }) => {
-      const { teamOptions } = getState() as AppStateType      
-      if (teamOptions.isFetching) {        
-        return false
-      }
+      const { teamOptions, user } = getState() as AppStateType      
+      if (teamOptions.isFetching) return false
+      if (authorizationExpired(user.currentUser)) return false
     }
   }
 );

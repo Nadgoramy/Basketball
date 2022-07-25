@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PositionDto } from "api/dto/positionDto";
 import PlayerService from "api/players/playerService";
 import { OptionTypeValueString } from "common/components/StyledSelect";
+import { authorizationExpired } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 
@@ -28,10 +29,9 @@ export const getPositions = createAsyncThunk(
     }
   },{
     condition: (_, { getState, extra }) => {
-      const { positions } = getState() as AppStateType      
-      if (positions.isFetching) {        
-        return false
-      }
+      const { positions, user } = getState() as AppStateType      
+      if (positions.isFetching) return false
+      if (authorizationExpired(user.currentUser)) return false
     },
   }
 );

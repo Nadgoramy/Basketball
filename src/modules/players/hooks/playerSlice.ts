@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { NewPlayerDto, PlayerDto } from "api/dto/playerDto";
 import PlayerService from "api/players/playerService";
+import { authorizationExpired } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 
@@ -24,10 +25,9 @@ export const getPlayer = createAsyncThunk(
   },
   {
     condition: (_, { getState, extra }) => {
-      const { player } = getState() as AppStateType;
-      if (player.isFetching) {
-        return false;
-      }
+      const { player, user } = getState() as AppStateType;
+      if (player.isFetching) return false      
+      if (authorizationExpired(user.currentUser)) return false
     },
   }
 );
