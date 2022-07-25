@@ -10,11 +10,18 @@ const parseJwt = (token:string) => {
 
 export const authorizationExpired = (user: UserDto | undefined) =>{
     if (user) {
-        const decodedJwt = parseJwt(user.token);
-        if (!decodedJwt || decodedJwt.exp * 1000 < Date.now()) {
-          return true
-        }
-        return false
+        return tokenExpired(user.token);        
       }
       else return true
+}
+
+export const tokenExpired = (token: string | undefined) =>{
+  if (token) {
+      const decodedJwt = parseJwt(token);
+      if (!decodedJwt || decodedJwt.exp * 1000 < Date.now()) {
+        return true
+      }
+      return false
+    }
+    else return true
 }

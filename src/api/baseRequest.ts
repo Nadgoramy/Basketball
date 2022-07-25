@@ -1,6 +1,8 @@
 //import { IRequestBaseBody } from '../helpers/interfaces/requestInterfaces/RequestBase';
 //import { RequestGenericType } from '../helpers/types/types';
 
+import { tokenExpired } from "common/helpers/userCheck";
+
 const base = process.env.REACT_APP_API;
 
 interface IRequestBaseBody {
@@ -24,7 +26,7 @@ const request = async (
   data: IRequestBaseBody,
   token: string | undefined
 ) => {
-  const headersForToken = token
+  const headersForToken = token && !tokenExpired(token)
     ? {
         Authorization: `Bearer ${token}`,
       }
@@ -60,15 +62,9 @@ const request = async (
 
     throw { isCustomError: true, status: response.status };
   } catch (error: any) {
-    if(error.isCustomError) throw error;
-    if (data.method == "GET")
-      throw { isCustomError: true, status: 401, message: error.message };
-    else
-      throw {
-        //isCustomError: true,
-        //status: error.status,
-        message: error.message,
-      };
+    if(error.isCustomError) throw error;  
+    
+    throw { message: error.message, };
   }
 };
 

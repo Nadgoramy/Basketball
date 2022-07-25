@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import AuthService from "api/requests/authService";
 import { TeamDto, TeamDtoPageResult } from "api/dto/teamDto";
 import TeamService from "api/requests/teamService";
 import { AppStateType } from "core/redux/configureStore";
