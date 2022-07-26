@@ -1,11 +1,8 @@
 import AuthService from "./authService";
-import { imagePost, post } from "../baseRequest";
+import { imagePost, post, remove } from "../baseRequest";
 
 const API_URL = "image/";
 
-/*function ab2str(buf: ArrayBuffer) {
-  return new TextDecoder().decode(buf);
-}*/
 const saveImage = async (file:File ) => {    
   let buff = await file.arrayBuffer();
     let currentUser = AuthService.getCurrentUser();
@@ -22,9 +19,7 @@ const saveImage = async (file:File ) => {
 const deleteImage = (fileName:string) => {
   let currentUser = AuthService.getCurrentUser();
   if(!currentUser) return null;
-    return post(API_URL + "DeleteImage", {
-        fileName
-    }, currentUser.token);
+    return remove(API_URL + "DeleteImage?fileName="+fileName, currentUser.token);
   };
 
 

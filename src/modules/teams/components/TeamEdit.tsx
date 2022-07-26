@@ -17,13 +17,12 @@ import { StyledButton } from "common/components/Button/Button.styled";
 import { AppDispatch, useAppDispatch, useAppSelector } from "core/redux/store";
 import { addTeam, getTeam, teamActions, updateTeam } from "../hooks/teamSlice";
 import { StyledFlexRow } from "modules/interface/EditComponents";
-import { useDispatch } from "react-redux";
 
 const TeamEdit = () => {
   const team = useAppSelector((state: AppStateType) => state.team.team);
   const operationSecceded = useAppSelector((state: AppStateType) => state.team.operationSucceded);
   const [initialState, setInitialState] = useState<TeamDto | null>();
-  const dispatch = useDispatch<AppDispatch>();// useAppDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   let { id } = useParams();
   const [file, setFile] = useState(null);
@@ -84,9 +83,9 @@ const TeamEdit = () => {
   const handleFiles = (file: File) => {    
     removeImageIfNeeded()
     ImageService.saveImage(file)?.then((url: string) => {
-      dispatch(teamActions.setTeamImage(url));
       console.log(url);
       setCurrentImageUrl(url)
+      setValue("imageUrl", url, {shouldDirty: true})
     }).catch(e=>dispatch(errorActions.setErrorMessage(e.message)));
   };
 
@@ -103,6 +102,7 @@ const TeamEdit = () => {
   };
   const onCancel=()=>{    
     removeImageIfNeeded()
+    setFormValues(team)
     redirect()
   }
   const removeImageIfNeeded=()=>{
@@ -112,7 +112,7 @@ const TeamEdit = () => {
   }  
   const removeImageOnServer=(url:string)=>{
     ImageService.deleteImage(url)?.then((url: string) => {
-      console.log("Removed image url:"+ url)
+      setCurrentImageUrl(team.imageUrl)
     });
   }
   const redirect=()=>{

@@ -113,7 +113,7 @@ const PlayerEdit: React.FunctionComponent = () => {
     removeImageIfNeeded();
 
     ImageService.saveImage(file)?.then((url: string) => {
-      setValue("avatarUrl", url);
+      setValue("avatarUrl", url, {shouldDirty: true});
       setCurrentAvatarUrl(url);
       console.log(url);
     });
@@ -133,8 +133,8 @@ const PlayerEdit: React.FunctionComponent = () => {
       removeImageOnServer(currentAvatarUrl);
   };
   const removeImageOnServer = (url: string) => {
-    ImageService.deleteImage(url)?.then((url: string) => {
-      console.log("Removed image url:" + url);
+    return ImageService.deleteImage(url)?.then((res: any) => {
+      setCurrentAvatarUrl(player.avatarUrl)
     });
   };
   function setFormValues(player: PlayerDto | null) {
@@ -162,6 +162,7 @@ const PlayerEdit: React.FunctionComponent = () => {
   };
   const onCancel = () => {
     removeImageIfNeeded();
+    setFormValues(player)
     redirect();
   };
   const values = watch();
