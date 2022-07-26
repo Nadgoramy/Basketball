@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { PlayerDto, PlayerDtoPageResult } from "api/dto/playerDto";
+import { PlayerDto, PlayerDtoPageResult } from "api/Dto/playerDto";
 import PlayerService from "api/players/playerService";
 import { OptionTypeValueNumber } from "common/components/StyledSelect";
 import { authorizationExpired } from "common/helpers/userCheck";

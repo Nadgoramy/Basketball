@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { NewPlayerDto, PlayerDto } from "api/dto/playerDto";
+import { NewPlayerDto, PlayerDto } from "api/Dto/playerDto";
 import PlayerService from "api/players/playerService";
 import { authorizationExpired } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";

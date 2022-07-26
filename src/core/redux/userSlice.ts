@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import AuthService from "api/requests/authService";
-import { LoginFormDto, RegisterFormDto, UserDto } from "api/dto/userDto";
+import { LoginFormDto, RegisterFormDto, UserDto } from "api/Dto/userDto";
 
 export const login = createAsyncThunk(
   `user/login`,

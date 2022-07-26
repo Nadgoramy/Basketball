@@ -1,6 +1,6 @@
 import {get, post, remove, put} from '../baseRequest';
 import AuthService from './authService';
-import { NewTeamDto, TeamDto } from 'api/dto/teamDto';
+import { NewTeamDto, TeamDto } from 'api/Dto/teamDto';
 
 const API_URL = "team/";
 

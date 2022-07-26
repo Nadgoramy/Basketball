@@ -9,7 +9,7 @@ import { AppStateType } from "core/redux/configureStore";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { errorActions } from "core/redux/errorSlice";
 import { login } from "core/redux/userSlice";
-import { LoginFormDto } from "api/dto/userDto";
+import { LoginFormDto } from "api/Dto/userDto";
 
 const StyledLoginContainer = styled.div`
   margin: auto;

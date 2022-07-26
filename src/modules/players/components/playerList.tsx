@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { playersActions } from "modules/players/hooks/playersPageSlice";
 import { PlayerCard } from "./playerCard";
-import { PlayerDto } from "api/dto/playerDto";
+import { PlayerDto } from "api/Dto/playerDto";
 import {
   getCount,
   getCurrentPage,

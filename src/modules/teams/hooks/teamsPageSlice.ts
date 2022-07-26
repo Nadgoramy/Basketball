@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { TeamDto, TeamDtoPageResult } from "api/dto/teamDto";
+import { TeamDto, TeamDtoPageResult } from "api/Dto/teamDto";
 import TeamService from "api/requests/teamService";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";

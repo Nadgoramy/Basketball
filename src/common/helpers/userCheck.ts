@@ -1,4 +1,4 @@
-import { UserDto } from "api/dto/userDto";
+import { UserDto } from "api/Dto/userDto";
 
 const parseJwt = (token:string) => {
     try {

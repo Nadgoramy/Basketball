@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { TeamDto } from "api/dto/teamDto";
+import { TeamDto } from "api/Dto/teamDto";
 import TeamService from "api/requests/teamService";
 import { OptionTypeValueNumber } from "common/components/StyledSelect";
 import { authorizationExpired } from "common/helpers/userCheck";

@@ -9,7 +9,7 @@ import PasswordInput from "common/components/PasswordInput";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { errorActions } from "core/redux/errorSlice";
 import { register as userRegister } from "core/redux/userSlice";
-import { RegisterFormDto } from "api/dto/userDto";
+import { RegisterFormDto } from "api/Dto/userDto";
 import { AppStateType } from "core/redux/configureStore";
 
 const StyledFormContainer = styled.div`

@@ -1,4 +1,4 @@
-import { TeamDto } from "api/dto/teamDto";
+import { TeamDto } from "api/Dto/teamDto";
 import ImageService from "api/requests/imageServise";
 import DragDropFile from "common/components/DragDropFile";
 import { StyledFlex } from "common/components/Flex";

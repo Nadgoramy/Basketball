@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { PlayerDto, PlayerDtoPageResult } from "api/dto/playerDto";
-import { NewTeamDto, TeamDto } from "api/dto/teamDto";
+import { PlayerDto, PlayerDtoPageResult } from "api/Dto/playerDto";
+import { NewTeamDto, TeamDto } from "api/Dto/teamDto";
 import PlayerService from "api/players/playerService";
 import TeamService from "api/requests/teamService";
 import { authorizationExpired } from "common/helpers/userCheck";

@@ -7,7 +7,7 @@ import {
   updatePlayer,
   addPlayer,
 } from "../hooks/playerSlice";
-import { PlayerDto } from "api/dto/playerDto";
+import { PlayerDto } from "api/Dto/playerDto";
 import Input from "common/components/Input/Input";
 import DragDropFile from "common/components/DragDropFile";
 import ImageService from "api/requests/imageServise";
