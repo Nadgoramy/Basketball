@@ -109,6 +109,9 @@ const playersPageSlice = createSlice({
         );
       }
     },
+    clearState: (state) => {
+      state = initialState;      
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -123,10 +126,17 @@ const playersPageSlice = createSlice({
           let newIds = action.payload.data.map(x=> x.id);
           let newDataContainsPrevious = existingIds.every(id => newIds.indexOf(id)>=0);
           if (newDataContainsPrevious) {
+            let previousItems: PlayerDto[]=[];
+            state.pageItems.forEach(player => {
+              let teamFromBd = action.payload.data.find(t=>t.id === player.id);
+              previousItems.push( teamFromBd? teamFromBd : player)
+            })
+
+
             let newPlayers = action.payload.data.filter(
               (x) => existingIds.indexOf(x.id) == -1
             );
-            state.pageItems = new Array<PlayerDto>().concat(state.pageItems, newPlayers);
+            state.pageItems = new Array<PlayerDto>().concat(previousItems, newPlayers);
           } else {
             state.pageItems = action.payload.data;
           }

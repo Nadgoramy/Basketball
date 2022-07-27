@@ -14,13 +14,14 @@ import {
   StyledMainContainer,
 } from "modules/interface/StyledEditComponents";
 import { StyledButton } from "common/components/Button/Button.styled";
-import { AppDispatch, useAppDispatch, useAppSelector } from "core/redux/store";
+import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { addTeam, getTeam, teamActions, updateTeam } from "../hooks/teamSlice";
 import { StyledFlexRow } from "modules/interface/EditComponents";
+import { teamsActions } from "../hooks/teamsPageSlice";
 
 const TeamEdit = () => {
   const team = useAppSelector((state: AppStateType) => state.team.team);
-  const operationSecceded = useAppSelector((state: AppStateType) => state.team.operationSucceded);
+  const operationSecceded = useAppSelector((state: AppStateType) => state.team.updateSucceded);
   const [initialState, setInitialState] = useState<TeamDto | null>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const TeamEdit = () => {
     setValue
   } = useForm<TeamDto>();
 
-  const error = useAppSelector((store) => store.player.error);
+  const error = useAppSelector((store: AppStateType) => store.player.error);
   useEffect(() => {
     dispatch(errorActions.setErrorMessage(error));
   }, [error]);
@@ -56,7 +57,10 @@ const TeamEdit = () => {
   },[team])
 
   useEffect(()=>{
-    if(operationSecceded) redirect()
+    if(operationSecceded){ 
+      dispatch(teamsActions.clearState())
+      navigate("/teams/"+team.id);
+    }
   },[operationSecceded])
 
   const emptyTeam: TeamDto = {
@@ -102,8 +106,7 @@ const TeamEdit = () => {
   };
   const onCancel=()=>{    
     removeImageIfNeeded()
-    setFormValues(team)
-    redirect()
+    setFormValues(team)    
   }
   const removeImageIfNeeded=()=>{
     if(id=="0" && currentImageUrl) removeImageOnServer(currentImageUrl)
@@ -115,11 +118,7 @@ const TeamEdit = () => {
       setCurrentImageUrl(team.imageUrl)
     });
   }
-  const redirect=()=>{
-    /*if (id && parseInt(id) > 0) {
-      navigate("/teams/" + id);
-    } else navigate("/teams");*/
-  }
+  
 
   return (
     <StyledFlex direction="column">

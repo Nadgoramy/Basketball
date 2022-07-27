@@ -4,6 +4,7 @@ import PlayerService from "api/players/playerService";
 import { authorizationExpired } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
+import { playersActions } from "modules/players/hooks/playersPageSlice"
 
 export const getPlayer = createAsyncThunk(
   `player/getPlayer`,
@@ -78,13 +79,15 @@ interface StateType {
   player: PlayerDto;
   isFetching: boolean;
   error?: string;
-  operationSucceded: boolean;
+  updateSucceded: boolean;
+  deleteSucceded: boolean;
 }
 const initialState: StateType = {
   player: {} as PlayerDto,
   isFetching: false,
   error: "",
-  operationSucceded: false,
+  updateSucceded: false,
+  deleteSucceded: false
 };
 const playerSlice = createSlice({
   name: "player",
@@ -103,15 +106,16 @@ const playerSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getPlayer.pending, (state, action) => {
-        state.isFetching = true;
+        state.isFetching = true;        
+        state.updateSucceded=false;
+        state.deleteSucceded=false;   
       })
       .addCase(getPlayer.fulfilled, (state, action) => {
         state.isFetching = false;
         let player = action.payload as PlayerDto;
         if (typeof player.birthday == "string")
           player.birthday = new Date(player.birthday);
-        state.player = player;
-        state.operationSucceded = false;
+        state.player = player;        
         state.error = undefined;
       })
       .addCase(getPlayer.rejected, (state, action) => {
@@ -120,6 +124,7 @@ const playerSlice = createSlice({
       })
       .addCase(updatePlayer.pending, (state, action) => {
         state.isFetching = true;
+        state.updateSucceded = false;
       })
       .addCase(updatePlayer.fulfilled, (state, action) => {
         state.isFetching = false;
@@ -128,7 +133,7 @@ const playerSlice = createSlice({
         if (typeof player.birthday == "string")
           player.birthday = new Date(player.birthday);
         state.player = player;
-        state.operationSucceded = true;
+        state.updateSucceded = true;
         state.error = undefined;
       })
       .addCase(updatePlayer.rejected, (state, action) => {
@@ -137,6 +142,7 @@ const playerSlice = createSlice({
       })
       .addCase(deletePlayer.pending, (state, action) => {
         state.isFetching = true;
+        state.deleteSucceded = false;
       })
       .addCase(deletePlayer.fulfilled, (state, action) => {
         state.isFetching = false;
@@ -146,7 +152,7 @@ const playerSlice = createSlice({
           player.birthday = new Date(player.birthday);
         state.player = player;
 
-        state.operationSucceded = true;
+        state.deleteSucceded = true;
         state.error = undefined;
       })
       .addCase(deletePlayer.rejected, (state, action) => {
@@ -155,17 +161,17 @@ const playerSlice = createSlice({
       })
       .addCase(addPlayer.pending, (state, action) => {
         state.isFetching = true;
+        state.updateSucceded = false;
       })
       .addCase(addPlayer.fulfilled, (state, action) => {
         state.isFetching = false;
+        state.updateSucceded = true;
+        state.error = undefined;
 
         let player = action.payload as PlayerDto;
         if (typeof player.birthday == "string")
           player.birthday = new Date(player.birthday);
-        state.player = player;
-
-        state.operationSucceded = true;
-        state.error = undefined;
+        state.player = player;        
       })
       .addCase(addPlayer.rejected, (state, action) => {
         state.isFetching = false;

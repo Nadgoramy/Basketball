@@ -7,9 +7,9 @@ import { EditLink } from "common/components/Link/editLink";
 import { StyledLink } from "common/components/Link/styledLink";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { deleteTeam, getTeam } from "../hooks/teamSlice";
-import { StyledDeleteButton, DeleteButton } from "common/components/Button/deleteButton";
+import { DeleteButton } from "common/components/Button/deleteButton";
 import { errorActions } from "core/redux/errorSlice";
-import ErrorPopUp from "common/components/ErrorPopUp";
+import { teamsActions } from "../hooks/teamsPageSlice";
 
 type PropTypes = {};
 export const TeamInfo: React.FunctionComponent<PropTypes> = (
@@ -17,7 +17,9 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
 ) => {
   const dispatch = useAppDispatch();
   let { id } = useParams();
-  let team = useAppSelector((state: AppStateType) => state.team.team);
+  let team = useAppSelector((store: AppStateType) => store.team.team);
+  const deleteOperationSucceded = useAppSelector((store:AppStateType)=>store.team.deleteSucceded);
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!id) return;
@@ -29,6 +31,14 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
   useEffect(() => {
     dispatch(errorActions.setErrorMessage(error));
   }, [error]);
+
+  useEffect(()=>{
+    if(deleteOperationSucceded){
+      dispatch(teamsActions.clearState());
+      navigate(-1);
+    }
+  },[deleteOperationSucceded])
+
 
   const requestTeam = (teamId: number) => {
     dispatch(getTeam(teamId));
@@ -48,11 +58,7 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
       if (window.confirm("Are you sure?")) dispatch(deleteTeam(teamId));
     }
   };
-  const navigate = useNavigate()
-  const operationSecceded = useAppSelector((state: AppStateType) => state.team.operationSucceded);
-  useEffect(()=>{
-    if(operationSecceded) navigate("/teams");
-  },[operationSecceded])
+   
   
   return (
     <StyledFlex direction="column">

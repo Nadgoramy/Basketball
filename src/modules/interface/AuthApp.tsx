@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import SideBar from "modules/interface/SideBar";
 import Header from "./Header";
 import { MainContainer, FullScreenContainer } from "./MainContainer";
@@ -11,7 +11,6 @@ import { userActions } from "core/redux/userSlice";
 import { authorizationExpired } from "common/helpers/userCheck";
 
 type AuthProps = {};
-type AuthState = { mobileSideBarOpen: boolean };
 
 const AuthApp: React.FunctionComponent<AuthProps> = (props: AuthProps) => {
   const [mobileSideBarOpen, setMobileSideBarOpen] = useState(false);

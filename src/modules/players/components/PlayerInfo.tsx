@@ -2,7 +2,6 @@ import { StyledFlex } from "common/components/Flex";
 import { AppStateType } from "core/redux/configureStore";
 import { useEffect } from "react";
 import {
-  Link,
   useNavigate,
   useParams,  
 } from "react-router-dom";
@@ -13,7 +12,7 @@ import { getPlayer, deletePlayer } from "../hooks/playerSlice";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { DeleteButton } from "common/components/Button/deleteButton";
 import { errorActions } from "core/redux/errorSlice";
-import { userActions } from "core/redux/userSlice";
+import { playersActions } from "../hooks/playersPageSlice";
 
 type PlayerInfoPtopType = React.HTMLAttributes<HTMLElement> & {};
 
@@ -21,7 +20,8 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
   props: PlayerInfoPtopType
 ) => {
   const dispatch = useAppDispatch();
-  const player = useAppSelector((state: AppStateType) => state.player.player);
+  const player = useAppSelector((store: AppStateType) => store.player.player);
+  const deleteOperationSucceded = useAppSelector((store: AppStateType)=> store.player.deleteSucceded)
   const params = useParams();
   let { id } = useParams();
 
@@ -36,6 +36,12 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
     dispatch(errorActions.setErrorMessage(error));    
   }, [error]);
 
+  useEffect(()=>{
+    if(deleteOperationSucceded){
+      dispatch(playersActions.clearState());
+      navigate(-1);
+    }
+  },[deleteOperationSucceded])
 
   let navigate = useNavigate();
   const routeChange = (id: number) => {
@@ -52,7 +58,7 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
   const handleDeleteClick = (e: any) =>{
     if (!id) return;
     let playerId = parseInt(id);
-    dispatch(deletePlayer(playerId));
+    dispatch(deletePlayer(playerId));    
   }
 
   return (

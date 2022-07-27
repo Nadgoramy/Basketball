@@ -36,6 +36,7 @@ import { useNavigate } from "react-router-dom";
 import BirthdayCalendarInput from "common/components/BirthdayCalendarInput";
 import { ErrorInputSpan } from "common/components/ErrorInputSpan";
 import Preloader from "common/components/preloader";
+import { playersActions } from "../hooks/playersPageSlice";
 
 const PlayerEdit: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
@@ -49,7 +50,7 @@ const PlayerEdit: React.FunctionComponent = () => {
   const teamOptions = useAppSelector((store) => store.teamOptions.options);
   const player = useAppSelector((state: AppStateType) => state.player.player);
   const operationSecceded = useAppSelector(
-    (state: AppStateType) => state.team.operationSucceded
+    (state: AppStateType) => state.player.updateSucceded
   );
   const isFetching = useAppSelector((store) => store.player.isFetching);
   const [initialState, setInitialState] = useState<PlayerDto | null>();
@@ -58,7 +59,6 @@ const PlayerEdit: React.FunctionComponent = () => {
     handleSubmit,
     reset,
     formState: { errors, isDirty },
-    getValues,
     setValue,
     control,
     watch,
@@ -102,13 +102,16 @@ const PlayerEdit: React.FunctionComponent = () => {
   }, [player]);
 
   useEffect(() => {
-    if (operationSecceded) redirect();
+    if (operationSecceded) {
+      dispatch(playersActions.clearState());
+      
+      navigate("/players/"+player.id);
+    }
   }, [operationSecceded]);
-
-  const handleChange = (file: any) => {
-    setFile(file);
+const redirect = () => {
+    // navigate(-1)
   };
-
+  
   const handleFiles = (file: File) => {
     removeImageIfNeeded();
 
@@ -118,11 +121,7 @@ const PlayerEdit: React.FunctionComponent = () => {
       console.log(url);
     });
   };
-  const redirect = () => {
-    /*if (id && parseInt(id) > 0) {
-      navigate("/players/" + id);
-    } else navigate("/players");*/
-  };
+  
   const removeImageIfNeeded = () => {
     if (id == "0" && currentAvatarUrl) removeImageOnServer(currentAvatarUrl);
     if (
