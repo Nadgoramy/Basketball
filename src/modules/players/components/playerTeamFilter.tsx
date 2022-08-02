@@ -56,7 +56,7 @@ export const PlayerTeamFilter: React.FunctionComponent = () => {
 
     let count = 0;
     let childrenWidth = 0;
-    const dotsWidth = 30;
+    const dotsWidth = 40;
     multiValuesNodes.forEach((child: any) => {
       if (
         child.className.includes("Select__multi-value") &&
@@ -77,37 +77,26 @@ export const PlayerTeamFilter: React.FunctionComponent = () => {
     } else {
       let selectedItems = (selectRef.current as any).getValue();
       if (selectedItems.length <= count) {
+        setMaxToShow(count + 1);
         return;
       }
 
       let approximateNexItemLength = selectedItems[count].label.length * 8 + 44;
 
-      if (multiValueContainerRef.clientWidth - childrenWidth > 150) {
-        if (selectedItems.length >= count + 1) {
-          if (
-            (selectedItems.length > count + 1 &&
-              multiValueContainerRef.clientWidth -
-                childrenWidth -
-                approximateNexItemLength >
-                dotsWidth) ||
-            (selectedItems.length == count + 1 &&
-              multiValueContainerRef.clientWidth -
-                childrenWidth -
-                approximateNexItemLength >
-                10)
-          ) {
-            setMaxToShow(count + 1);
-          } else setMaxToShow(count);
-        } else {
-          setMaxToShow(count + 1);
-        }
-      } else {
-        if (multiValueContainerRef.clientWidth - childrenWidth > dotsWidth) {
-          //setMaxToShow(count);
-        } else {
-          setMaxToShow(count - 1);
-        }
-      }
+      if (
+        (selectedItems.length > count + 1 &&
+          multiValueContainerRef.clientWidth -
+            childrenWidth -
+            approximateNexItemLength >
+            dotsWidth) ||
+        (selectedItems.length == count + 1 &&
+          multiValueContainerRef.clientWidth -
+            childrenWidth -
+            approximateNexItemLength >
+            10)
+      ) {
+        setMaxToShow(count + 1);
+      } else setMaxToShow(count);
     }
     console.log(multiValueContainerRef.clientHeight);
   }
