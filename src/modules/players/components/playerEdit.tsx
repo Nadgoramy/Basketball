@@ -104,24 +104,24 @@ const PlayerEdit: React.FunctionComponent = () => {
   useEffect(() => {
     if (operationSecceded) {
       dispatch(playersActions.clearState());
-      
-      navigate("/players/"+player.id);
+
+      navigate("/players/" + player.id);
     }
   }, [operationSecceded]);
-const redirect = () => {
+  const redirect = () => {
     // navigate(-1)
   };
-  
+
   const handleFiles = (file: File) => {
     removeImageIfNeeded();
 
     ImageService.saveImage(file)?.then((url: string) => {
-      setValue("avatarUrl", url, {shouldDirty: true});
+      setValue("avatarUrl", url, { shouldDirty: true });
       setCurrentAvatarUrl(url);
       console.log(url);
     });
   };
-  
+
   const removeImageIfNeeded = () => {
     if (id == "0" && currentAvatarUrl) removeImageOnServer(currentAvatarUrl);
     if (
@@ -133,14 +133,14 @@ const redirect = () => {
   };
   const removeImageOnServer = (url: string) => {
     return ImageService.deleteImage(url)?.then((res: any) => {
-      setCurrentAvatarUrl(player.avatarUrl)
+      setCurrentAvatarUrl(player.avatarUrl);
     });
   };
   function setFormValues(player: PlayerDto | null) {
     reset({
       id: player?.id,
       name: player?.name,
-      birthday: player?.birthday ,
+      birthday: player?.birthday,
       height: player?.height,
       weight: player?.weight,
       avatarUrl: player?.avatarUrl,
@@ -161,7 +161,7 @@ const redirect = () => {
   };
   const onCancel = () => {
     removeImageIfNeeded();
-    setFormValues(player)
+    setFormValues(player);
     redirect();
   };
   const values = watch();
@@ -226,22 +226,17 @@ const redirect = () => {
                       ref={ref}
                     />
                   )}
-                />
-                {errors.position && (
-                  <ErrorInputSpan>{errors.position.message}</ErrorInputSpan>
-                )}
+                />                  
+                  {errors.position && (
+                    <ErrorInputSpan>{errors.position.message}</ErrorInputSpan>
+                  )}
               </div>
               <div>
                 <p>Team</p>
                 <Controller
                   control={control}
                   rules={{
-                    required: true,
-                    validate: (value) => {
-                      if (!value || value < 0) {
-                        return "Please provide input name";
-                      }
-                    },
+                    required: "Team is required",
                   }}
                   name="team"
                   render={({
@@ -251,6 +246,7 @@ const redirect = () => {
                   }) => (
                     <StyledSelect
                       classNamePrefix="Select"
+                      className={errors.position ? "error" : ""}
                       options={teamOptions}
                       menuPlacement="auto"
                       onChange={(newValue, action) => {
@@ -266,6 +262,9 @@ const redirect = () => {
                     />
                   )}
                 />
+                {errors.team && (
+                  <ErrorInputSpan>{errors.team.message}</ErrorInputSpan>
+                )}
               </div>
               <StyledFlexRow>
                 <div>
@@ -299,7 +298,7 @@ const redirect = () => {
                     control={control}
                     name="birthday"
                     rules={{
-                      required: "Birthday is required",                      
+                      required: "Birthday is required",
                     }}
                     render={({
                       field: { onChange, onBlur, value, name, ref },

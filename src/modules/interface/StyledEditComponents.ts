@@ -6,6 +6,9 @@ export const StyledHeaderContainer = styled.div`
   background: ${({ theme }) => theme.colors.white};
   border-radius: 10px 10px 0px 0px;
   color: ${({ theme }) => theme.colors.red};
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 24px;
 
   display: flex;
   flex-direction: row;
@@ -18,12 +21,15 @@ export const StyledHeaderContainer = styled.div`
     padding: 12px 16px;
     border-radius: 0;
     margin-top: 16px;
+
+    font-size: 13px;
+    line-height: 18px;
   }
 
   a {
-    textdecoration: none;
+    text-decoration: none;
     &a:-webkit-any-link {
-      textdecoration: none;
+      text-decoration: none;
     }
   }
 `;
@@ -35,41 +41,46 @@ export const StyledMainContainer = styled.div`
   margin: 0;
   gap: 60px;
 
-  @media(max-width: ${({ theme }) => theme.mobile}){
-    flex-direction: column;   
-    margin: 16px 24px; 
+  @media (max-width: ${({ theme }) => theme.mobile}) {
+    flex-direction: column;
+    margin: 16px 24px;
     gap: 0px;
   }
 
-  &>div{
+  & > div {
     flex: 1 1 380px;
-    @media(max-width: ${({ theme }) => theme.mobile}){
+    @media (max-width: ${({ theme }) => theme.mobile}) {
       flex: 1 1 auto;
     }
   }
 
-  form{
+  form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
     margin-top: 40px;
-    @media(max-width: ${({ theme }) => theme.mobile}){
+    max-width: 365px;
+    @media (max-width: ${({ theme }) => theme.mobile}) {
       margin-top: 0px;
-      gap: 16px;
+      max-width: none;
     }
-  
-   div>p{
-        margin-top:8px;
-        margin-bottom:2px;
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 24px;
+    & > div {
+      height: 90px;
+    }
+    div > button {
+      margin-top: 8px;
+    }
+    div > p {
+      margin-top: 8px;
+      margin-bottom: 2px;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 24px;
+    }
   }
-}
 `;
 
-export const StyledEditContainer=styled(StyledFlex)`
-@media(max-width: ${({ theme }) => theme.mobile}){
-  //margin: 16px 24px; 
-}
-`
+export const StyledEditContainer = styled(StyledFlex)`
+  @media (max-width: ${({ theme }) => theme.mobile}) {
+    //margin: 16px 24px;
+  }
+`;

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useLayoutEffect, useEffect, useRef, useState } from "react";
 import { playersActions } from "modules/players/hooks/playersPageSlice";
 import { PlayerCard } from "./playerCard";
 import { PlayerDto } from "api/Dto/playerDto";
@@ -14,8 +14,8 @@ import {
   getTeamsOptions,
 } from "modules/players/selectors";
 import Preloader from "common/components/preloader";
-import { Link, useNavigate } from "react-router-dom";
-import {  
+import { useNavigate } from "react-router-dom";
+import {
   StyledFooter,
   StyledGrid,
   StyledGridContainer,
@@ -36,6 +36,9 @@ import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { getTeamOptions } from "../hooks/teamOptionSlice";
 import { pageSizeOptions } from "common/helpers/pageSizeOptions";
 import { errorActions } from "core/redux/errorSlice";
+import { components, MultiValueProps } from "react-select";
+import { AppStateType } from "core/redux/configureStore";
+import {PlayerTeamFilter} from "modules/players/components/playerTeamFilter"
 
 type PropsType = {};
 export const PlayerList: React.FunctionComponent<PropsType> = (
@@ -54,18 +57,17 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
 
   const teamNames = useAppSelector(getTeamsOptions);
   useEffect(() => {
-    dispatch(getTeamOptions())
+    dispatch(getTeamOptions());
   }, []);
-  
+
   useEffect(() => {
-    dispatch(errorActions.setErrorMessage(error))
+    dispatch(errorActions.setErrorMessage(error));
   }, [error]);
 
-useEffect(()=>{
-  if(teamNames && players)
-    dispatch(playersActions.setPlayerTeamName(teamNames))
-},[teamNames, players])
-
+  useEffect(() => {
+    if (teamNames && players)
+      dispatch(playersActions.setPlayerTeamName(teamNames));
+  }, [teamNames, players]);
 
   useEffect(() => {
     dispatch(
@@ -87,28 +89,12 @@ useEffect(()=>{
   const updateCurrentPage = (n: number) => {
     dispatch(playersActions.setPageNumber(n));
   };
-  const updateTeamFilter = (evn: OptionTypeValueNumber[]) => {
-    if (!evn) dispatch(playersActions.setTeamFilter(null));
-    else {
-      let teamRequest: number[] = [];
-      evn.map((item) => teamRequest.push(item.value));
-      dispatch(playersActions.setTeamFilter(teamRequest));
-    }
-  };
-
+  
   return (
     <StyledMainContainer direction="column">
-      <StyledHeader>        
-          <Search onChange={(evt) => updateFilterValue(evt)} value={filter} />
-          <StyledMultiSelect
-            classNamePrefix="Select"
-            options={teamNames}
-            isMulti            
-            value={teamNames.filter(obj => teamIds.includes(obj.value))} 
-            onChange={(e: any) =>
-              updateTeamFilter(e as OptionTypeValueNumber[])
-            }
-          />        
+      <StyledHeader>
+        <Search onChange={(evt) => updateFilterValue(evt)} value={filter} />
+        <PlayerTeamFilter />        
         <StyledButton mode="add" onClick={() => navigate("edit/0")}>
           Add &nbsp;<span id="plus">&nbsp;+</span>
         </StyledButton>
@@ -116,44 +102,44 @@ useEffect(()=>{
       {isFetching && <Preloader />}
       {players && players.length == 0 && <EmptyListScreen mode="player" />}
       <StyledGridContainer>
-      <StyledGrid>
-        {players &&
-          players.map((p: PlayerDto) => <PlayerCard player={p} key={p.id} />)}
-      </StyledGrid>
+        <StyledGrid>
+          {players &&
+            players.map((p: PlayerDto) => <PlayerCard player={p} key={p.id} />)}
+        </StyledGrid>
       </StyledGridContainer>
 
-      {Math.ceil(itemsCount / pageSize)>0 &&
-      <StyledFooter>        
-      <div id="footerFlex">
-        <StyledPaginateContainer>       
-          <ReactPaginate
-            previousLabel="<"
-            nextLabel=">"
-            breakLabel="..."
-            breakClassName="break-me"
-            pageCount={Math.ceil(itemsCount / pageSize)}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={5}
-            onPageChange={(pagination: any) => {              
-              updateCurrentPage(pagination.selected + 1);
-            }}
-            containerClassName="pagination"
-            activeClassName="active"
-            forcePage={currentPage - 1}
-          />
-        </StyledPaginateContainer>
-        <StyledSelect
-          classNamePrefix="Select"
-          className="pagesizeSelector"
-          options={pageSizeOptions}
-          defaultValue={pageSizeOptions[0]}
-          onChange={handlePageSizeSelect}
-          menuPlacement="auto"
-          value={pageSizeOptions.filter(({ value }) => value === pageSize)}
-        />
-        </div>
-      </StyledFooter>
-    }
+      {Math.ceil(itemsCount / pageSize) > 0 && (
+        <StyledFooter>
+          <div id="footerFlex">
+            <StyledPaginateContainer>
+              <ReactPaginate
+                previousLabel="<"
+                nextLabel=">"
+                breakLabel="..."
+                breakClassName="break-me"
+                pageCount={Math.ceil(itemsCount / pageSize)}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={(pagination: any) => {
+                  updateCurrentPage(pagination.selected + 1);
+                }}
+                containerClassName="pagination"
+                activeClassName="active"
+                forcePage={currentPage - 1}
+              />
+            </StyledPaginateContainer>
+            <StyledSelect
+              classNamePrefix="Select"
+              className="pagesizeSelector"
+              options={pageSizeOptions}
+              defaultValue={pageSizeOptions[0]}
+              onChange={handlePageSizeSelect}
+              menuPlacement="auto"
+              value={pageSizeOptions.filter(({ value }) => value === pageSize)}
+            />
+          </div>
+        </StyledFooter>
+      )}
     </StyledMainContainer>
   );
 };

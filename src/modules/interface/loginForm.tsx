@@ -10,80 +10,7 @@ import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { errorActions } from "core/redux/errorSlice";
 import { login } from "core/redux/userSlice";
 import { LoginFormDto } from "api/Dto/userDto";
-
-const StyledLoginContainer = styled.div`
-  margin: auto;
-  flex: 1 1 606px;
-  @media (max-width: ${({ theme }) => theme.mobile}) {
-    margin: 0 24px 0 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  h4 {
-    font-style: normal;
-    font-weight: 400;
-    font-size: 36px;
-    line-height: 49px;
-    color: #344472;
-    padding-bottom: 32px;
-    margin: 0 0;
-
-    @media (max-width: ${({ theme }) => theme.mobile}) {
-      text-align: center;
-    }
-  }
-
-  form {
-    width: 365px;
-    margin: auto;
-    @media (max-width: ${({ theme }) => theme.mobile}) {
-      width: 100%;
-      margin: auto;
-    }
-  }
-
-  div {
-    margin-bottom: 24px;
-
-    p {
-      height: 18px;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 24px;
-      color: ${({ theme }) => theme.colors.grey};
-      margin: 0 0 8px 0;
-
-      @media (max-width: ${({ theme }) => theme.mobile}) {
-        font-size: 17px;
-        line-height: 25px;
-      }
-    }
-    button {
-      height: 40px;
-    }
-  }
-
-  button {
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 24px;
-  }
-
-  nav {
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 24px;
-    text-align: center;
-    position: relative;
-    color: ${({ theme }) => theme.colors.grey};
-
-    a {
-      color: ${({ theme }) => theme.colors.lightest_red};
-    }
-  }
-`;
+import { StyledFormContainer } from "./AuthComponents";
 
 type PropsType = {
   setError?: (msg: string) => void;
@@ -134,7 +61,7 @@ const LoginForm: React.FC<PropsType> = (props) => {
   };
 
   return (
-    <StyledLoginContainer>
+    <StyledFormContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
         <h4>Sign In</h4>
         <div>
@@ -165,7 +92,7 @@ const LoginForm: React.FC<PropsType> = (props) => {
           <NavLink to="/register">Sing up</NavLink>
         </nav>
       </form>
-    </StyledLoginContainer>
+    </StyledFormContainer>
   );
 };
 

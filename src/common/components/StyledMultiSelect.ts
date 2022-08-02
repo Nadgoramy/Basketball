@@ -1,6 +1,5 @@
 import React from "react";
-import ReactSelect, { Props } from "react-select";
-//import {defaultProps} from "react-select/dist/declaration/Select"
+import ReactSelect from "react-select";
 import styled from "styled-components";
 
 export const StyledMultiSelect = styled(ReactSelect)`
@@ -24,6 +23,8 @@ export const StyledMultiSelect = styled(ReactSelect)`
     background: ${({ theme }) => theme.colors.red};
     border-radius: 4px;
     color: ${({ theme }) => theme.colors.white};
+    padding: 0 4px 0 4px;
+    height: 24px;
   }
   .Select__multi-value__label {
     color: ${({ theme }) => theme.colors.white};
@@ -53,14 +54,14 @@ export const StyledMultiSelect = styled(ReactSelect)`
     border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
     box-shadow: none;
   }
-  
+
   .Select__option {
     border-bottom: "0.5px solid ${({ theme }) => theme.colors.lightest_grey}";
     color: ${({ theme }) => theme.colors.light_grey};
     backgroundcolor: ${({ theme }) => theme.colors.white};
   }
   .Select__option:hover {
-    background-color:${({ theme }) => theme.colors.dark_red};
+    background-color: ${({ theme }) => theme.colors.dark_red};
     color: ${({ theme }) => theme.colors.white};
   }
   .Select__option:focused {
@@ -71,22 +72,15 @@ export const StyledMultiSelect = styled(ReactSelect)`
     background-color: ${({ theme }) => theme.colors.lightest_red};
     color: ${({ theme }) => theme.colors.white};
   }
+
+  input{
+    display:none;
+  }
 `;
 export interface SelectProps
-  extends React.HTMLAttributes<HTMLSelectElement | HTMLInputElement> {    
+  extends React.HTMLAttributes<HTMLSelectElement | HTMLInputElement> {
   options: Array<any>;
   isMulti: boolean;
   isDisabled: boolean;
   isSearchable: boolean;
 }
-/**
-type KnownKeys<T> = {
-  [K in keyof T]: string extends K ? never : number extends K ? never : K
-} extends {[_ in keyof T]: infer U}
-  ? U
-  : never;
-
-export type CustomSelectProps<T> = Pick<
-  ReactSelect<T>['props'],
-  KnownKeys<ReactSelect<T>['props']>
->;*/

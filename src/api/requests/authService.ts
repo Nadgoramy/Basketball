@@ -1,40 +1,44 @@
-import {post} from '../baseRequest';
-import {AuthUserDto} from '../Dto/AuthUserDto'
+import { post } from "../baseRequest";
+import { AuthUserDto } from "../Dto/AuthUserDto";
 
 const API_URL = "auth/";
-const throwError =(msg: string) => { throw Error(msg);}
+const throwError = (msg: string) => {
+  throw Error(msg);
+};
 
-const register = (username:string, login: string, password:string) => {
+const register = (username: string, login: string, password: string) => {
   return post(API_URL + "signup", {
     username,
     login,
     password,
-  })
+  });
 };
-const login = (login: string, password:string) => {
-  console.log(login+"/"+password);
+const login = (login: string, password: string) => {
+  console.log(login + "/" + password);
   return post(API_URL + "signin", {
-      login,
-      password,
-    })    
+    login,
+    password,
+  });
 };
 
 const change = (username: string, avatarUrl: string) => {
-    return post(API_URL + "change", {
-        username,
-        avatarUrl,
-      })
-      .then((response) => {        
-        return response.data;
-      });
-  };
+  return post(API_URL + "change", {
+    username,
+    avatarUrl,
+  }).then((response) => {
+    return response.data;
+  });
+};
 
-const getCurrentUser = () : AuthUserDto|null => {
-  
+const getCurrentUser = (): AuthUserDto | null => {
   let userFromStorage = localStorage.getItem("user");
-  if(!userFromStorage) return null;
+  if (!userFromStorage) return null;
   let user = JSON.parse(userFromStorage);
-  return {name: user.name, avatarUrl:user.avatarUrl, token:user.token} as AuthUserDto;
+  return {
+    name: user.name,
+    avatarUrl: user.avatarUrl,
+    token: user.token,
+  } as AuthUserDto;
 };
 
 const AuthService = {
@@ -43,4 +47,3 @@ const AuthService = {
   getCurrentUser,
 };
 export default AuthService;
-

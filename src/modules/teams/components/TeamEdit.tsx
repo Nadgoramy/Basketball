@@ -21,20 +21,24 @@ import { teamsActions } from "../hooks/teamsPageSlice";
 
 const TeamEdit = () => {
   const team = useAppSelector((state: AppStateType) => state.team.team);
-  const operationSecceded = useAppSelector((state: AppStateType) => state.team.updateSucceded);
+  const operationSecceded = useAppSelector(
+    (state: AppStateType) => state.team.updateSucceded
+  );
   const [initialState, setInitialState] = useState<TeamDto | null>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   let { id } = useParams();
   const [file, setFile] = useState(null);
-  const [currentImageUrl, setCurrentImageUrl] = useState<string| undefined>(undefined);
+  const [currentImageUrl, setCurrentImageUrl] = useState<string | undefined>(
+    undefined
+  );
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isDirty },
     getValues,
-    setValue
+    setValue,
   } = useForm<TeamDto>();
 
   const error = useAppSelector((store: AppStateType) => store.player.error);
@@ -43,25 +47,24 @@ const TeamEdit = () => {
   }, [error]);
 
   useEffect(() => {
-    if (id  && parseInt(id)>0) {
-       dispatch(getTeam(parseInt(id)));
-    }   
-    else{
+    if (id && parseInt(id) > 0) {
+      dispatch(getTeam(parseInt(id)));
+    } else {
       dispatch(teamActions.setTeam(emptyTeam));
     }
   }, []);
-  useEffect(()=>{
-    setInitialState(team)
-    setFormValues(team)
-    setCurrentImageUrl(team?.imageUrl)
-  },[team])
+  useEffect(() => {
+    setInitialState(team);
+    setFormValues(team);
+    setCurrentImageUrl(team?.imageUrl);
+  }, [team]);
 
-  useEffect(()=>{
-    if(operationSecceded){ 
-      dispatch(teamsActions.clearState())
-      navigate("/teams/"+team.id);
+  useEffect(() => {
+    if (operationSecceded) {
+      dispatch(teamsActions.clearState());
+      navigate("/teams/" + team.id);
     }
-  },[operationSecceded])
+  }, [operationSecceded]);
 
   const emptyTeam: TeamDto = {
     name: "",
@@ -70,7 +73,7 @@ const TeamEdit = () => {
     foundationYear: 2000,
     imageUrl: "",
     id: 0,
-    players: []
+    players: [],
   };
 
   function setFormValues(team: TeamDto | null) {
@@ -80,116 +83,121 @@ const TeamEdit = () => {
       division: team?.division,
       conference: team?.conference,
       foundationYear: team?.foundationYear,
-      imageUrl: team?.imageUrl
-    })
-  }
-  
-  const handleFiles = (file: File) => {    
-    removeImageIfNeeded()
-    ImageService.saveImage(file)?.then((url: string) => {
-      console.log(url);
-      setCurrentImageUrl(url)
-      setValue("imageUrl", url, {shouldDirty: true})
-    }).catch(e=>dispatch(errorActions.setErrorMessage(e.message)));
-  };
-
-  
-  const onSubmit = (data: TeamDto) => {
-    if(!isDirty) return
-    
-    let teamId=parseInt(id??"0")
-    if (teamId) {
-      dispatch(updateTeam(data))      
-    } else{
-      dispatch(addTeam(data))
-      }     
-  };
-  const onCancel=()=>{    
-    removeImageIfNeeded()
-    setFormValues(team)    
-  }
-  const removeImageIfNeeded=()=>{
-    if(id=="0" && currentImageUrl) removeImageOnServer(currentImageUrl)
-    if(currentImageUrl && initialState?.imageUrl && currentImageUrl != initialState.imageUrl)
-      removeImageOnServer(currentImageUrl)
-  }  
-  const removeImageOnServer=(url:string)=>{
-    ImageService.deleteImage(url)?.then((url: string) => {
-      setCurrentImageUrl(team.imageUrl)
+      imageUrl: team?.imageUrl,
     });
   }
-  
+
+  const handleFiles = (file: File) => {
+    removeImageIfNeeded();
+    ImageService.saveImage(file)
+      ?.then((url: string) => {
+        console.log(url);
+        setCurrentImageUrl(url);
+        setValue("imageUrl", url, { shouldDirty: true });
+      })
+      .catch((e) => dispatch(errorActions.setErrorMessage(e.message)));
+  };
+
+  const onSubmit = (data: TeamDto) => {
+    if (!isDirty) return;
+
+    let teamId = parseInt(id ?? "0");
+    if (teamId) {
+      dispatch(updateTeam(data));
+    } else {
+      dispatch(addTeam(data));
+    }
+  };
+  const onCancel = () => {
+    removeImageIfNeeded();
+    setFormValues(team);
+  };
+  const removeImageIfNeeded = () => {
+    if (id == "0" && currentImageUrl) removeImageOnServer(currentImageUrl);
+    if (
+      currentImageUrl &&
+      initialState?.imageUrl &&
+      currentImageUrl != initialState.imageUrl
+    )
+      removeImageOnServer(currentImageUrl);
+  };
+  const removeImageOnServer = (url: string) => {
+    ImageService.deleteImage(url)?.then((url: string) => {
+      setCurrentImageUrl(team.imageUrl);
+    });
+  };
 
   return (
     <StyledFlex direction="column">
-        <StyledHeaderContainer>
-          <span className="headerText">
-            <StyledLink to="/teams">Teams</StyledLink>
-            <span> / </span>
-            <span>{id ? "Edit team" : "Add new team"}</span>
-          </span>
-        </StyledHeaderContainer>
-        <StyledMainContainer>
-          <div>
-            <DragDropFile handleFiles={handleFiles} url={currentImageUrl} />
-          </div>
-          <div>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div>
-                <p>Name</p>
-                <Input
-                  type="text"
-                  {...register("name", {
-                    required: "Name is required",
-                    maxLength: 30,
-                  })}
-                  error={errors.name?.message}
-                />
-              </div>
-              <div>
-                <p>Division</p>
-                <Input
-                  type="text"
-                  {...register("division",                  
-                  {
-                    required: "Division is required",
-                    maxLength: 30,
-                  })}
-                  error={errors.division?.message}
-                />
-              </div>
-              <div>
-                <p>Conference</p>
-                <Input
-                  type="text"
-                  {...register("conference", {
-                    required: "Conference is required",
-                    maxLength: 30,
-                  })}
-                  error={errors.conference?.message}
-                />
-              </div>
+      <StyledHeaderContainer>
+        <span className="headerText">
+          <StyledLink to="/teams">Teams</StyledLink>
+          <span> / </span>
+          <span>{id && parseInt(id) > 0 ? "Edit team" : "Add new team"}</span>
+        </span>
+      </StyledHeaderContainer>
+      <StyledMainContainer>
+        <div>
+          <DragDropFile handleFiles={handleFiles} url={currentImageUrl} />
+        </div>
+        <div>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div>
+              <p>Name</p>
+              <Input
+                type="text"
+                {...register("name", {
+                  required: "Name is required",
+                  maxLength: 30,
+                })}
+                error={errors.name?.message}
+              />
+            </div>
+            <div>
+              <p>Division</p>
+              <Input
+                type="text"
+                {...register("division", {
+                  required: "Division is required",
+                  maxLength: 30,
+                })}
+                error={errors.division?.message}
+              />
+            </div>
+            <div>
+              <p>Conference</p>
+              <Input
+                type="text"
+                {...register("conference", {
+                  required: "Conference is required",
+                  maxLength: 30,
+                })}
+                error={errors.conference?.message}
+              />
+            </div>
 
-              <div>
-                <p>Year of foundation</p>
-                <Input
-                  type="number"
-                  {...register("foundationYear", {
-                    required: "Year of foundation is required",
-                    maxLength: 30,
-                  })}
-                  error={errors.foundationYear?.message}
-                />
-              </div>
-              <StyledFlexRow>
-              <StyledButton mode="cancel" type="button" onClick={onCancel}>Cancel</StyledButton>
-                <StyledButton type="submit">Save</StyledButton>
-              </StyledFlexRow>
-              <input type="hidden" {...register("imageUrl")} />
-              <input type="hidden" {...register("id")} />
-            </form>
-          </div>
-        </StyledMainContainer>
+            <div>
+              <p>Year of foundation</p>
+              <Input
+                type="number"
+                {...register("foundationYear", {
+                  required: "Year of foundation is required",
+                  maxLength: 30,
+                })}
+                error={errors.foundationYear?.message}
+              />
+            </div>
+            <StyledFlexRow>
+              <StyledButton mode="cancel" type="button" onClick={onCancel}>
+                Cancel
+              </StyledButton>
+              <StyledButton type="submit">Save</StyledButton>
+            </StyledFlexRow>
+            <input type="hidden" {...register("imageUrl")} />
+            <input type="hidden" {...register("id")} />
+          </form>
+        </div>
+      </StyledMainContainer>
     </StyledFlex>
   );
 };

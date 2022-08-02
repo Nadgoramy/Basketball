@@ -1,17 +1,17 @@
 export interface NewPlayerDto {
-  name?: string ;
-  number?: number ;
-  height?: number ;
+  name?: string;
+  number?: number;
+  height?: number;
   birthday?: Date;
-  weight?: number ;
-  position?: string ;
-  team?: number ;
-  avatarUrl?: string ;
+  weight?: number;
+  position?: string;
+  team?: number;
+  avatarUrl?: string;
 }
 
 export interface PlayerDto extends NewPlayerDto {
-  id?: number ;
-  teamName?: string ;
+  id?: number;
+  teamName?: string;
 }
 
 export interface PlayerDtoPageResult {

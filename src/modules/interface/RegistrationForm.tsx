@@ -1,77 +1,17 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import styled from "styled-components";
 import Input from "common/components/Input/Input";
 import { StyledButton } from "common/components/Button/Button.styled";
 import Checkbox from "common/components/Checkbox";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import PasswordInput from "common/components/PasswordInput";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { errorActions } from "core/redux/errorSlice";
 import { register as userRegister } from "core/redux/userSlice";
 import { RegisterFormDto } from "api/Dto/userDto";
 import { AppStateType } from "core/redux/configureStore";
+import { StyledFormContainer } from "./AuthComponents";
 
-const StyledFormContainer = styled.div`
-  display: flex;
-  margin: auto;
-  flex: 1 1 606px;
-  justify-content: center;
-  @media (max-width: ${({ theme }) => theme.mobile}) {
-    margin: 0 24px 0 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  h4 {
-    font-style: normal;
-    font-weight: 400;
-    font-size: 36px;
-    line-height: 49px;
-    color: #344472;
-    padding-bottom: 32px;
-    margin: 0 0;
-
-    @media (max-width: ${({ theme }) => theme.mobile}) {
-      text-align: center;
-    }
-  }
-
-  form {
-    width: 365px;
-    margin: auto 24px;
-    @media (max-width: ${({ theme }) => theme.mobile}) {
-      width: 100%;
-      margin: auto;
-    }
-  }
-
-  div {
-    margin-bottom: 18px;
-
-    p {
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 24px;
-      color: ${({ theme }) => theme.colors.grey};
-      margin: 0 0 8px 0;
-    }
-    button {
-      height: 40px;
-    }
-  }
-
-  nav {
-    text-align: center;
-    position: relative;
-    color: ${({ theme }) => theme.colors.grey};
-
-    a {
-      color: ${({ theme }) => theme.colors.lightest_red};
-    }
-  }
-`;
 
 interface UserSubmitForm extends RegisterFormDto {
   confirmPassword: string;
@@ -120,7 +60,7 @@ const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
     }
   }, [error]);
 
-  const onSubmit = (data: UserSubmitForm) => {    
+  const onSubmit = (data: UserSubmitForm) => {
     dispatch(userRegister(data));
   };
 
@@ -196,7 +136,7 @@ const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
               e.preventDefault();
               setValue("acceptTerms", !e.target.checked, {
                 shouldValidate: true,
-              });              
+              });
             }}
             error={errors.acceptTerms?.message}
           />
@@ -207,7 +147,6 @@ const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
         <nav>
           <span>Already a member? </span>
           <NavLink to="/">Sing in</NavLink>
-          
         </nav>
       </form>
     </StyledFormContainer>

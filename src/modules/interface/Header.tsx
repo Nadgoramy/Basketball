@@ -5,7 +5,6 @@ import noUserImg from "asserts/images/profile.svg";
 import { useAppSelector } from "core/redux/store";
 
 const StyledHeader = styled.header`
-  /*max-width:1440px;*/
   position: absolute;
   left: 0%;
   right: 0%;
@@ -22,7 +21,6 @@ const StyledHeader = styled.header`
 
 const Nav = styled.nav`
   display: flex;
-  align-items: center;
   justify-content: space-between;
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
@@ -33,15 +31,16 @@ const Nav = styled.nav`
 const Logo = styled.img`
   margin: 16px 51px;
   width: 191px;
+  height: 48px;
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
     margin: 14px auto;
     width: 137px;
+    height: 34px;
   }
 `;
 const OpenLinkButton = styled.button`
   width: 24px;
-  //margin: 19px 12px;
   border: none;
   cursor: pointer;
   background: none;
@@ -53,6 +52,7 @@ const OpenLinkButton = styled.button`
   font-size: 36px;
   font-weight: 800;
   padding: 0;
+  padding-top: 3px;
 
   @media (min-width: ${({ theme }) => theme.mobile}) {
     display: none;
@@ -60,31 +60,33 @@ const OpenLinkButton = styled.button`
 `;
 
 const UserPrifile = styled.div`
-padding: 22px 51px;
-display: inline;
+  padding: 22px 51px;
+  display: inline;
 
-label{
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 24px;
-  padding-right: 19px;  
-  color: #303030;
+  label {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 24px;
+    padding-right: 19px;
+    color: #303030;
 
-  position: relative;
-  top: -12px;
-}
-img{
-  width: 36px;
-  height: 36px;  
-}
+    position: relative;
+    top: -12px;
+  }
+  img {
+    width: 36px;
+    height: 36px;
+  }
 
-@media (max-width: ${({ theme }) => theme.mobile}) {
-  display: none;
-}
+  @media (max-width: ${({ theme }) => theme.mobile}) {
+    display: none;
+  }
 `;
 
 const Header = (props: any) => {
-  const userFromStore = useAppSelector((state: AppStateType) => state.user.currentUser);
+  const userFromStore = useAppSelector(
+    (state: AppStateType) => state.user.currentUser
+  );
 
   return (
     <StyledHeader>
@@ -97,7 +99,9 @@ const Header = (props: any) => {
           <label>{userFromStore?.name}</label>
           <img
             src={
-              userFromStore && userFromStore.avatarUrl >"" ? userFromStore?.avatarUrl : noUserImg
+              userFromStore && userFromStore.avatarUrl > ""
+                ? userFromStore?.avatarUrl
+                : noUserImg
               //noUserImg
             }
           />

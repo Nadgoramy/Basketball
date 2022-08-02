@@ -26,11 +26,12 @@ const request = async (
   data: IRequestBaseBody,
   token: string | undefined
 ) => {
-  const headersForToken = token && !tokenExpired(token)
-    ? {
-        Authorization: `Bearer ${token}`,
-      }
-    : {};
+  const headersForToken =
+    token && !tokenExpired(token)
+      ? {
+          Authorization: `Bearer ${token}`,
+        }
+      : {};
   const headerForMultiPart =
     typeof data.body === "string"
       ? {
@@ -62,9 +63,9 @@ const request = async (
 
     throw { isCustomError: true, status: response.status };
   } catch (error: any) {
-    if(error.isCustomError) throw error;  
-    
-    throw { message: error.message, };
+    if (error.isCustomError) throw error;
+
+    throw { message: error.message };
   }
 };
 
