@@ -1,65 +1,68 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppStateType } from "core/redux/configureStore";
 import { StyledFlex, StyledFlexRow } from "common/components/Flex";
-import * as Info from "modules/interface/InfoComponents";
+import * as Info from "common/components/InfoComponents";
 import { EditLink } from "common/components/Link/editLink";
 import { StyledLink } from "common/components/Link/styledLink";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
-import { deleteTeam, getTeam } from "../hooks/teamSlice";
+import { deleteTeam, getTeam, teamActions } from "../hooks/teamSlice";
 import { DeleteButton } from "common/components/Button/deleteButton";
 import { errorActions } from "core/redux/errorSlice";
 import { teamsActions } from "../hooks/teamsPageSlice";
+import debounce from "lodash.debounce";
 
 type PropTypes = {};
 export const TeamInfo: React.FunctionComponent<PropTypes> = (
   props: PropTypes
 ) => {
   const dispatch = useAppDispatch();
-  let { id } = useParams();
-  let team = useAppSelector((store: AppStateType) => store.team.team);
-  const deleteOperationSucceded = useAppSelector((store:AppStateType)=>store.team.deleteSucceded);
-  const navigate = useNavigate()
+  const { id } = useParams();
+  const [teamId, setTeamId] = useState(id ? parseInt(id) : 0);
+  const team = useAppSelector((store: AppStateType) => store.team.team);
+  const deleteOperationSucceded = useAppSelector(
+    (store: AppStateType) => store.team.deleteSucceded
+  );
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!id) return;
-    let teamId = parseInt(id);
-    requestTeam(teamId);
-  }, [id]);
+
+    const delayedRequest = debounce(() => {
+      dispatch(getTeam(teamId));
+    }, 500);
+    delayedRequest();
+  }, [teamId]);
 
   const error = useAppSelector((store) => store.team.error);
   useEffect(() => {
     dispatch(errorActions.setErrorMessage(error));
   }, [error]);
 
-  useEffect(()=>{
-    if(deleteOperationSucceded){
+  useEffect(() => {
+    if (deleteOperationSucceded) {
       dispatch(teamsActions.clearState());
+      dispatch(teamActions.clearState());
       navigate(-1);
     }
-  },[deleteOperationSucceded])
+  }, [deleteOperationSucceded]);
 
-
-  const requestTeam = (teamId: number) => {
-    dispatch(getTeam(teamId));
-  };
-
-  const getAge = (birthday: Date | undefined): string => {
+  const getAge = (birthday?: Date): string => {
     if (birthday === undefined) return "";
-    let age = new Date(Date.now() - birthday.valueOf());
+    const age = new Date(Date.now() - birthday.valueOf());
     return Math.abs(age.getUTCFullYear() - 1970).toString();
   };
 
   const handleDeleteClick = (e: any) => {
     if (!id) return;
-    let teamId = parseInt(id);
-    if(team.players.length>0){window.alert("Team has players. Please remove them first")}
-    else {
+    const teamId = parseInt(id);
+    if (team.players && team.players.length > 0) {
+      window.alert("Team has players. Please remove them first");
+    } else {
       if (window.confirm("Are you sure?")) dispatch(deleteTeam(teamId));
     }
   };
-   
-  
+
   return (
     <StyledFlex direction="column">
       <Info.StyledContainer>
@@ -85,22 +88,22 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
                 <h2>{team.name}</h2>
                 <Info.StyledDescriptionRow>
                   <Info.StyledDescriptionColumn>
-                  <div>
-                    <label>Year of foundation</label>
-                    <p>{team.foundationYear}</p>
-                  </div>
-                  <div>
-                    <label>Conference</label>
-                    <p>{team.conference}</p>
-                  </div>
+                    <div>
+                      <label>Year of foundation</label>
+                      <p>{team.foundationYear}</p>
+                    </div>
+                    <div>
+                      <label>Conference</label>
+                      <p>{team.conference}</p>
+                    </div>
                   </Info.StyledDescriptionColumn>
                   <Info.StyledDescriptionColumn>
-                  <div>
-                    <label>Division</label>
-                    <p>{team.division}</p>
-                  </div>
+                    <div>
+                      <label>Division</label>
+                      <p>{team.division}</p>
+                    </div>
                   </Info.StyledDescriptionColumn>
-                </Info.StyledDescriptionRow>                
+                </Info.StyledDescriptionRow>
               </Info.StyledDescriptionContainer>
             </Info.StyledMainContainer>
           </div>
@@ -141,7 +144,7 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
                     </td>
                     <td className="hide">{p.height}</td>
                     <td className="hide">{p.weight}</td>
-                    <td className="hide">{getAge(p.birthday)}</td>                    
+                    <td className="hide">{getAge(p.birthday)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -149,7 +152,6 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
           </Info.StyledTeamListContainer>
         </Info.StyledContainer>
       )}
-     
     </StyledFlex>
   );
 };

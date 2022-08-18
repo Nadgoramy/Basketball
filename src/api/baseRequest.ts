@@ -52,12 +52,11 @@ const request = async (
         return true;
       }
       const typeResponse = response.headers.get("Content-Type");
-      let result;
       if (typeResponse === "application/text") {
-        result = await response.text();
+        const result = await response.text();
         return result;
       }
-      result = await response.json();
+      const result = await response.json();
       return result;
     }
 

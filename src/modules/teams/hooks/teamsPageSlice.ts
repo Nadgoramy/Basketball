@@ -5,27 +5,22 @@ import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 import { authorizationExpired } from "common/helpers/userCheck";
 
-interface IParams {
+export interface IParams {
   filter: string;
   page: number;
   pageSize: number;
 }
 export const getTeamsPage = createAsyncThunk(
   `teamsPage/getTeams`,
-  async (params: IParams, { rejectWithValue ,dispatch, getState }) => {
-    try {      
-      let { page, pageSize, filter } = params;
-      const responce = await TeamService.getTeams(
-        filter,
-        page,
-        pageSize
-      );
+  async (params: IParams, { rejectWithValue, dispatch, getState }) => {
+    try {
+      const { page, pageSize, filter } = params;
+      const responce = await TeamService.getTeams(filter, page, pageSize);
 
-      let teamsPage = responce as TeamDtoPageResult;
-      return teamsPage;
+      return responce as TeamDtoPageResult;
     } catch (error: any) {
-      if(error.status == 401) {
-        dispatch(userActions.removeUser())
+      if (error.status == 401) {
+        dispatch(userActions.removeUser());
       }
       return rejectWithValue(error.message);
     }
@@ -33,20 +28,21 @@ export const getTeamsPage = createAsyncThunk(
   {
     condition: (_, { getState, extra }) => {
       const { teams, user } = getState() as AppStateType;
-      if (teams.isFetching) return false      
-      if (authorizationExpired(user.currentUser)) return false
+      if (teams.isFetching) return false;
+      if (authorizationExpired(user.currentUser)) return false;
     },
   }
 );
 
-type StateType = {
+interface StateType {
   isFetching: boolean;
   page: number;
   count: number;
   pageSize: number;
   filter: string;
   pageItems: TeamDto[];
-};
+  error?: string;
+}
 
 const initialState: StateType = {
   isFetching: false,
@@ -55,6 +51,7 @@ const initialState: StateType = {
   pageSize: 6,
   filter: "",
   pageItems: [],
+  error: undefined,
 };
 
 const teamsPageSlice = createSlice({
@@ -77,7 +74,7 @@ const teamsPageSlice = createSlice({
       state.page = 1;
     },
     clearState: (state) => {
-      state = initialState
+      state = initialState;
     },
   },
   extraReducers: (builder) => {
@@ -89,22 +86,29 @@ const teamsPageSlice = createSlice({
         state.isFetching = false;
         state.count = action.payload?.count;
 
-        let existingIds = state.pageItems.map((x) => x.id);        
+        const existingIds = state.pageItems.map((x) => x.id);
         if (action.payload && existingIds.length > 0) {
-          let newIds = action.payload.data.map(x=> x.id);
-          let newDataContainsPrevious = existingIds.every(id => newIds.indexOf(id)>=0);
+          const newIds = action.payload.data.map((x) => x.id);
+          const newDataContainsPrevious = existingIds.every(
+            (id) => newIds.indexOf(id) >= 0
+          );
           if (newDataContainsPrevious) {
-            let previousItems: TeamDto[]=[];
-            state.pageItems.forEach(team => {
-              let teamFromBd = action.payload.data.find(t=>t.id === team.id);
-              previousItems.push( teamFromBd? teamFromBd : team)
-            })
+            let previousItems: TeamDto[] = [];
+            state.pageItems.forEach((team) => {
+              const teamFromBd = action.payload.data.find(
+                (t) => t.id === team.id
+              );
+              previousItems.push(teamFromBd ? teamFromBd : team);
+            });
 
-            let newTeams = action.payload.data.filter(
+            const newTeams = action.payload.data.filter(
               (x) => existingIds.indexOf(x.id) === -1
             );
 
-                        state.pageItems = new Array<TeamDto>().concat(previousItems, newTeams);
+            state.pageItems = new Array<TeamDto>().concat(
+              previousItems,
+              newTeams
+            );
           } else {
             state.pageItems = action.payload.data;
           }
@@ -114,6 +118,7 @@ const teamsPageSlice = createSlice({
       })
       .addCase(getTeamsPage.rejected, (state, action) => {
         state.isFetching = false;
+        state.error = action.error.message + " :" + (action.payload as string);
       });
   },
 });

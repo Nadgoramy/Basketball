@@ -17,7 +17,7 @@ import {
   StyledEditContainer,
   StyledHeaderContainer,
   StyledMainContainer,
-} from "modules/interface/StyledEditComponents";
+} from "common/components/StyledEditComponents";
 import { StyledButton } from "common/components/Button/Button.styled";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { getPositions } from "../hooks/positionSlice";
@@ -30,7 +30,7 @@ import {
 import {
   StyledFlexAutoDiv,
   StyledFlexRow,
-} from "modules/interface/EditComponents";
+} from "common/components/EditComponents";
 import { errorActions } from "core/redux/errorSlice";
 import { useNavigate } from "react-router-dom";
 import BirthdayCalendarInput from "common/components/BirthdayCalendarInput";
@@ -40,9 +40,8 @@ import { playersActions } from "../hooks/playersPageSlice";
 
 const PlayerEdit: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
-  let { id } = useParams();
-  let navigate = useNavigate();
-  const [file, setFile] = useState(null);
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | undefined>(
     undefined
   );
@@ -86,7 +85,7 @@ const PlayerEdit: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (id) {
-      let playerId = parseInt(id);
+      const playerId = parseInt(id);
       if (playerId > 0) dispatch(getPlayer(playerId));
       if (playerId == 0) {
         dispatch(playerActions.setPlayer(emptyPlayer));
@@ -104,7 +103,7 @@ const PlayerEdit: React.FunctionComponent = () => {
   useEffect(() => {
     if (operationSecceded) {
       dispatch(playersActions.clearState());
-
+      dispatch(playerActions.clearState());
       navigate("/players/" + player.id);
     }
   }, [operationSecceded]);
@@ -136,7 +135,7 @@ const PlayerEdit: React.FunctionComponent = () => {
       setCurrentAvatarUrl(player.avatarUrl);
     });
   };
-  function setFormValues(player: PlayerDto | null) {
+  function setFormValues(player?: PlayerDto) {
     reset({
       id: player?.id,
       name: player?.name,
@@ -226,10 +225,10 @@ const PlayerEdit: React.FunctionComponent = () => {
                       ref={ref}
                     />
                   )}
-                />                  
-                  {errors.position && (
-                    <ErrorInputSpan>{errors.position.message}</ErrorInputSpan>
-                  )}
+                />
+                {errors.position && (
+                  <ErrorInputSpan>{errors.position.message}</ErrorInputSpan>
+                )}
               </div>
               <div>
                 <p>Team</p>
@@ -275,6 +274,7 @@ const PlayerEdit: React.FunctionComponent = () => {
                     {...register("height", {
                       required: "Height is required",
                       valueAsNumber: true,
+                      min: 0,
                     })}
                   />
                 </div>
@@ -286,6 +286,7 @@ const PlayerEdit: React.FunctionComponent = () => {
                     {...register("weight", {
                       required: "Weight is required",
                       valueAsNumber: true,
+                      min: 0,
                     })}
                   />
                 </div>
@@ -323,6 +324,7 @@ const PlayerEdit: React.FunctionComponent = () => {
                     {...register("number", {
                       required: "Number is required",
                       valueAsNumber: true,
+                      min: 0,
                     })}
                   />
                 </div>

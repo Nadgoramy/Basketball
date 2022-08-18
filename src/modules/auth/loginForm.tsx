@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import { StyledButton } from "common/components/Button/Button.styled";
 import Input from "common/components/Input/Input";
-import styled from "styled-components";
 import PasswordInput from "common/components/PasswordInput";
 import { AppStateType } from "core/redux/configureStore";
 import { useAppDispatch, useAppSelector } from "core/redux/store";

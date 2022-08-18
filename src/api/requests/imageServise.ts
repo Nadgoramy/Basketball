@@ -4,8 +4,8 @@ import { imagePost, post, remove } from "../baseRequest";
 const API_URL = "image/";
 
 const saveImage = async (file: File) => {
-  let buff = await file.arrayBuffer();
-  let currentUser = AuthService.getCurrentUser();
+  const buff = await file.arrayBuffer();
+  const currentUser = AuthService.getCurrentUser();
   if (!currentUser) return null;
   let formData = new FormData();
   formData.append("file", file);
@@ -18,7 +18,7 @@ const saveImage = async (file: File) => {
 };
 
 const deleteImage = (fileName: string) => {
-  let currentUser = AuthService.getCurrentUser();
+  const currentUser = AuthService.getCurrentUser();
   if (!currentUser) return null;
   return remove(
     API_URL + "DeleteImage?fileName=" + fileName,

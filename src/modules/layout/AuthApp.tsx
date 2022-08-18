@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import SideBar from "modules/interface/SideBar";
+import SideBar from "modules/layout/SideBar";
 import Header from "./Header";
 import { MainContainer, FullScreenContainer } from "./MainContainer";
 import { AppStateType } from "core/redux/configureStore";
@@ -19,25 +19,21 @@ const AuthApp: React.FunctionComponent<AuthProps> = (props: AuthProps) => {
   );
   const user = useAppSelector((state: AppStateType) => state.user.currentUser);
 
-  
   const toggleMobileSideBar = () => {
     setMobileSideBarOpen(!mobileSideBarOpen);
   };
   const location = useLocation();
   const dispatch = useAppDispatch();
-  let path = location.pathname;
-  let isTeamPage: boolean = path.includes("/team");
-  
-  useEffect(()=>{
-    dispatch(errorActions.clearErrorMessage())
+  const path = location.pathname;
+  const isTeamPage: boolean = path.includes("/team");
 
-    if (authorizationExpired(user)) {      
-        dispatch(userActions.removeUser())      
+  useEffect(() => {
+    dispatch(errorActions.clearErrorMessage());
+    if (authorizationExpired(user)) {
+      dispatch(userActions.removeUser());
     }
-  }, [location.pathname])
+  }, [location.pathname]);
 
-  
-  
   return (
     <FullScreenContainer>
       <Header toggleMobileSideBar={toggleMobileSideBar} />
@@ -45,7 +41,6 @@ const AuthApp: React.FunctionComponent<AuthProps> = (props: AuthProps) => {
         isOpen={mobileSideBarOpen}
         activeItem={isTeamPage ? "team" : "player"}
       />
-
       <MainContainer>
         <Outlet />
       </MainContainer>

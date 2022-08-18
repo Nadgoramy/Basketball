@@ -1,25 +1,30 @@
-import { AppStateType } from "../../core/redux/configureStore";
-
-export const getCurrentPage=(state: AppStateType) => {
-    return state.teams.page;
-}
-
-export const getPageSize=(state: AppStateType) => {
-    return state.teams.pageSize;
-}
+import { createSelector } from "reselect";
+import { AppStateType } from "core/redux/configureStore";
+import { IParams } from "./hooks/teamsPageSlice";
 
 export const getIsFetching = (state: AppStateType) => {
-    return state.teams.isFetching;
-}
+  return state.teams.isFetching;
+};
 
-export const getFilter = (state: AppStateType) => {
-    return state.teams.filter;
-}
+export const getTeams = (state: AppStateType) => {
+  return state.teams.pageItems;
+};
 
-export const getTeams = (state: AppStateType) => {    
-    return state.teams.pageItems;
-}
+export const getCount = (state: AppStateType) => {
+  return state.teams.count;
+};
 
-export const getCount = (state: AppStateType) =>{
-    return state.teams.count
-}
+export const getError = (state: AppStateType) => {
+  return state.teams.error;
+};
+
+export const getTeamsPageParams = createSelector(
+  (state: AppStateType) => state.teams.filter,
+  (state: AppStateType) => state.teams.page,
+  (state: AppStateType) => state.teams.pageSize,
+  (filter, page, pageSize): IParams => ({
+    filter,
+    page,
+    pageSize,
+  })
+);

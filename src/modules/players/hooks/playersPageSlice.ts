@@ -6,7 +6,7 @@ import { authorizationExpired } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 
-interface IParams {
+export interface IParams {
   filter: string;
   teamFilter: number[] | null;
   page: number;
@@ -25,23 +25,21 @@ export const getPlayersPage = createAsyncThunk(
         pageSize,
         teamFilter
       );
-      
+
       let playerPage = response as PlayerDtoPageResult;
       if (teamOptions.options) {
-        playerPage.data.forEach(
-          (x) =>{  
-            //if(typeof x.birthday == "string") x.birthday = new Date( x.birthday as string);
-            (x.teamName = teamOptions.options.find(
-              (to) => to.value == x.team
-            )?.label)
-          }
-        );
+        playerPage.data.forEach((x) => {
+          //if(typeof x.birthday == "string") x.birthday = new Date( x.birthday as string);
+          x.teamName = teamOptions.options.find(
+            (to) => to.value == x.team
+          )?.label;
+        });
       }
 
       return playerPage;
     } catch (error: any) {
-      if(error.status == 401) {
-        dispatch(userActions.removeUser())
+      if (error.status == 401) {
+        dispatch(userActions.removeUser());
       }
       return rejectWithValue(error.message);
     }
@@ -49,10 +47,10 @@ export const getPlayersPage = createAsyncThunk(
   {
     condition: (_, { getState, extra }) => {
       const { players, user } = getState() as AppStateType;
-      if (players.isFetching) return false
-      if (authorizationExpired(user.currentUser))  return false
+      if (players.isFetching) return false;
+      if (authorizationExpired(user.currentUser)) return false;
     },
-  } 
+  }
 );
 
 type StateType = {
@@ -110,7 +108,7 @@ const playersPageSlice = createSlice({
       }
     },
     clearState: (state) => {
-      state = initialState;      
+      state = initialState;
     },
   },
   extraReducers: (builder) => {
@@ -121,22 +119,28 @@ const playersPageSlice = createSlice({
       .addCase(getPlayersPage.fulfilled, (state, action) => {
         state.isFetching = false;
 
-        let existingIds = state.pageItems.map((x) => x.id);        
+        const existingIds = state.pageItems.map((x) => x.id);
         if (action.payload && existingIds.length > 0) {
-          let newIds = action.payload.data.map(x=> x.id);
-          let newDataContainsPrevious = existingIds.every(id => newIds.indexOf(id)>=0);
+          const newIds = action.payload.data.map((x) => x.id);
+          const newDataContainsPrevious = existingIds.every(
+            (id) => newIds.indexOf(id) >= 0
+          );
           if (newDataContainsPrevious) {
-            let previousItems: PlayerDto[]=[];
-            state.pageItems.forEach(player => {
-              let teamFromBd = action.payload.data.find(t=>t.id === player.id);
-              previousItems.push( teamFromBd? teamFromBd : player)
-            })
+            let previousItems: PlayerDto[] = [];
+            state.pageItems.forEach((player) => {
+              const teamFromBd = action.payload.data.find(
+                (t) => t.id === player.id
+              );
+              previousItems.push(teamFromBd ? teamFromBd : player);
+            });
 
-
-            let newPlayers = action.payload.data.filter(
+            const newPlayers = action.payload.data.filter(
               (x) => existingIds.indexOf(x.id) == -1
             );
-            state.pageItems = new Array<PlayerDto>().concat(previousItems, newPlayers);
+            state.pageItems = new Array<PlayerDto>().concat(
+              previousItems,
+              newPlayers
+            );
           } else {
             state.pageItems = action.payload.data;
           }

@@ -1,10 +1,8 @@
 import React from "react";
-import loginWebPageImg from "asserts/images/loginWebPage.svg";
-import registerPageImg from "asserts/images/registerWebPage.svg";
 import styled from "styled-components";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import ErrorPopUp from "common/components/ErrorPopUp";
-import { PageNotFound } from "./PageNotFound";
+import { PageNotFound } from "modules/layout/PageNotFound";
 import LoginPage from "./LoginPage";
 import RegistrationPage from "./RegistrationPage";
 import { useAppSelector } from "core/redux/store";

@@ -10,9 +10,9 @@ const borderProp = (props: any) => {
 export const StyledInputContaner = styled.div<InputProps>`
   position: relative;
   min-width: 50px;
-  height: 40px;
+  height: ${(props: InputProps) => (props.error ? "64px" : "40px")};
   outline-style: none;
-  ${(props: any) => (props.width ? "width: " + props.width + ";" : "")}
+  ${(props: InputProps) => (props.width ? "width: " + props.width + ";" : "")}
   font: ${({ theme }) => theme.font};
 
   input {
@@ -59,7 +59,7 @@ export const StyledInputContaner = styled.div<InputProps>`
 
   span {
     position: absolute;
-    top: 42px;
+    top: 40px;
     font-style: normal;
     font-weight: 500;
     font-size: 12px;

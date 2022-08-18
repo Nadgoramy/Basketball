@@ -10,7 +10,7 @@ import { PositionDto } from "api/Dto/positionDto";
 const API_URL = "player/";
 
 const getPositions = () => {
-  let currentUser = AuthService.getCurrentUser();
+  const currentUser = AuthService.getCurrentUser();
   if (!currentUser) return null;
   return get(API_URL + "getpositions", currentUser.token).then((response) => {
     let list: PositionDto[] = [];
@@ -27,53 +27,48 @@ const getPlayers = (
   pageSize: number,
   teamIds: number[] | null
 ) => {
-  let currentUser = AuthService.getCurrentUser();
+  const currentUser = AuthService.getCurrentUser();
   if (!currentUser) return;
   let requestParams =
     "?Name=" + name + "&Page=" + page + "&PageSize=" + pageSize;
   if (teamIds) teamIds.forEach((tId) => (requestParams += "&TeamIds=" + tId));
   return get(API_URL + "getplayers" + requestParams, currentUser.token).then(
     (response) => {
-      let result: PlayerDtoPageResult = response;
-      return result;
+      return response as PlayerDtoPageResult;
     }
   );
 };
 
 const getPlayer = (id: number) => {
-  let currentUser = AuthService.getCurrentUser();
+  const currentUser = AuthService.getCurrentUser();
   if (!currentUser) return null;
   return get(API_URL + "get?id=" + id, currentUser.token).then((response) => {
-    let result: PlayerDto = response;
-    return result;
+    return response as PlayerDto;
   });
 };
 
 const addPlayer = (player: NewPlayerDto) => {
-  let currentUser = AuthService.getCurrentUser();
+  const currentUser = AuthService.getCurrentUser();
   if (!currentUser) return;
   return post(API_URL + "add", player, currentUser.token).then((response) => {
-    let result: PlayerDto = response;
-    return result;
+    return response as PlayerDto;
   });
 };
 
 const updatePlayer = (player: PlayerDto) => {
-  let currentUser = AuthService.getCurrentUser();
+  const currentUser = AuthService.getCurrentUser();
   if (!currentUser) return;
   return put(API_URL + "update", player, currentUser.token).then((response) => {
-    let result: PlayerDto = response;
-    return result;
+    return response as PlayerDto;
   });
 };
 
 const deletePlayer = (id: number) => {
-  let currentUser = AuthService.getCurrentUser();
+  const currentUser = AuthService.getCurrentUser();
   if (!currentUser) return;
   return remove(API_URL + "delete?id=" + id, currentUser.token).then(
     (response) => {
-      let result: PlayerDto = response;
-      return result;
+      return response as PlayerDto;
     }
   );
 };

@@ -4,13 +4,13 @@ import PlayerService from "api/players/playerService";
 import { authorizationExpired } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
-import { playersActions } from "modules/players/hooks/playersPageSlice"
+import { playersActions } from "modules/players/hooks/playersPageSlice";
 
 export const getPlayer = createAsyncThunk(
   `player/getPlayer`,
   async (id: number, { rejectWithValue, dispatch, getState }) => {
     try {
-      let currentPlayer = (getState() as AppStateType).player.player;
+      const currentPlayer = (getState() as AppStateType).player.player;
       if (id == currentPlayer.id) return currentPlayer;
 
       const responce = await PlayerService.getPlayer(id);
@@ -18,17 +18,19 @@ export const getPlayer = createAsyncThunk(
         return responce as PlayerDto;
       } else throw new Error("Player not found");
     } catch (error: any) {
-      if(error.status == 401) {
-        dispatch(userActions.removeUser())
+      if (error.status == 401) {
+        dispatch(userActions.removeUser());
+        return rejectWithValue("Authorization error");
       }
       return rejectWithValue(error.message);
     }
   },
   {
-    condition: (_, { getState, extra }) => {
+    condition: (id: number, { getState, extra }) => {
       const { player, user } = getState() as AppStateType;
-      if (player.isFetching) return false      
-      if (authorizationExpired(user.currentUser)) return false
+      if (player.isFetching) return false;
+      if (authorizationExpired(user.currentUser)) return false;
+      if (player.player.id === id) return false;
     },
   }
 );
@@ -39,8 +41,9 @@ export const updatePlayer = createAsyncThunk(
       const responce = await PlayerService.updatePlayer(params);
       return responce as PlayerDto;
     } catch (error: any) {
-      if(error.status == 401) {
-        dispatch(userActions.removeUser())
+      if (error.status == 401) {
+        dispatch(userActions.removeUser());
+        return rejectWithValue("Authorization error");
       }
       return rejectWithValue(error.message);
     }
@@ -53,8 +56,9 @@ export const deletePlayer = createAsyncThunk(
       const responce = await PlayerService.deletePlayer(id);
       return responce as PlayerDto;
     } catch (error: any) {
-      if(error.status == 401) {
-        dispatch(userActions.removeUser())
+      if (error.status == 401) {
+        dispatch(userActions.removeUser());
+        return rejectWithValue("Authorization error");
       }
       return rejectWithValue(error.message);
     }
@@ -67,8 +71,9 @@ export const addPlayer = createAsyncThunk(
       const responce = await PlayerService.addPlayer(player);
       return responce as PlayerDto;
     } catch (error: any) {
-      if(error.status == 401) {
-        dispatch(userActions.removeUser())
+      if (error.status == 401) {
+        dispatch(userActions.removeUser());
+        return rejectWithValue("Authorization error");
       }
       return rejectWithValue(error.message);
     }
@@ -87,7 +92,7 @@ const initialState: StateType = {
   isFetching: false,
   error: "",
   updateSucceded: false,
-  deleteSucceded: false
+  deleteSucceded: false,
 };
 const playerSlice = createSlice({
   name: "player",
@@ -96,31 +101,30 @@ const playerSlice = createSlice({
     setPlayer: (state, action) => {
       state.player = action.payload;
     },
-    setPlayerPhoto: (state, action) => {
-      state.player.avatarUrl = action.payload;
-    },
-    setPlayerBirthday: (state, action) => {
-      state.player.birthday = action.payload;
+    clearState: (state) => {
+      state = initialState;
+      state.deleteSucceded = false;
+      state.updateSucceded = false;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getPlayer.pending, (state, action) => {
-        state.isFetching = true;        
-        state.updateSucceded=false;
-        state.deleteSucceded=false;   
+        state.isFetching = true;
+        state.updateSucceded = false;
+        state.deleteSucceded = false;
       })
       .addCase(getPlayer.fulfilled, (state, action) => {
         state.isFetching = false;
         let player = action.payload as PlayerDto;
         if (typeof player.birthday == "string")
           player.birthday = new Date(player.birthday);
-        state.player = player;        
+        state.player = player;
         state.error = undefined;
       })
       .addCase(getPlayer.rejected, (state, action) => {
         state.isFetching = false;
-        state.error = action.error.message + " :" + (action.payload as string);
+        state.error = "Error on getting player: " + (action.payload as string);
       })
       .addCase(updatePlayer.pending, (state, action) => {
         state.isFetching = true;
@@ -138,7 +142,7 @@ const playerSlice = createSlice({
       })
       .addCase(updatePlayer.rejected, (state, action) => {
         state.isFetching = false;
-        state.error = action.error.message + " :" + (action.payload as string);
+        state.error = "Error on updating team: " + (action.payload as string);
       })
       .addCase(deletePlayer.pending, (state, action) => {
         state.isFetching = true;
@@ -157,7 +161,7 @@ const playerSlice = createSlice({
       })
       .addCase(deletePlayer.rejected, (state, action) => {
         state.isFetching = false;
-        state.error = action.error.message + " :" + (action.payload as string);
+        state.error = "Error on deleting team: " + (action.payload as string);
       })
       .addCase(addPlayer.pending, (state, action) => {
         state.isFetching = true;
@@ -171,11 +175,11 @@ const playerSlice = createSlice({
         let player = action.payload as PlayerDto;
         if (typeof player.birthday == "string")
           player.birthday = new Date(player.birthday);
-        state.player = player;        
+        state.player = player;
       })
       .addCase(addPlayer.rejected, (state, action) => {
         state.isFetching = false;
-        state.error = action.error.message + " :" + (action.payload as string);
+        state.error = "Error on adding team: " + (action.payload as string);
       });
   },
 });

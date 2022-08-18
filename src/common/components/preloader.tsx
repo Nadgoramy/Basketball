@@ -5,8 +5,8 @@ import styled from "styled-components";
 const StyledOverlay = styled.div`
   position: absolute;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index:100;
-  
+  z-index: 100;
+
   left: 0;
   top: 0;
   width: 100%;
@@ -24,7 +24,7 @@ const StyledOverlay = styled.div`
 
 type PropsType = {};
 
-let Preloader: React.FC = () => {
+const Preloader: React.FC = () => {
   return (
     <StyledOverlay>
       <div>

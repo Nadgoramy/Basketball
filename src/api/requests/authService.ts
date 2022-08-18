@@ -31,9 +31,9 @@ const change = (username: string, avatarUrl: string) => {
 };
 
 const getCurrentUser = (): AuthUserDto | null => {
-  let userFromStorage = localStorage.getItem("user");
+  const userFromStorage = localStorage.getItem("user");
   if (!userFromStorage) return null;
-  let user = JSON.parse(userFromStorage);
+  const user = JSON.parse(userFromStorage);
   return {
     name: user.name,
     avatarUrl: user.avatarUrl,

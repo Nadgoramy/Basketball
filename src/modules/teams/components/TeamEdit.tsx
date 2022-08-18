@@ -12,23 +12,22 @@ import { errorActions } from "core/redux/errorSlice";
 import {
   StyledHeaderContainer,
   StyledMainContainer,
-} from "modules/interface/StyledEditComponents";
+} from "common/components/StyledEditComponents";
 import { StyledButton } from "common/components/Button/Button.styled";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { addTeam, getTeam, teamActions, updateTeam } from "../hooks/teamSlice";
-import { StyledFlexRow } from "modules/interface/EditComponents";
-import { teamsActions } from "../hooks/teamsPageSlice";
+import { StyledFlexRow } from "common/components/EditComponents";
+import { teamsActions } from "modules/teams/hooks/teamsPageSlice";
 
 const TeamEdit = () => {
   const team = useAppSelector((state: AppStateType) => state.team.team);
   const operationSecceded = useAppSelector(
     (state: AppStateType) => state.team.updateSucceded
   );
-  const [initialState, setInitialState] = useState<TeamDto | null>();
+  //const [initialState, setInitialState] = useState<TeamDto | null>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  let { id } = useParams();
-  const [file, setFile] = useState(null);
+  const { id } = useParams();
   const [currentImageUrl, setCurrentImageUrl] = useState<string | undefined>(
     undefined
   );
@@ -37,7 +36,6 @@ const TeamEdit = () => {
     handleSubmit,
     reset,
     formState: { errors, isDirty },
-    getValues,
     setValue,
   } = useForm<TeamDto>();
 
@@ -54,7 +52,7 @@ const TeamEdit = () => {
     }
   }, []);
   useEffect(() => {
-    setInitialState(team);
+    //setInitialState(team);
     setFormValues(team);
     setCurrentImageUrl(team?.imageUrl);
   }, [team]);
@@ -62,6 +60,7 @@ const TeamEdit = () => {
   useEffect(() => {
     if (operationSecceded) {
       dispatch(teamsActions.clearState());
+      dispatch(teamActions.clearState());
       navigate("/teams/" + team.id);
     }
   }, [operationSecceded]);
@@ -76,7 +75,7 @@ const TeamEdit = () => {
     players: [],
   };
 
-  function setFormValues(team: TeamDto | null) {
+  function setFormValues(team?: TeamDto) {
     reset({
       id: team?.id,
       name: team?.name,
@@ -101,7 +100,7 @@ const TeamEdit = () => {
   const onSubmit = (data: TeamDto) => {
     if (!isDirty) return;
 
-    let teamId = parseInt(id ?? "0");
+    const teamId = parseInt(id ?? "0");
     if (teamId) {
       dispatch(updateTeam(data));
     } else {
@@ -114,11 +113,7 @@ const TeamEdit = () => {
   };
   const removeImageIfNeeded = () => {
     if (id == "0" && currentImageUrl) removeImageOnServer(currentImageUrl);
-    if (
-      currentImageUrl &&
-      initialState?.imageUrl &&
-      currentImageUrl != initialState.imageUrl
-    )
+    if (currentImageUrl && team?.imageUrl && currentImageUrl != team.imageUrl)
       removeImageOnServer(currentImageUrl);
   };
   const removeImageOnServer = (url: string) => {

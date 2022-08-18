@@ -99,10 +99,9 @@ const Header = (props: any) => {
           <label>{userFromStore?.name}</label>
           <img
             src={
-              userFromStore && userFromStore.avatarUrl > ""
+              userFromStore && userFromStore.avatarUrl
                 ? userFromStore?.avatarUrl
                 : noUserImg
-              //noUserImg
             }
           />
         </UserPrifile>

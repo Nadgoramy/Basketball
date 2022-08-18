@@ -93,22 +93,22 @@ export const StyledCalendar = styled(DatePicker)`
   }
   .inputStyle {
     background-color: green;
-    
-    input{
-      position: absolute;
-    left: 0;
-    right: 0;
-    height: 40px;
-    width: -moz-available;
-    padding: 0; 
-    padding-left: 12px;   
 
-    border-radius: 4px;
-    border-width: 0;
-    background: ${({ theme }) => theme.colors.lightest_grey1};
-    color: ${({ theme }) => theme.colors.dark_grey};
-    border: ${(props) => borderProp(props)};
-    box-shadow: none;
+    input {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 40px;
+      width: -moz-available;
+      padding: 0;
+      padding-left: 12px;
+
+      border-radius: 4px;
+      border-width: 0;
+      background: ${({ theme }) => theme.colors.lightest_grey1};
+      color: ${({ theme }) => theme.colors.dark_grey};
+      border: ${(props) => borderProp(props)};
+      box-shadow: none;
     }
   }
 `;
@@ -126,7 +126,8 @@ const CustomCalendarContainerStyled = styled.div`
     background-color: ${({ theme }) => theme.colors.red};
     color: ${({ theme }) => theme.colors.white};
   }
-  .customColor, .react-datepicker__day--keyboard-selected{
+  .customColor,
+  .react-datepicker__day--keyboard-selected {
     background-color: ${({ theme }) => theme.colors.lightest_red};
     color: ${({ theme }) => theme.colors.white};
   }
@@ -145,7 +146,7 @@ const CustomInput = forwardRef((props: any, ref: Ref<HTMLInputElement>) => (
 ));
 
 const CustomCalendarContainer = (props: any) => {
-  let { className, children } = props;
+  const { className, children } = props;
   return (
     <CustomCalendarContainerStyled>
       <CalendarContainer className={className + "customColor"}>
@@ -155,8 +156,8 @@ const CustomCalendarContainer = (props: any) => {
   );
 };
 
-interface CustomDatePickerProps extends ReactDatePickerProps{
-  error? :string 
+interface CustomDatePickerProps extends ReactDatePickerProps {
+  error?: string;
 }
 
 const BirthdayCalendarInput = (props: CustomDatePickerProps, ref: any) => {
@@ -174,7 +175,7 @@ const BirthdayCalendarInput = (props: CustomDatePickerProps, ref: any) => {
       ref={ref}
       filterDate={lessthenToday}
       wrapperClassName="inputStyle"
-      customInput={<CustomInput error={error}/>}
+      customInput={<CustomInput error={error} />}
       calendarContainer={CustomCalendarContainer}
     />
   );

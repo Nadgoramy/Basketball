@@ -39,7 +39,7 @@ export const StyledMainContainer = styled.div`
   flex-direction: row;
   align-items: stretch;
   margin: 0;
-  gap: 60px;
+  gap: 5%;
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
     flex-direction: column;
@@ -48,10 +48,14 @@ export const StyledMainContainer = styled.div`
   }
 
   & > div {
-    flex: 1 1 380px;
+    flex: 1 1 40%;
     @media (max-width: ${({ theme }) => theme.mobile}) {
       flex: 1 1 auto;
     }
+  }
+
+  & > div:nth-child(2) {
+    flex: 1 1 50%;
   }
 
   form {

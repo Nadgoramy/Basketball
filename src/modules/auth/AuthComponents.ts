@@ -28,8 +28,8 @@ export const StyledImageContainer = styled.div<IProps>`
 
 export const StyledFormContainer = styled.div`
   margin: auto;
-  flex: 1 1 606px;
-  padding: 24px;
+  flex: 1 1 558px;
+  padding: 0 24px;
   @media (max-width: ${({ theme }) => theme.mobile}) {
     margin: 0 24px 0 24px;
     padding: 0;
@@ -79,6 +79,10 @@ export const StyledFormContainer = styled.div`
   nav {
     text-align: center;
     position: relative;
+    top: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 24px;
     color: ${({ theme }) => theme.colors.grey};
 
     a {

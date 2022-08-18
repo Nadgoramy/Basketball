@@ -1,17 +1,18 @@
-import React, { useLayoutEffect, useEffect, useRef, useState } from "react";
-import { playersActions } from "modules/players/hooks/playersPageSlice";
+import React, { useCallback, useEffect } from "react";
+import {
+  playersActions,
+  IParams,
+} from "modules/players/hooks/playersPageSlice";
 import { PlayerCard } from "./playerCard";
 import { PlayerDto } from "api/Dto/playerDto";
 import {
   getCount,
-  getCurrentPage,
   getError,
-  getFilter,
   getIsFetching,
-  getPageSize,
   getPlayers,
-  getTeamIds,
+  getPlayersPageParams,
   getTeamsOptions,
+  getFilter,
 } from "modules/players/selectors";
 import Preloader from "common/components/preloader";
 import { useNavigate } from "react-router-dom";
@@ -21,24 +22,19 @@ import {
   StyledGridContainer,
   StyledHeader,
   StyledMainContainer,
-} from "modules/interface/ListComponents";
+} from "common/components/ListComponents";
 import { StyledButton } from "common/components/Button/Button.styled";
 import Search from "common/components/Search/Search";
-import { StyledMultiSelect } from "common/components/StyledMultiSelect";
 import { StyledPaginateContainer } from "common/components/Pagination/StyledPaginate";
 import ReactPaginate from "react-paginate";
-import { EmptyListScreen } from "modules/interface/EmptyListScreen";
-import {
-  OptionTypeValueNumber,
-  StyledSelect,
-} from "common/components/StyledSelect";
+import { EmptyList } from "common/components/EmptyList";
+import { StyledSelect } from "common/components/StyledSelect";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { getTeamOptions } from "../hooks/teamOptionSlice";
 import { pageSizeOptions } from "common/helpers/pageSizeOptions";
 import { errorActions } from "core/redux/errorSlice";
-import { components, MultiValueProps } from "react-select";
-import { AppStateType } from "core/redux/configureStore";
-import {PlayerTeamFilter} from "modules/players/components/playerTeamFilter"
+import { PlayerTeamFilter } from "modules/players/components/playerTeamFilter";
+import debounce from "lodash.debounce";
 
 type PropsType = {};
 export const PlayerList: React.FunctionComponent<PropsType> = (
@@ -46,18 +42,17 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
 ) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const pageParams = useAppSelector(getPlayersPageParams);
   const players = useAppSelector(getPlayers);
-  const currentPage = useAppSelector(getCurrentPage);
-  const filter = useAppSelector(getFilter);
-  const pageSize = useAppSelector(getPageSize);
   const isFetching = useAppSelector(getIsFetching);
   const itemsCount = useAppSelector(getCount);
-  const teamIds = useAppSelector(getTeamIds);
   const error = useAppSelector(getError);
+  const filter = useAppSelector(getFilter);
 
   const teamNames = useAppSelector(getTeamsOptions);
   useEffect(() => {
     dispatch(getTeamOptions());
+    dispatch(playersActions.clearState());
   }, []);
 
   useEffect(() => {
@@ -69,38 +64,46 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
       dispatch(playersActions.setPlayerTeamName(teamNames));
   }, [teamNames, players]);
 
-  useEffect(() => {
+  const updatePage = (pageParams: IParams) => {
     dispatch(
       playersActions.getPlayersPage({
-        filter: filter,
-        teamFilter: teamIds,
-        page: currentPage,
-        pageSize: pageSize,
+        filter: pageParams.filter,
+        teamFilter: pageParams.teamFilter,
+        page: pageParams.page,
+        pageSize: pageParams.pageSize,
       })
     );
-  }, [filter, teamIds, currentPage, pageSize]);
+  };
+  const delayedUpdatePage = useCallback(debounce(updatePage, 300), []);
+  useEffect(() => {
+    delayedUpdatePage(pageParams);
+  }, [pageParams]);
 
   const handlePageSizeSelect = (a: any, b: any) => {
     dispatch(playersActions.setPageSize(a.value));
   };
   const updateFilterValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(playersActions.setFilter(e.target.value));
+    //setSearchTxt(e.target.value);
   };
   const updateCurrentPage = (n: number) => {
     dispatch(playersActions.setPageNumber(n));
   };
-  
+
   return (
     <StyledMainContainer direction="column">
       <StyledHeader>
-        <Search onChange={(evt) => updateFilterValue(evt)} value={filter} />
-        <PlayerTeamFilter />        
+        <Search
+          onChange={(evt) => updateFilterValue(evt)}
+          value={pageParams.filter}
+        />
+        <PlayerTeamFilter />
         <StyledButton mode="add" onClick={() => navigate("edit/0")}>
           Add &nbsp;<span id="plus">&nbsp;+</span>
         </StyledButton>
       </StyledHeader>
       {isFetching && <Preloader />}
-      {players && players.length == 0 && <EmptyListScreen mode="player" />}
+      {players && players.length == 0 && <EmptyList mode="player" />}
       <StyledGridContainer>
         <StyledGrid>
           {players &&
@@ -108,7 +111,7 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
         </StyledGrid>
       </StyledGridContainer>
 
-      {Math.ceil(itemsCount / pageSize) > 0 && (
+      {Math.ceil(itemsCount / pageParams.pageSize) > 0 && (
         <StyledFooter>
           <div id="footerFlex">
             <StyledPaginateContainer>
@@ -117,15 +120,15 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
                 nextLabel=">"
                 breakLabel="..."
                 breakClassName="break-me"
-                pageCount={Math.ceil(itemsCount / pageSize)}
+                pageCount={Math.ceil(itemsCount / pageParams.pageSize)}
                 marginPagesDisplayed={2}
-                pageRangeDisplayed={5}
+                pageRangeDisplayed={2}
                 onPageChange={(pagination: any) => {
                   updateCurrentPage(pagination.selected + 1);
                 }}
                 containerClassName="pagination"
                 activeClassName="active"
-                forcePage={currentPage - 1}
+                forcePage={pageParams.page - 1}
               />
             </StyledPaginateContainer>
             <StyledSelect
@@ -135,7 +138,9 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
               defaultValue={pageSizeOptions[0]}
               onChange={handlePageSizeSelect}
               menuPlacement="auto"
-              value={pageSizeOptions.filter(({ value }) => value === pageSize)}
+              value={pageSizeOptions.filter(
+                ({ value }) => value === pageParams.pageSize
+              )}
             />
           </div>
         </StyledFooter>

@@ -7,18 +7,22 @@ export const StyledContainer = styled.div`
   border-radius: 4px;
 `;
 export const StyledTeamImageContainer = styled.div<PhotoPropsType>`
-  width: 150px;
+  width: 100%;
   height: 150px;
-  margin: 65px 107px;
+  margin: 65px auto;
   position: relative;
   background-image: url("${(props) => props.url}");
   background-repeat: no-repeat;
   background-size: contain;
+  background-position-x: center;
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
     margin: 32px 55px;
     width: 58px;
     height: 50px;
+    background-position: center;
+    width: 100%;
+    margin: 32px 0;
   }
 
   img {
@@ -30,16 +34,18 @@ export const StyledTeamImageContainer = styled.div<PhotoPropsType>`
 
 type PhotoPropsType = { url?: string };
 export const StyledPlayerImageContainer = styled.div<PhotoPropsType>`
-  width: 274px;
   height: 207px;
+  width: 100%;
   margin: 73px auto 0 auto;
   position: relative;
   background-image: url("${(props) => props.url}");
   background-repeat: no-repeat;
   background-size: contain;
+  background-position-x: center;
+  background-position-y: bottom;
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
-    width: 140px;
+    //width: 140px;
     background-position: center;
     height: 93px;
     margin: 11px auto 0 auto;
@@ -50,18 +56,6 @@ export const StyledPlayerImageContainer = styled.div<PhotoPropsType>`
     height: 100%;
     object-fit: contain;
   }
-`;
-
-type ImgType = {
-  url: string;
-};
-export const StyledImageDiv = styled.div<ImgType>`
-  background-image: linear-gradient(red, yellow);
-  background-image: url("${(props: ImgType) => props.url}");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  position: relative;
 `;
 
 export const StyledFooter = styled.div`
@@ -96,6 +90,9 @@ export const StyledFooter = styled.div`
     font-size: 18px;
     line-height: 22px;
     color: ${({ theme }) => theme.colors.white};
+
+    width: 90%;
+    max-height: 44px;
 
     @media (max-width: ${({ theme }) => theme.mobile}) {
       font-size: 15px;

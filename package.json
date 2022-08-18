@@ -15,9 +15,11 @@
     "classnames": "^2.3.1",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.0",
+    "lodash.debounce": "^4.0.8",
     "prettier": "^2.6.2",
     "prop-types": "^15.8.1",
     "react": "^18.1.0",
+    "react-animations": "^1.0.0",
     "react-calendar": "^3.7.0",
     "react-datepicker": "^4.8.0",
     "react-dom": "^18.1.0",
@@ -58,6 +60,8 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.7",
+    "@types/react-animations": "^1.0.0",
     "@types/styled-components": "^5.1.25",
     "file-loader": "^6.2.0"
   },

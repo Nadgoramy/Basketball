@@ -1,27 +1,25 @@
 import { UserDto } from "api/Dto/userDto";
 
-const parseJwt = (token:string) => {
-    try {
-      return JSON.parse(atob(token.split(".")[1]));
-    } catch (e) {
-      return null;
-    }
-  };
+const parseJwt = (token: string) => {
+  try {
+    return JSON.parse(atob(token.split(".")[1]));
+  } catch (e) {
+    return null;
+  }
+};
 
-export const authorizationExpired = (user: UserDto | undefined) =>{
-    if (user) {
-        return tokenExpired(user.token);        
-      }
-      else return true
-}
+export const authorizationExpired = (user?: UserDto) => {
+  if (user) {
+    return tokenExpired(user.token);
+  } else return true;
+};
 
-export const tokenExpired = (token: string | undefined) =>{
+export const tokenExpired = (token?: string) => {
   if (token) {
-      const decodedJwt = parseJwt(token);
-      if (!decodedJwt || decodedJwt.exp * 1000 < Date.now()) {
-        return true
-      }
-      return false
+    const decodedJwt = parseJwt(token);
+    if (!decodedJwt || decodedJwt.exp * 1000 < Date.now()) {
+      return true;
     }
-    else return true
-}
+    return false;
+  } else return true;
+};
