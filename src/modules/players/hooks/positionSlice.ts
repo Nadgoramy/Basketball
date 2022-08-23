@@ -22,8 +22,9 @@ export const getPositions = createAsyncThunk(
         return responce;
       } else throw new Error("No position found");
     } catch (error: any) {
-      if(error.status == 401) {
-        dispatch(userActions.removeUser())
+      if (error.status == 401) {
+        dispatch(userActions.removeUser());
+        return rejectWithValue("Authorization error");
       }
       return rejectWithValue(error.message);
     }

@@ -1,6 +1,6 @@
 import { StyledFlex } from "common/components/Flex";
 import { AppStateType } from "core/redux/configureStore";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as Info from "common/components/InfoComponents";
 import { EditLink } from "common/components/Link/editLink";
@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { DeleteButton } from "common/components/Button/deleteButton";
 import { errorActions } from "core/redux/errorSlice";
 import { playersActions } from "../hooks/playersPageSlice";
+import { getAge } from "common/helpers/age";
 
 type PlayerInfoPtopType = React.HTMLAttributes<HTMLElement> & {};
 
@@ -30,7 +31,7 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
     dispatch(getPlayer(playerId));
   }, [id]);
 
-  const error = useAppSelector((store) => store.player.error);
+  const error = useAppSelector((store: AppStateType) => store.player.error);
   useEffect(() => {
     dispatch(errorActions.setErrorMessage(error));
   }, [error]);
@@ -42,17 +43,15 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
     }
   }, [deleteOperationSucceded]);
 
-  
-  const getAge = (birthday?: Date) => {
-    if (!birthday) return "";
-    const age = new Date(Date.now() - birthday.valueOf());
-    return Math.abs(age.getUTCFullYear() - 1970);
-  };
+
+  const playerAge = useMemo(() => getAge(player.birthday), [player.birthday]);
 
   const handleDeleteClick = (e: any) => {
     if (!id) return;
     const playerId = parseInt(id);
-    dispatch(deletePlayer(playerId));
+    if (window.confirm("Are you sure?")) {
+      dispatch(deletePlayer(playerId));
+    }
   };
 
   return (
@@ -101,7 +100,7 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
                 <Info.StyledDescriptionRow>
                   <div>
                     <label>Age</label>
-                    <p>{getAge(player.birthday)}</p>
+                    <p>{playerAge}</p>
                   </div>
                 </Info.StyledDescriptionRow>
               </Info.StyledDescriptionContainerPlayer>

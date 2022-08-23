@@ -24,7 +24,6 @@ const TeamEdit = () => {
   const operationSecceded = useAppSelector(
     (state: AppStateType) => state.team.updateSucceded
   );
-  //const [initialState, setInitialState] = useState<TeamDto | null>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -52,7 +51,6 @@ const TeamEdit = () => {
     }
   }, []);
   useEffect(() => {
-    //setInitialState(team);
     setFormValues(team);
     setCurrentImageUrl(team?.imageUrl);
   }, [team]);
@@ -143,7 +141,10 @@ const TeamEdit = () => {
                 type="text"
                 {...register("name", {
                   required: "Name is required",
-                  maxLength: 30,
+                  maxLength: {
+                    value: 80,
+                    message: "Maximum length is 80",
+                  },
                 })}
                 error={errors.name?.message}
               />

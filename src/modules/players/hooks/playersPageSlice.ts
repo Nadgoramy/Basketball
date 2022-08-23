@@ -40,6 +40,7 @@ export const getPlayersPage = createAsyncThunk(
     } catch (error: any) {
       if (error.status == 401) {
         dispatch(userActions.removeUser());
+        return rejectWithValue("Authorization error");
       }
       return rejectWithValue(error.message);
     }

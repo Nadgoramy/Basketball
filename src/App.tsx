@@ -4,7 +4,7 @@ import { AppStateType } from "core/redux/configureStore";
 import { ThemeProvider } from "styled-components";
 import AuthApp from "modules/layout/AuthApp";
 import { theme } from "DefaultTheme";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PageNotFound } from "modules/layout/PageNotFound";
 import { TeamsList } from "modules/teams/components/teamsList";
 import TeamEdit from "modules/teams/components/TeamEdit";
@@ -12,11 +12,8 @@ import { TeamInfo } from "modules/teams/components/teamInfo";
 import PlayerEdit from "modules/players/components/playerEdit";
 import { PlayerInfo } from "modules/players/components/PlayerInfo";
 import { PlayerList } from "modules/players/components/playerList";
-import ErrorPopUp from "common/components/ErrorPopUp";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { userActions } from "core/redux/userSlice";
-import { useEffect } from "react";
-import { errorActions } from "core/redux/errorSlice";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -54,9 +51,3 @@ function App() {
 }
 
 export default App;
-
-/*{!userFromStorage && <UnauthApp/>}
-{userFromStorage && ()}
-
- {error && <ErrorPopUp errorMessage={error} />}
-*/

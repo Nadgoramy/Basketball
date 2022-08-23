@@ -9,7 +9,7 @@ const parseJwt = (token: string) => {
 };
 
 export const authorizationExpired = (user?: UserDto) => {
-  if (user) {
+  if (user && localStorage.getItem("user")) {
     return tokenExpired(user.token);
   } else return true;
 };

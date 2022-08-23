@@ -102,7 +102,8 @@ const playerSlice = createSlice({
       state.player = action.payload;
     },
     clearState: (state) => {
-      state = initialState;
+      state.player = {} as PlayerDto;
+      state.error = undefined;
       state.deleteSucceded = false;
       state.updateSucceded = false;
     },

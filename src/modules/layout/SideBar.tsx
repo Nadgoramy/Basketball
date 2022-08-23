@@ -32,7 +32,7 @@ interface PropsType extends HTMLAttributes<HTMLHeadingElement> {
 }
 const StyledSideBar = styled.div<PropsType>`
   position: fixed;
-  height: 100%;
+  //height: 100%;
   width: 140px;
   left: 0;
   top: 80px;
@@ -42,6 +42,7 @@ const StyledSideBar = styled.div<PropsType>`
   flex-direction: column;
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
+    top: 62px;
     width: 200px;
     z-index: 8888;
     background: ${({ theme }) => theme.colors.white};
@@ -81,39 +82,31 @@ const UserProfile = styled.div`
 
 const NavContainer = styled.div`
   text-align: center;
-  margin: 0 0 0 0;
+  padding: 0 0 0 0;
   display: flex;
   flex-direction: column;
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
     text-align: left;
-    margin: 24px 0 24px 20px;
+    padding: 24px 0 0px 20px;
   }
   .active {
     color: ${({ theme }) => theme.colors.lightest_red};
   }
-
-  .singout {
-    margin-top: auto;
-    height: 115px;
-    padding: 0 40px 40px 40px;
-  }
 `;
 const LogOutContainer = styled.div`
   text-align: center;
-  margin: 0 0 60px 0;
   display: flex;
   flex-direction: column;
-
-  @media (max-width: ${({ theme }) => theme.mobile}) {
-    text-align: left;
-    margin: 24px 0 24px 20px;
-  }
-
   color: ${({ theme }) => theme.colors.lightest_red};
   margin-top: auto;
-  height: 115px;
-  //padding: 0 40px 40px 40px;
+  height: 108px;
+  padding: 0;
+  @media (max-width: ${({ theme }) => theme.mobile}) {
+    text-align: left;
+    padding: 24px 0 24px 20px;
+    height: 24px;
+  }
 `;
 const SingOutLink = styled(Link)`
   padding: 30px 35px 0 35px;
@@ -121,7 +114,7 @@ const SingOutLink = styled(Link)`
   text-decoration: none;
   color: ${({ theme }) => theme.colors.lightest_red};
   @media (max-width: ${({ theme }) => theme.mobile}) {
-    padding: 0 0;
+    padding: 0;
     display: block;
   }
   img {
@@ -129,12 +122,18 @@ const SingOutLink = styled(Link)`
     height: 24px;
     margin: auto;
     display: block;
+    padding-right: 0px;
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      padding-right: 8px;
+      display: inline;
+    }
   }
   label {
     font-weight: 500;
     font-size: 12px;
     line-height: 150%;
     cursor: pointer;
+
     @media (max-width: ${({ theme }) => theme.mobile}) {
       position: relative;
       top: -8px;
@@ -146,7 +145,9 @@ const SingOutLink = styled(Link)`
 `;
 
 const NavBarLink = styled(Link)`
-  padding: 30px 50px 0 50px;
+  padding-top: 32px;
+  margin: auto;
+  width: 40px;
   display: inline-block;
   color: ${({ theme }) => theme.colors.light_grey};
   text-decoration: none;
@@ -154,16 +155,24 @@ const NavBarLink = styled(Link)`
     color: ${({ theme }) => theme.colors.lightest_red};
   }
   @media (max-width: ${({ theme }) => theme.mobile}) {
-    padding: 0 0;
+    padding: 0;
     display: block;
+    height: 24px;
+    margin: 0;
+    width: auto;
   }
 
   img {
     width: 24px;
     height: 24px;
-    margin: 0 8px;
+    padding-right: 0px;
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      padding-right: 8px;
+    }
   }
   label {
+    position: relative;
+    top: -4px;
     font-weight: 500;
     font-size: 12px;
     line-height: 150%;
@@ -175,53 +184,6 @@ const NavBarLink = styled(Link)`
       font-size: 13px;
       line-height: 18px;
     }
-  }
-`;
-
-const StyledLogOut = styled(Link)`
-  margin-top: auto;
-  height: 115px;
-  padding: 0 40px 40px 40px;
-
-  text-align: center;
-  color: ${({ theme }) => theme.colors.lightest_red};
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 18px;
-  img {
-    width: 24px;
-    height: 24px;
-    margin: 0 8px;
-    display: block;
-    margin: auto;
-  }
-  div {
-    display: block;
-    @media (min-width: ${({ theme }) => theme.mobile}) {
-      display: flex;
-      text-align: center;
-      padding-bottom: 32px;
-    }
-  }
-  label {
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 150%;
-    cursor: pointer;
-    @media (max-width: ${({ theme }) => theme.mobile}) {
-      position: relative;
-      top: -8px;
-      font-weight: 500;
-      font-size: 13px;
-      line-height: 18px;
-      margin-left: 8px;
-    }
-  }
-
-  @media (min-width: ${({ theme }) => theme.mobile}) {
-    padding: 0 0 36px 44px;
-    display: block;
   }
 `;
 
@@ -281,7 +243,7 @@ const SideBar = (props: SideBarProps) => {
         <LogOutContainer key="singOut" className="active singout">
           <SingOutLink to="/" onClick={singout}>
             <img src={SingoutImg} />
-            <label>Sing out</label>
+            <label>Sign out</label>
           </SingOutLink>
         </LogOutContainer>
       </StyledSideBar>
@@ -290,12 +252,3 @@ const SideBar = (props: SideBarProps) => {
 };
 
 export default SideBar;
-
-/*
- <StyledLogOut to="/" onClick={singout}>
-          <div>
-            <img src={SingoutImg} />
-            <label>Sing out</label>
-          </div>
-        </StyledLogOut>
-*/

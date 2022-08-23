@@ -7,11 +7,10 @@ import { NavLink, useNavigate } from "react-router-dom";
 import PasswordInput from "common/components/PasswordInput";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { errorActions } from "core/redux/errorSlice";
-import { register as userRegister } from "core/redux/userSlice";
+import { register as userRegister, userActions } from "core/redux/userSlice";
 import { RegisterFormDto } from "api/Dto/userDto";
 import { AppStateType } from "core/redux/configureStore";
 import { StyledFormContainer } from "./AuthComponents";
-
 
 interface UserSubmitForm extends RegisterFormDto {
   confirmPassword: string;
@@ -62,6 +61,9 @@ const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
 
   const onSubmit = (data: UserSubmitForm) => {
     dispatch(userRegister(data));
+  };
+  const removeError = () => {
+    dispatch(userActions.removeError());
   };
 
   return (
@@ -146,7 +148,9 @@ const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
         </div>
         <nav>
           <span>Already a member? </span>
-          <NavLink to="/">Sing in</NavLink>
+          <NavLink to="/" onClick={removeError}>
+            Sing in
+          </NavLink>
         </nav>
       </form>
     </StyledFormContainer>

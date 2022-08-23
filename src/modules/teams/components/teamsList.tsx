@@ -22,6 +22,8 @@ import { StyledSelect } from "common/components/StyledSelect";
 import { pageSizeOptions } from "common/helpers/pageSizeOptions";
 import { errorActions } from "core/redux/errorSlice";
 import debounce from "lodash.debounce";
+import arrowLeft from "asserts/icons/chevron_left.svg";
+import arrowRight from "asserts/icons/chevron_right.svg";
 
 type PropsType = {};
 export const TeamsList: React.FunctionComponent<PropsType> = (
@@ -90,8 +92,8 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
           <div id="footerFlex">
             <StyledPaginateContainer>
               <ReactPaginate
-                previousLabel="<"
-                nextLabel=">"
+                previousLabel={<img src={arrowRight} />}
+                nextLabel={<img src={arrowLeft} />}
                 breakLabel="..."
                 breakClassName="break-me"
                 pageCount={Math.ceil(itemsCount / pageParams.pageSize)}

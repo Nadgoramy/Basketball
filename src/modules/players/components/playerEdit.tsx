@@ -190,7 +190,10 @@ const PlayerEdit: React.FunctionComponent = () => {
                   error={errors.name?.message}
                   {...register("name", {
                     required: "Name is required",
-                    maxLength: 30,
+                    maxLength: {
+                      value: 80,
+                      message: "Maximum length is 80",
+                    },
                   })}
                 />
               </div>
@@ -274,7 +277,10 @@ const PlayerEdit: React.FunctionComponent = () => {
                     {...register("height", {
                       required: "Height is required",
                       valueAsNumber: true,
-                      min: 0,
+                      min: {
+                        value: 0,
+                        message: "Negative value is not allowed",
+                      },
                     })}
                   />
                 </div>
@@ -286,7 +292,10 @@ const PlayerEdit: React.FunctionComponent = () => {
                     {...register("weight", {
                       required: "Weight is required",
                       valueAsNumber: true,
-                      min: 0,
+                      min: {
+                        value: 0,
+                        message: "Negative value is not allowed",
+                      },
                     })}
                   />
                 </div>
@@ -324,7 +333,10 @@ const PlayerEdit: React.FunctionComponent = () => {
                     {...register("number", {
                       required: "Number is required",
                       valueAsNumber: true,
-                      min: 0,
+                      min: {
+                        value: 0,
+                        message: "Negative value is not allowed",
+                      },
                     })}
                   />
                 </div>

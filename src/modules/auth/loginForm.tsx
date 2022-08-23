@@ -7,7 +7,7 @@ import PasswordInput from "common/components/PasswordInput";
 import { AppStateType } from "core/redux/configureStore";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { errorActions } from "core/redux/errorSlice";
-import { login } from "core/redux/userSlice";
+import { login, userActions } from "core/redux/userSlice";
 import { LoginFormDto } from "api/Dto/userDto";
 import { StyledFormContainer } from "./AuthComponents";
 
@@ -58,7 +58,10 @@ const LoginForm: React.FC<PropsType> = (props) => {
   const onSubmit = (data: LoginFormDto) => {
     dispatch(login(data) as any);
   };
-
+  
+  const removeError =()=>{
+    dispatch(userActions.removeError())
+  }
   return (
     <StyledFormContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -88,7 +91,7 @@ const LoginForm: React.FC<PropsType> = (props) => {
         </div>
         <nav>
           <span>Not a member yet? </span>
-          <NavLink to="/register">Sing up</NavLink>
+          <NavLink to="/register" onClick={removeError}>Sing up</NavLink>
         </nav>
       </form>
     </StyledFormContainer>

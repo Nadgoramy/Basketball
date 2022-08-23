@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import styled from "styled-components";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import ErrorPopUp from "common/components/ErrorPopUp";
 import { PageNotFound } from "modules/layout/PageNotFound";
 import LoginPage from "./LoginPage";
 import RegistrationPage from "./RegistrationPage";
-import { useAppSelector } from "core/redux/store";
+import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { AppStateType } from "core/redux/configureStore";
+import { errorActions } from "core/redux/errorSlice";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -35,8 +36,14 @@ const StyledLoginContainer = styled.div`
 `;
 
 const UnauthApp: React.FunctionComponent = () => {
-  const error = useAppSelector((store) => store.error.message);
-  const user = useAppSelector((state: AppStateType) => state.user.currentUser);
+  const error = useAppSelector((store: AppStateType) => store.error.message);
+  const user = useAppSelector((store: AppStateType) => store.user.currentUser);
+  const location = useLocation();
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(errorActions.clearErrorMessage());
+  }, [location.pathname]);
+  const errorNode = useMemo(() => <ErrorPopUp errorMessage={error} />, [error]);
   if (user) {
     return <Navigate to="/teams" replace />;
   }
@@ -50,7 +57,7 @@ const UnauthApp: React.FunctionComponent = () => {
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </StyledLoginContainer>
-      {error && <ErrorPopUp errorMessage={error} />}
+      {error && errorNode}
     </StyledContainer>
   );
 };

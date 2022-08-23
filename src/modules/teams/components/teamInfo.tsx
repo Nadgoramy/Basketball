@@ -11,6 +11,7 @@ import { DeleteButton } from "common/components/Button/deleteButton";
 import { errorActions } from "core/redux/errorSlice";
 import { teamsActions } from "../hooks/teamsPageSlice";
 import debounce from "lodash.debounce";
+import { getAge } from "common/helpers/age";
 
 type PropTypes = {};
 export const TeamInfo: React.FunctionComponent<PropTypes> = (
@@ -46,12 +47,6 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
       navigate(-1);
     }
   }, [deleteOperationSucceded]);
-
-  const getAge = (birthday?: Date): string => {
-    if (birthday === undefined) return "";
-    const age = new Date(Date.now() - birthday.valueOf());
-    return Math.abs(age.getUTCFullYear() - 1970).toString();
-  };
 
   const handleDeleteClick = (e: any) => {
     if (!id) return;

@@ -95,7 +95,7 @@ interface StateType {
 const initialState: StateType = {
   team: {} as TeamDto,
   isFetching: false,
-  error: "",
+  error: undefined,
   updateSucceded: false,
   deleteSucceded: false,
 };
@@ -107,9 +107,10 @@ const teamSlice = createSlice({
       state.team = action.payload;
       state.deleteSucceded = false;
       state.updateSucceded = false;
-    },    
+    },
     clearState: (state) => {
-      state = initialState;
+      state.team = {} as TeamDto;
+      state.error = undefined;
       state.deleteSucceded = false;
       state.updateSucceded = false;
     },

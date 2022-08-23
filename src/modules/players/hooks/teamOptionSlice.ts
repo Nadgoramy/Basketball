@@ -6,21 +6,21 @@ import { authorizationExpired } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 
-async function LoadTeamOptions(){
-  const totalCountResponce = await TeamService.getTeams("", 1, 1);
+async function LoadTeamOptions() {
+  const totalCountResponce = await TeamService.getTeams("", 1, 1); //.then((res: any) => totalCountResponce = res.data.count);
 
-  if (totalCountResponce && totalCountResponce.count>0) {
-    let iteration=0;
+  if (totalCountResponce && totalCountResponce.count > 0) {
+    let iteration = 0;
     let options = new Array<OptionTypeValueNumber>();
-    do{
+    do {
       iteration++;
-    const responce = await TeamService.getTeams("", iteration, 25);    
-    responce.data.map((t: TeamDto) =>
-    options.push({ label: t.name, value: t.id })
-    );
-    }while(options.length < totalCountResponce.count)
+      const responce = await TeamService.getTeams("", iteration, 25);
+      responce.data.map((t: TeamDto) =>
+        options.push({ label: t.name, value: t.id })
+      );
+    } while (options.length < totalCountResponce.count);
 
-    return  options
+    return options;
   } else throw new Error("No team found");
 }
 
@@ -29,36 +29,37 @@ export const getTeamOptions = createAsyncThunk(
   async (_, { rejectWithValue, getState, dispatch }) => {
     try {
       const state = getState() as AppStateType;
-      if(state.teamOptions.options.length>0) return state.teamOptions.options 
+      if (state.teamOptions.options.length > 0)
+        return state.teamOptions.options;
 
-      return LoadTeamOptions()
-      
+      return LoadTeamOptions();
     } catch (error: any) {
-      if(error.status == 401) {
-        dispatch(userActions.removeUser())
+      if (error.status == 401) {
+        dispatch(userActions.removeUser());
+        return rejectWithValue("Authorization error");
       }
       return rejectWithValue(error.message);
     }
   },
   {
-    condition: (_, { getState, extra }) => {
-      const { teamOptions, user } = getState() as AppStateType      
-      if (teamOptions.isFetching) return false
-      if (authorizationExpired(user.currentUser)) return false
-    }
+    condition: (_, { getState }) => {
+      const { teamOptions, user } = getState() as AppStateType;
+      if (teamOptions.isFetching) return false;
+      if (authorizationExpired(user.currentUser)) return false;
+    },
   }
 );
 
 type StateType = {
   isFetching: boolean;
   options: OptionTypeValueNumber[];
-  error: string|undefined
+  error: string | undefined;
 };
 
 const initialState = {
   isFetching: false,
   options: [],
-  error:undefined
+  error: undefined,
 } as StateType;
 
 const teamOptionSlice = createSlice({
@@ -78,7 +79,7 @@ const teamOptionSlice = createSlice({
       })
       .addCase(getTeamOptions.rejected, (state, action) => {
         state.isFetching = false;
-        state.error = action.error.message
+        state.error = action.error.message;
       });
   },
 });

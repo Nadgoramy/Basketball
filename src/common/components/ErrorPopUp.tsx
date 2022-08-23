@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fadeIn } from "react-animations";
 import styled, { keyframes } from "styled-components";
 
@@ -17,7 +17,6 @@ const fadeOut = keyframes`
 `;
 
 const ErrorPopUpStyled = styled.div`
-  
   position: absolute;
   display: flex;
   right: 0;
@@ -49,6 +48,9 @@ const ErrorPopUp = (props: PropType) => {
   const fade = () => {
     setFading(true);
   };
+  useEffect(() => {
+    setFading(false);
+  }, [props.errorMessage]);
   const fadeTimer = setTimeout(() => setFading(true), 10000);
   return (
     <ErrorPopUpStyled onMouseEnter={fade} hidden={fading}>
