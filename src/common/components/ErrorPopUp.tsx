@@ -1,20 +1,32 @@
+import { errorActions } from "core/redux/errorSlice";
+import { useAppDispatch } from "core/redux/store";
 import { useEffect, useState } from "react";
-import { fadeIn } from "react-animations";
 import styled, { keyframes } from "styled-components";
-
-const bounceAnimation = keyframes`${fadeIn}`;
 
 const fadeOut = keyframes`
   from {
     transform: scale(1);
     opacity: 1;
   }
-
   to {
     transform: scale(.25);
     opacity: 0;
   }
 `;
+const fadeIn = keyframes`
+  from {
+    transform: scale(1);
+    opacity: 0;    
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+`;
+
+interface IProps {
+  fading: boolean;
+}
 
 const ErrorPopUpStyled = styled.div`
   position: absolute;
@@ -28,8 +40,8 @@ const ErrorPopUpStyled = styled.div`
   border-radius: 4px;
   margin: 36px;
 
-  visibility: ${(props) => (props.hidden ? "hidden" : "visible")};
-  animation: ${(props) => (props.hidden ? fadeOut : "")} 2s linear;
+  visibility: ${(props: IProps) => (props.fading ? "hidden" : "visible")};
+  animation: ${(props: IProps) => (props.fading ? fadeOut : fadeIn)} 2s linear;
   transition: visibility 2s linear;
 
   span {
@@ -45,16 +57,22 @@ interface PropType {
 }
 const ErrorPopUp = (props: PropType) => {
   const [fading, setFading] = useState(false);
+  const [text, setText] = useState(props.errorMessage);
+  const dispatch = useAppDispatch();
   const fade = () => {
     setFading(true);
+    setTimeout(() => dispatch(errorActions.clearErrorMessage()), 2100);
   };
   useEffect(() => {
     setFading(false);
+  }, [text]);
+  useEffect(() => {
+    setText(props.errorMessage);
   }, [props.errorMessage]);
   const fadeTimer = setTimeout(() => setFading(true), 10000);
   return (
-    <ErrorPopUpStyled onMouseEnter={fade} hidden={fading}>
-      <span>{props.errorMessage}</span>
+    <ErrorPopUpStyled onMouseEnter={fade} fading={fading}>
+      <span>{text}</span>
     </ErrorPopUpStyled>
   );
 };

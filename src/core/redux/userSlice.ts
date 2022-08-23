@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import AuthService from "api/requests/authService";
 import { LoginFormDto, RegisterFormDto, UserDto } from "api/Dto/userDto";
+import { number } from "prop-types";
 
 export const login = createAsyncThunk(
   `user/login`,
@@ -46,12 +47,14 @@ interface UserState {
   isLoggedIn: boolean;
   isFetching: boolean;
   error?: string;
+  postAttemptTime:number
 }
 
 const initialState = {
   currentUser: undefined,
   isLoggedIn: false,
   isFetching: false,
+  postAttemptTime: 0
 } as UserState;
 
 const userSlice = createSlice({
@@ -75,6 +78,7 @@ const userSlice = createSlice({
     builder
       .addCase(login.pending, (state, action) => {
         state.isFetching = true;
+        state.postAttemptTime = Date.now()
       })
       .addCase(login.fulfilled, (state, action) => {
         state.isFetching = false;
@@ -89,6 +93,7 @@ const userSlice = createSlice({
       })
       .addCase(register.pending, (state, action) => {
         state.isFetching = true;
+        state.postAttemptTime = Date.now()
       })
       .addCase(register.fulfilled, (state, action) => {
         state.isFetching = false;

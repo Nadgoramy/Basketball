@@ -5,7 +5,7 @@ import { StyledButton } from "common/components/Button/Button.styled";
 import Input from "common/components/Input/Input";
 import PasswordInput from "common/components/PasswordInput";
 import { AppStateType } from "core/redux/configureStore";
-import { useAppDispatch, useAppSelector } from "core/redux/store";
+import { store, useAppDispatch, useAppSelector } from "core/redux/store";
 import { errorActions } from "core/redux/errorSlice";
 import { login, userActions } from "core/redux/userSlice";
 import { LoginFormDto } from "api/Dto/userDto";
@@ -14,28 +14,21 @@ import { StyledFormContainer } from "./AuthComponents";
 type PropsType = {
   setError?: (msg: string) => void;
 };
-type StateType = {
-  login: string;
-  password: string;
-  msg: string;
-};
-const LoginForm: React.FC<PropsType> = (props) => {
-  const globalSetError = props.setError;
+const LoginForm: React.FC<PropsType> = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    getValues,
     setError,
   } = useForm<LoginFormDto>();
   const dispatch = useAppDispatch();
-  const currentUser = useAppSelector(
-    (state: AppStateType) => state.user.currentUser
-  );
   const isLoggedIn = useAppSelector(
     (state: AppStateType) => state.user.isLoggedIn
   );
   const error = useAppSelector((state: AppStateType) => state.user.error);
+  const postTime = useAppSelector(
+    (store: AppStateType) => store.user.postAttemptTime
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,15 +46,15 @@ const LoginForm: React.FC<PropsType> = (props) => {
         message: "Wrong password. Please, try again.",
       });
     }
-  }, [error]);
+  }, [error, postTime]);
 
   const onSubmit = (data: LoginFormDto) => {
     dispatch(login(data) as any);
   };
-  
-  const removeError =()=>{
-    dispatch(userActions.removeError())
-  }
+
+  const removeError = () => {
+    dispatch(userActions.removeError());
+  };
   return (
     <StyledFormContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -91,7 +84,9 @@ const LoginForm: React.FC<PropsType> = (props) => {
         </div>
         <nav>
           <span>Not a member yet? </span>
-          <NavLink to="/register" onClick={removeError}>Sing up</NavLink>
+          <NavLink to="/register" onClick={removeError}>
+            Sing up
+          </NavLink>
         </nav>
       </form>
     </StyledFormContainer>

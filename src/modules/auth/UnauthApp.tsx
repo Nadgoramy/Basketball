@@ -43,7 +43,7 @@ const UnauthApp: React.FunctionComponent = () => {
   useEffect(() => {
     dispatch(errorActions.clearErrorMessage());
   }, [location.pathname]);
-  const errorNode = useMemo(() => <ErrorPopUp errorMessage={error} />, [error]);
+  const errorNode = <ErrorPopUp errorMessage={error} />;
   if (user) {
     return <Navigate to="/teams" replace />;
   }
