@@ -1,54 +1,95 @@
 import React from "react";
+import { shallowEqual } from "react-redux";
 import styled from "styled-components";
-import { ActionMeta, SingleValue } from "react-select";
+import { StyledSelect } from "../StyledSelect";
 
-interface PropType {
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-}
-type OptionType = {
-  label: string,
-  value: number
-}
-const options=[
+const options = [
   {
-    label:"6",
-    value:6 
+    label: "6",
+    value: 6,
   },
   {
-    label:"12",
-    value: 12
+    label: "12",
+    value: 12,
   },
   {
-    label:"24",
-    value: 24
+    label: "24",
+    value: 24,
+  },
+];
+
+const StyledPageSizeSelector = styled(StyledSelect)`
+.Select__control {
+    @media (max-width: ${({ theme }) => theme.mobile}) {    
+        min-height: 28px;
+        min-width: 60px;
+        width: 60px;
+        height: 28px;          
+    }
   }
-]
-
-const StyledPageSizeSelector=styled.select<PropType>`
-  height: 40px;
-  border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
-  border-radius: 4px;
-  color: ${({ theme }) => theme.colors.dark_grey};
-  font-family: 'Avenir';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 24px;
-  outline: none;
-
-  option{
-    height: 40px;
-    color: ${({theme})=> theme.colors.dark_grey};
+  @media (max-width: ${({ theme }) => theme.mobile}) {
+    min-height: 28px;
+    height: 28px;
+    width: 60px;
   }
-`
 
-const PageSizeSelector = (props: PropType) => {
+ 
+.Select__indicator {
+  align-items: center;
+  @media (max-width: ${({ theme }) => theme.mobile}) {          
+      width: 24px;
+      height: 28px;
+      align-items: center;
+      }
+  }
+
+
+.Select__input-container {
+  align-items: center;
+  @media (max-width: ${({ theme }) => theme.mobile}) {    
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 24px;
+    margin: 0;
+    padding: 0;
+      
+  }
+}
+
+.Select__value-container {
+  @media (max-width: ${({ theme }) => theme.mobile}) {    
+    padding: 2px 2px;
+    text-align: center;
+  }
+}
+.Select__single-value{
+  text-align: center;
+}
+.Select__input{
+  text-align: center;
+}
+
+`;
+interface PageSizeSelectorPropType {
+  onChange: (a: any, b: any) => void;
+  value: number;
+}
+const PageSizeSelector = (props: PageSizeSelectorPropType) => {
   return (
-    <StyledPageSizeSelector onChange={props.onChange}>
-      <option key="6">6</option>
-      <option key="12">12</option>
-      <option key="24">24</option>
-    </StyledPageSizeSelector>
+    <StyledPageSizeSelector
+      border={true}
+      classNamePrefix="Select"
+      className="pagesizeSelector"
+      options={options}
+      defaultValue={options[0]}
+      onChange={props.onChange}
+      menuPlacement="auto"
+      isSearchable={false}
+      value={options.filter(
+        ({ value }) => value === props.value
+      )}
+    />
   );
 };
-export default PageSizeSelector;
+
+export default React.memo(PageSizeSelector, shallowEqual);

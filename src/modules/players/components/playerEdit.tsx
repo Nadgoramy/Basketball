@@ -8,9 +8,9 @@ import {
   addPlayer,
 } from "../hooks/playerSlice";
 import { PlayerDto } from "api/Dto/playerDto";
-import Input from "common/components/Input/Input";
-import DragDropFile from "common/components/DragDropFile";
-import ImageService from "api/requests/imageServise";
+import { Input } from "common/components/Input/Input";
+import { DragDropFile } from "common/components/DragDropFile";
+import { ImageService } from "api/requests/imageServise";
 import { StyledLink } from "common/components/Link/styledLink";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -31,26 +31,28 @@ import {
   StyledFlexAutoDiv,
   StyledFlexRow,
 } from "common/components/EditComponents";
-import { errorActions } from "core/redux/errorSlice";
 import { useNavigate } from "react-router-dom";
-import BirthdayCalendarInput from "common/components/BirthdayCalendarInput";
+import { BirthdayCalendarInput } from "common/components/BirthdayCalendarInput";
 import { ErrorInputSpan } from "common/components/ErrorInputSpan";
-import Preloader from "common/components/preloader";
+import { Preloader } from "common/components/preloader";
 import { playersActions } from "../hooks/playersPageSlice";
+import { useAPIError } from "common/hooks/useApiError";
 
-const PlayerEdit: React.FunctionComponent = () => {
+export const PlayerEdit: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | undefined>(
     undefined
   );
-  const positionOptions = useAppSelector((store) => store.positions.options);
-  const teamOptions = useAppSelector((store) => store.teamOptions.options);
-  const player = useAppSelector((state: AppStateType) => state.player.player);
-  const operationSecceded = useAppSelector(
-    (state: AppStateType) => state.player.updateSucceded
+  const positionOptions = useAppSelector(
+    (store: AppStateType) => store.positions.options
   );
+  const teamOptions = useAppSelector(
+    (store: AppStateType) => store.teamOptions.options
+  );
+  const player = useAppSelector((state: AppStateType) => state.player.player);
+
   const isFetching = useAppSelector((store) => store.player.isFetching);
   const [initialState, setInitialState] = useState<PlayerDto | null>();
   const {
@@ -73,8 +75,9 @@ const PlayerEdit: React.FunctionComponent = () => {
   };
 
   const error = useAppSelector((store) => store.player.error);
+  const { addError } = useAPIError();
   useEffect(() => {
-    dispatch(errorActions.setErrorMessage(error));
+    if (error) addError(error);
   }, [error]);
 
   useEffect(() => {
@@ -100,17 +103,6 @@ const PlayerEdit: React.FunctionComponent = () => {
     setCurrentAvatarUrl(player?.avatarUrl);
   }, [player]);
 
-  useEffect(() => {
-    if (operationSecceded) {
-      dispatch(playersActions.clearState());
-      dispatch(playerActions.clearState());
-      navigate("/players/" + player.id);
-    }
-  }, [operationSecceded]);
-  const redirect = () => {
-    // navigate(-1)
-  };
-
   const handleFiles = (file: File) => {
     removeImageIfNeeded();
 
@@ -135,6 +127,7 @@ const PlayerEdit: React.FunctionComponent = () => {
       setCurrentAvatarUrl(player.avatarUrl);
     });
   };
+
   function setFormValues(player?: PlayerDto) {
     reset({
       id: player?.id,
@@ -151,17 +144,23 @@ const PlayerEdit: React.FunctionComponent = () => {
 
   const onSubmit = (data: any) => {
     if (!isDirty) {
-      redirect();
       return;
     }
-
-    if (id && parseInt(id) > 0) dispatch(updatePlayer(data as PlayerDto));
-    else dispatch(addPlayer(data as PlayerDto));
+    if (id && parseInt(id) > 0)
+      dispatch(updatePlayer(data as PlayerDto)).then(() => onSubmited(parseInt(id)));
+    else dispatch(addPlayer(data as PlayerDto)).then((res) => onSubmited((res.payload as PlayerDto).id));
   };
+  const onSubmited = (id?: number) => {
+    if (id) {
+      dispatch(playersActions.clearState());
+      dispatch(playerActions.clearState());
+      navigate("/players/" + id);
+    }
+  };
+
   const onCancel = () => {
     removeImageIfNeeded();
-    setFormValues(player);
-    redirect();
+    navigate(-1);
   };
   const values = watch();
   return (
@@ -207,22 +206,23 @@ const PlayerEdit: React.FunctionComponent = () => {
                   }}
                   render={({
                     field: { onChange, onBlur, value, name, ref },
-                    fieldState: { invalid, isTouched, isDirty, error },
-                    formState,
                   }) => (
                     <StyledSelect
+                      border={false}
                       classNamePrefix="Select"
                       className={errors.position ? "error" : ""}
                       id={name}
                       options={positionOptions}
                       menuPlacement="auto"
-                      onChange={(newValue, action) => {
+                      onChange={(newValue, _) => {
                         onChange((newValue as OptionTypeValueString).value);
                       }}
                       onBlur={onBlur}
                       value={
                         positionOptions
-                          ? positionOptions.find((o) => o.value == value)
+                          ? positionOptions.find(
+                            (o: OptionTypeValueString) => o.value == value
+                          )
                           : undefined
                       }
                       ref={ref}
@@ -247,6 +247,7 @@ const PlayerEdit: React.FunctionComponent = () => {
                     formState,
                   }) => (
                     <StyledSelect
+                      border={false}
                       classNamePrefix="Select"
                       className={errors.position ? "error" : ""}
                       options={teamOptions}
@@ -257,7 +258,9 @@ const PlayerEdit: React.FunctionComponent = () => {
                       onBlur={onBlur}
                       value={
                         teamOptions
-                          ? teamOptions.find((o) => o.value == value)
+                          ? teamOptions.find(
+                            (o: OptionTypeValueNumber) => o.value == value
+                          )
                           : undefined
                       }
                       ref={ref}
@@ -356,5 +359,3 @@ const PlayerEdit: React.FunctionComponent = () => {
     </StyledEditContainer>
   );
 };
-
-export default PlayerEdit;

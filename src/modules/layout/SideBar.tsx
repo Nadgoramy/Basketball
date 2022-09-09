@@ -10,7 +10,10 @@ import noUserImg from "asserts/images/profile.svg";
 import SingoutImg from "asserts/images/singout.svg";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { userActions } from "core/redux/userSlice";
-import { errorActions } from "core/redux/errorSlice";
+import { themeColors } from "ThemeColors";
+import { shallowEqual } from "react-redux";
+import React from "react";
+import { AuthService } from "api/requests/authService";
 
 const menu = [
   {
@@ -27,17 +30,16 @@ const menu = [
   },
 ];
 
-interface PropsType extends HTMLAttributes<HTMLHeadingElement> {
+interface StyledSideBarPropsType extends HTMLAttributes<HTMLHeadingElement> {
   show: boolean;
 }
-const StyledSideBar = styled.div<PropsType>`
+const StyledSideBar = styled.div<StyledSideBarPropsType>`
   position: fixed;
-  //height: 100%;
   width: 140px;
   left: 0;
   top: 80px;
   bottom: 0;
-  background: ${({ theme }) => theme.colors.white};
+  background: ${themeColors.white};
   display: flex;
   flex-direction: column;
 
@@ -45,14 +47,13 @@ const StyledSideBar = styled.div<PropsType>`
     top: 62px;
     width: 200px;
     z-index: 8888;
-    background: ${({ theme }) => theme.colors.white};
+    background: ${themeColors.white};
     display: ${(props) => (props.show ? "" : "none")};
   }
 `;
-
 const UserProfile = styled.div`
   height: 80px;
-  border-bottom: 0.5px solid ${({ theme }) => theme.colors.light_grey};
+  border-bottom: 0.5px solid ${themeColors.light_grey};
   display: flex;
   text-align: center;
 
@@ -68,7 +69,7 @@ const UserProfile = styled.div`
 
     position: relative;
     top: -20px;
-    color: ${({ theme }) => theme.colors.dark_grey};
+    color: ${themeColors.dark_grey};
     margin-left: 8px;
   }
   img {
@@ -79,7 +80,6 @@ const UserProfile = styled.div`
     display: none;
   }
 `;
-
 const NavContainer = styled.div`
   text-align: center;
   padding: 0 0 0 0;
@@ -91,14 +91,14 @@ const NavContainer = styled.div`
     padding: 24px 0 0px 20px;
   }
   .active {
-    color: ${({ theme }) => theme.colors.lightest_red};
+    color: ${themeColors.lightest_red};
   }
 `;
 const LogOutContainer = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
-  color: ${({ theme }) => theme.colors.lightest_red};
+  color: ${themeColors.lightest_red};
   margin-top: auto;
   height: 108px;
   padding: 0;
@@ -112,7 +112,7 @@ const SingOutLink = styled(Link)`
   padding: 30px 35px 0 35px;
   display: inline-block;
   text-decoration: none;
-  color: ${({ theme }) => theme.colors.lightest_red};
+  color: ${themeColors.lightest_red};
   @media (max-width: ${({ theme }) => theme.mobile}) {
     padding: 0;
     display: block;
@@ -143,16 +143,15 @@ const SingOutLink = styled(Link)`
     }
   }
 `;
-
 const NavBarLink = styled(Link)`
   padding-top: 32px;
   margin: auto;
   width: 40px;
   display: inline-block;
-  color: ${({ theme }) => theme.colors.light_grey};
+  color: ${themeColors.light_grey};
   text-decoration: none;
   .active {
-    color: ${({ theme }) => theme.colors.lightest_red};
+    color: ${themeColors.lightest_red};
   }
   @media (max-width: ${({ theme }) => theme.mobile}) {
     padding: 0;
@@ -191,27 +190,19 @@ interface SideBarProps {
   isOpen: boolean;
   activeItem: "team" | "player";
 }
+
 const SideBar = (props: SideBarProps) => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const isLoggedIn = useAppSelector(
-    (state: AppStateType) => state.user.isLoggedIn
-  );
-  useEffect(() => {
-    if (!isLoggedIn) {
-      dispatch(errorActions.clearErrorMessage());
-      navigate("/");
-    }
-  }, [isLoggedIn]);
   const singout = () => {
     dispatch(userActions.removeUser());
+    AuthService.clearUser()
   };
 
   const userFromStore = useAppSelector(
     (state: AppStateType) => state.user.currentUser
   );
   const itemIsActive = (item: any) => item.link.indexOf(props.activeItem) > 0;
-
+  console.log("sideBar is rendering");
   if (userFromStore)
     return (
       <StyledSideBar show={props.isOpen}>
@@ -250,5 +241,4 @@ const SideBar = (props: SideBarProps) => {
     );
   else return <></>;
 };
-
-export default SideBar;
+export default React.memo(SideBar, shallowEqual);

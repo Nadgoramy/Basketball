@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { TeamDto, TeamDtoPageResult } from "api/Dto/teamDto";
-import TeamService from "api/requests/teamService";
+import { TeamService } from "api/requests/teamService";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 import { authorizationExpired } from "common/helpers/userCheck";
@@ -35,7 +35,7 @@ export const getTeamsPage = createAsyncThunk(
   }
 );
 
-interface StateType {
+interface TeamPageSliceStateType {
   isFetching: boolean;
   page: number;
   count: number;
@@ -45,7 +45,7 @@ interface StateType {
   error?: string;
 }
 
-const initialState: StateType = {
+const initialState: TeamPageSliceStateType = {
   isFetching: false,
   page: 1,
   count: 0,

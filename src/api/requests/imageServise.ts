@@ -1,4 +1,4 @@
-import AuthService from "./authService";
+import { AuthService } from "./authService";
 import { imagePost, post, remove } from "../baseRequest";
 
 const API_URL = "image/";
@@ -26,8 +26,7 @@ const deleteImage = (fileName: string) => {
   );
 };
 
-const ImageService = {
+export const ImageService = {
   saveImage,
   deleteImage,
 };
-export default ImageService;

@@ -1,11 +1,12 @@
 import { StyledFlex } from "common/components/Flex";
 import styled from "styled-components";
+import { themeColors } from "ThemeColors";
 
 export const StyledHeaderContainer = styled.div`
   box-sizing: border-box;
-  background: ${({ theme }) => theme.colors.white};
+  background: ${themeColors.white};
   border-radius: 10px 10px 0px 0px;
-  color: ${({ theme }) => theme.colors.red};
+  color: ${themeColors.red};
   font-weight: 500;
   font-size: 14px;
   line-height: 24px;
@@ -40,10 +41,12 @@ export const StyledMainContainer = styled.div`
   align-items: stretch;
   margin: 0;
   gap: 5%;
+  background-color: #fff;
+  background-color: ${themeColors.white};
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
     flex-direction: column;
-    margin: 16px 24px;
+    padding: 16px 24px;
     gap: 0px;
   }
 
@@ -84,6 +87,7 @@ export const StyledMainContainer = styled.div`
 `;
 
 export const StyledEditContainer = styled(StyledFlex)`
+  background-color: ${themeColors.white};
   @media (max-width: ${({ theme }) => theme.mobile}) {
     //margin: 16px 24px;
   }

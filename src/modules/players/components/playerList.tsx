@@ -1,20 +1,12 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   playersActions,
   IParams,
 } from "modules/players/hooks/playersPageSlice";
 import { PlayerCard } from "./playerCard";
 import { PlayerDto } from "api/Dto/playerDto";
-import {
-  getCount,
-  getError,
-  getIsFetching,
-  getPlayers,
-  getPlayersPageParams,
-  getTeamsOptions,
-  getFilter,
-} from "modules/players/selectors";
-import Preloader from "common/components/preloader";
+import * as selectors from "modules/players/selectors";
+import { Preloader } from "common/components/preloader";
 import { useNavigate } from "react-router-dom";
 import {
   StyledFooter,
@@ -24,41 +16,42 @@ import {
   StyledMainContainer,
 } from "common/components/ListComponents";
 import { StyledButton } from "common/components/Button/Button.styled";
-import Search from "common/components/Search/Search";
+import { Search } from "common/components/Search/Search";
 import { StyledPaginateContainer } from "common/components/Pagination/StyledPaginate";
 import ReactPaginate from "react-paginate";
 import { EmptyList } from "common/components/EmptyList";
-import { StyledSelect } from "common/components/StyledSelect";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { getTeamOptions } from "../hooks/teamOptionSlice";
-import { pageSizeOptions } from "common/helpers/pageSizeOptions";
-import { errorActions } from "core/redux/errorSlice";
 import { PlayerTeamFilter } from "modules/players/components/playerTeamFilter";
 import debounce from "lodash.debounce";
 import arrowLeft from "asserts/icons/chevron_left.svg";
 import arrowRight from "asserts/icons/chevron_right.svg";
+import { useAPIError } from "common/hooks/useApiError";
+import { shallowEqual } from "react-redux";
+import PageSizeSelector from "common/components/PageSizeSelector/PageSizeSelector";
 
-type PropsType = {};
-export const PlayerList: React.FunctionComponent<PropsType> = (
-  props: PropsType
-) => {
+export const PlayerList: React.FunctionComponent = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const pageParams = useAppSelector(getPlayersPageParams);
-  const players = useAppSelector(getPlayers);
-  const isFetching = useAppSelector(getIsFetching);
-  const itemsCount = useAppSelector(getCount);
-  const error = useAppSelector(getError);
-  const filter = useAppSelector(getFilter);
+  const pageParams = useAppSelector(
+    selectors.getPlayersPageParams,
+    shallowEqual
+  );
+  const players = useAppSelector(selectors.getPlayers);
+  const isFetching = useAppSelector(selectors.getIsFetchingtPlayers);
+  const itemsCount = useAppSelector(selectors.getCount);
+  const error = useAppSelector(selectors.getError);
+  const { addError } = useAPIError();
+  const [requestCompleted, setRequestCompleted] = useState(false);
 
-  const teamNames = useAppSelector(getTeamsOptions);
+  const teamNames = useAppSelector(selectors.getTeamsOptions);
   useEffect(() => {
     dispatch(getTeamOptions());
     dispatch(playersActions.clearState());
   }, []);
 
   useEffect(() => {
-    dispatch(errorActions.setErrorMessage(error));
+    if (error) addError(error);
   }, [error]);
 
   useEffect(() => {
@@ -67,6 +60,7 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
   }, [teamNames, players]);
 
   const updatePage = (pageParams: IParams) => {
+    setRequestCompleted(false);
     dispatch(
       playersActions.getPlayersPage({
         filter: pageParams.filter,
@@ -74,7 +68,11 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
         page: pageParams.page,
         pageSize: pageParams.pageSize,
       })
-    );
+    )
+      .then(() => setRequestCompleted(true))
+      .catch(() => {
+        setRequestCompleted(true);
+      });
   };
   const delayedUpdatePage = useCallback(debounce(updatePage, 300), []);
   useEffect(() => {
@@ -86,7 +84,6 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
   };
   const updateFilterValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(playersActions.setFilter(e.target.value));
-    //setSearchTxt(e.target.value);
   };
   const updateCurrentPage = (n: number) => {
     dispatch(playersActions.setPageNumber(n));
@@ -105,10 +102,15 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
         </StyledButton>
       </StyledHeader>
       {isFetching && <Preloader />}
-      {players && players.length == 0 && <EmptyList mode="player" />}
+      {requestCompleted && (!players || players.length == 0) && (
+        <EmptyList mode="player" />
+      )}
+
       <StyledGridContainer>
         <StyledGrid>
-          {players &&
+          {requestCompleted &&
+            players &&
+            players.length > 0 &&
             players.map((p: PlayerDto) => <PlayerCard player={p} key={p.id} />)}
         </StyledGrid>
       </StyledGridContainer>
@@ -133,17 +135,7 @@ export const PlayerList: React.FunctionComponent<PropsType> = (
                 forcePage={pageParams.page - 1}
               />
             </StyledPaginateContainer>
-            <StyledSelect
-              classNamePrefix="Select"
-              className="pagesizeSelector"
-              options={pageSizeOptions}
-              defaultValue={pageSizeOptions[0]}
-              onChange={handlePageSizeSelect}
-              menuPlacement="auto"
-              value={pageSizeOptions.filter(
-                ({ value }) => value === pageParams.pageSize
-              )}
-            />
+            <PageSizeSelector value={pageParams.pageSize} onChange={handlePageSizeSelect} />
           </div>
         </StyledFooter>
       )}

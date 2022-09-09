@@ -1,7 +1,8 @@
 //import { IRequestBaseBody } from '../helpers/interfaces/requestInterfaces/RequestBase';
 //import { RequestGenericType } from '../helpers/types/types';
 
-import { tokenExpired } from "common/helpers/userCheck";
+import { authorizationExpired, tokenExpired } from "common/helpers/userCheck";
+import { AuthService, AUTH_API_URL } from "./requests/authService";
 
 const base = process.env.REACT_APP_API;
 
@@ -68,33 +69,68 @@ const request = async (
   }
 };
 
-export const get = (url: string, token?: string) =>
-  request(`${base}${url}`, { method: "GET" }, token);
+export const get = (url: string, token?: string) => {
+  const currentUser = AuthService.getCurrentUser();
+  if (!currentUser || authorizationExpired(currentUser))
+    return Promise.reject({
+      isCustomError: true,
+      status: 401,
+      message: "Authorization exception",
+    });
+  return request(`${base}${url}`, { method: "GET" }, currentUser.token);
+};
 
 export function post<T extends RequestGenericType>(
   url: string,
   body: T,
   token?: string
 ) {
+  const currentUser = AuthService.getCurrentUser();
+  if (
+    (!currentUser || authorizationExpired(currentUser)) &&
+    !url.startsWith(AUTH_API_URL)
+  )
+    return Promise.reject({
+      isCustomError: true,
+      status: 401,
+      message: "Authorization exception",
+    });
+
   return request(
     `${base}${url}`,
     { method: "POST", body: JSON.stringify(body) },
-    token
+    currentUser?.token
   );
 }
 
-export const remove = (url: string, token: string) =>
-  request(`${base}${url}`, { method: "DELETE" }, token);
+export const remove = (url: string, token?: string) => {
+  const currentUser = AuthService.getCurrentUser();
+  if (!currentUser || authorizationExpired(currentUser))
+    return Promise.reject({
+      isCustomError: true,
+      status: 401,
+      message: "Authorization exception",
+    });
+  return request(`${base}${url}`, { method: "DELETE" }, currentUser.token);
+};
 
 export function put<T extends RequestGenericType>(
   url: string,
   body: T,
-  token: string
+  token?: string
 ) {
+  const currentUser = AuthService.getCurrentUser();
+  if (!currentUser || authorizationExpired(currentUser))
+    return Promise.reject({
+      isCustomError: true,
+      status: 401,
+      message: "Authorization exception",
+    });
+
   return request(
     `${base}${url}`,
     { method: "PUT", body: JSON.stringify(body) },
-    token
+    currentUser.token
   );
 }
 
@@ -103,5 +139,17 @@ export function imagePost<T extends RequestGenericType>(
   body: FormData,
   token?: string
 ) {
-  return request(`${base}${url}`, { method: "POST", body: body }, token);
+  const currentUser = AuthService.getCurrentUser();
+  if (!currentUser || authorizationExpired(currentUser))
+    return Promise.reject({
+      isCustomError: true,
+      status: 401,
+      message: "Authorization exception",
+    });
+
+  return request(
+    `${base}${url}`,
+    { method: "POST", body: body },
+    currentUser.token
+  );
 }

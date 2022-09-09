@@ -5,47 +5,46 @@ import Header from "./Header";
 import { MainContainer, FullScreenContainer } from "./MainContainer";
 import { AppStateType } from "core/redux/configureStore";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
-import ErrorPopUp from "common/components/ErrorPopUp";
-import { errorActions } from "core/redux/errorSlice";
 import { userActions } from "core/redux/userSlice";
 import { authorizationExpired } from "common/helpers/userCheck";
+import APIErrorProvider from "common/hooks/apiErrorProvider";
+import { useAPIError } from "common/hooks/useApiError";
+import { useCallback } from "react";
+import { AuthService } from "api/requests/authService";
 
-type AuthProps = {};
-
-const AuthApp: React.FunctionComponent<AuthProps> = (props: AuthProps) => {
+export const AuthApp: React.FunctionComponent = () => {
   const [mobileSideBarOpen, setMobileSideBarOpen] = useState(false);
-  const globalError = useAppSelector(
-    (store: AppStateType) => store.error.message
-  );
   const user = useAppSelector((state: AppStateType) => state.user.currentUser);
 
-  const toggleMobileSideBar = () => {
+  const toggleMobileSideBar = useCallback(() => {
     setMobileSideBarOpen(!mobileSideBarOpen);
-  };
+  }, [mobileSideBarOpen]);
+
   const location = useLocation();
   const dispatch = useAppDispatch();
   const path = location.pathname;
   const isTeamPage: boolean = path.includes("/team");
-
+  const { removeError } = useAPIError();
   useEffect(() => {
-    dispatch(errorActions.clearErrorMessage());
+    removeError();
     if (authorizationExpired(user)) {
       dispatch(userActions.removeUser());
+      AuthService.clearUser()
     }
   }, [location.pathname]);
 
   return (
     <FullScreenContainer>
-      <Header toggleMobileSideBar={toggleMobileSideBar} />
-      <SideBar
-        isOpen={mobileSideBarOpen}
-        activeItem={isTeamPage ? "team" : "player"}
-      />
-      <MainContainer>
-        <Outlet />
-      </MainContainer>
-      {globalError && <ErrorPopUp errorMessage={globalError} />}
+      <APIErrorProvider>
+        <Header toggleMobileSideBar={toggleMobileSideBar} />
+        <SideBar
+          isOpen={mobileSideBarOpen}
+          activeItem={isTeamPage ? "team" : "player"}
+        />
+        <MainContainer>
+          <Outlet />
+        </MainContainer>
+      </APIErrorProvider>
     </FullScreenContainer>
   );
 };
-export default AuthApp;

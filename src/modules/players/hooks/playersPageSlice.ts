@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PlayerDto, PlayerDtoPageResult } from "api/Dto/playerDto";
-import PlayerService from "api/players/playerService";
+import { PlayerService } from "api/players/playerService";
+import { AuthService } from "api/requests/authService";
 import { OptionTypeValueNumber } from "common/components/StyledSelect";
 import { authorizationExpired } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
@@ -29,9 +30,8 @@ export const getPlayersPage = createAsyncThunk(
       let playerPage = response as PlayerDtoPageResult;
       if (teamOptions.options) {
         playerPage.data.forEach((x) => {
-          //if(typeof x.birthday == "string") x.birthday = new Date( x.birthday as string);
           x.teamName = teamOptions.options.find(
-            (to) => to.value == x.team
+            (to: OptionTypeValueNumber) => to.value == x.team
           )?.label;
         });
       }
@@ -40,6 +40,7 @@ export const getPlayersPage = createAsyncThunk(
     } catch (error: any) {
       if (error.status == 401) {
         dispatch(userActions.removeUser());
+        AuthService.clearUser();
         return rejectWithValue("Authorization error");
       }
       return rejectWithValue(error.message);
@@ -54,7 +55,7 @@ export const getPlayersPage = createAsyncThunk(
   }
 );
 
-type StateType = {
+type PlayerPageSliceStateType = {
   isFetching: boolean;
   page: number;
   count: number;
@@ -65,7 +66,7 @@ type StateType = {
   error?: string;
 };
 
-const initialState: StateType = {
+const initialState: PlayerPageSliceStateType = {
   isFetching: false,
   page: 1,
   count: 0,

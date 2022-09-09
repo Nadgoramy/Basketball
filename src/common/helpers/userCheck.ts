@@ -1,13 +1,20 @@
 import { UserDto } from "api/Dto/userDto";
+import { AuthService } from "api/requests/authService";
 
 const parseJwt = (token: string) => {
   try {
     return JSON.parse(atob(token.split(".")[1]));
   } catch (e) {
-    return null;
+    console.log(e);
   }
 };
-
+export const isUserAuthorised = () => {
+  const currentUser = AuthService.getCurrentUser();
+  if (!currentUser || authorizationExpired(currentUser)) {
+    return false;
+  }
+  return true;
+};
 export const authorizationExpired = (user?: UserDto) => {
   if (user && localStorage.getItem("user")) {
     return tokenExpired(user.token);

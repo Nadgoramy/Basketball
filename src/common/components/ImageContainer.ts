@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { themeColors } from "ThemeColors";
 
 export const StyledImageContainer = styled.div`
   position: absolute;
@@ -6,11 +7,9 @@ export const StyledImageContainer = styled.div`
   height: 1024px;
   left: 0px;
   top: 0px;
-  background: ${({theme})=> theme.colors.white};
+  background: ${themeColors.white};
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
     display: none;
   }
 `;
-
-

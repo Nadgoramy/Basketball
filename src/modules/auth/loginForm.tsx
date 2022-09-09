@@ -2,19 +2,16 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import { StyledButton } from "common/components/Button/Button.styled";
-import Input from "common/components/Input/Input";
+import { Input } from "common/components/Input/Input";
 import PasswordInput from "common/components/PasswordInput";
 import { AppStateType } from "core/redux/configureStore";
-import { store, useAppDispatch, useAppSelector } from "core/redux/store";
-import { errorActions } from "core/redux/errorSlice";
+import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { login, userActions } from "core/redux/userSlice";
 import { LoginFormDto } from "api/Dto/userDto";
 import { StyledFormContainer } from "./AuthComponents";
+import { useAPIError } from "common/hooks/useApiError";
 
-type PropsType = {
-  setError?: (msg: string) => void;
-};
-const LoginForm: React.FC<PropsType> = () => {
+export const LoginForm: React.FC = () => {
   const {
     register,
     handleSubmit,
@@ -22,25 +19,25 @@ const LoginForm: React.FC<PropsType> = () => {
     setError,
   } = useForm<LoginFormDto>();
   const dispatch = useAppDispatch();
-  const isLoggedIn = useAppSelector(
-    (state: AppStateType) => state.user.isLoggedIn
-  );
+  const user = useAppSelector((state: AppStateType) => state.user.currentUser);
   const error = useAppSelector((state: AppStateType) => state.user.error);
+  const { addError, removeError } = useAPIError();
   const postTime = useAppSelector(
     (store: AppStateType) => store.user.postAttemptTime
   );
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isLoggedIn) {
-      dispatch(errorActions.clearErrorMessage());
+    if (user) {
+      removeError();
       navigate("/teams");
     }
-  }, [isLoggedIn]);
+  }, [user]);
 
   useEffect(() => {
     if (error) {
-      dispatch(errorActions.setErrorMessage(error));
+      addError(error);
+      clearUserError();
       setError("password", {
         type: "custom",
         message: "Wrong password. Please, try again.",
@@ -52,7 +49,7 @@ const LoginForm: React.FC<PropsType> = () => {
     dispatch(login(data) as any);
   };
 
-  const removeError = () => {
+  const clearUserError = () => {
     dispatch(userActions.removeError());
   };
   return (
@@ -84,7 +81,7 @@ const LoginForm: React.FC<PropsType> = () => {
         </div>
         <nav>
           <span>Not a member yet? </span>
-          <NavLink to="/register" onClick={removeError}>
+          <NavLink to="/register" onClick={clearUserError}>
             Sing up
           </NavLink>
         </nav>
@@ -92,5 +89,3 @@ const LoginForm: React.FC<PropsType> = () => {
     </StyledFormContainer>
   );
 };
-
-export default LoginForm;

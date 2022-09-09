@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import image from "asserts/images/404.svg";
 import { StyledFlex } from "common/components/Flex";
+import { themeColors } from "ThemeColors";
 
 const NoPageStyled = styled.div`
 position: absolute;
@@ -44,7 +45,7 @@ h2{
     line-height: 49px;
     text-align: center;
     margin-tip: 48px;
-    color: ${({ theme }) => theme.colors.lightest_red};
+    color: ${themeColors.lightest_red};
     @media (max-width: ${({ theme }) => theme.mobile}) {
         font-size: 17px;
         line-height: 25px;
@@ -54,7 +55,7 @@ span{
     font-weight: 400;
     font-size: 24px;
     line-height: 33px;
-    color: ${({ theme }) => theme.colors.grey};
+    color: ${themeColors.grey};
     @media (max-width: ${({ theme }) => theme.mobile}) {
         font-size: 15px;
     line-height: 24px;

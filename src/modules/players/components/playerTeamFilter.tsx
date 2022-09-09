@@ -4,13 +4,27 @@ import React, {
   useEffect,
   useLayoutEffect,
   useCallback,
+  useMemo,
 } from "react";
 import { StyledMultiSelect } from "common/components/StyledMultiSelect";
-import { components, MultiValueProps } from "react-select";
+import ReactSelect, { components, ControlProps, CSSObjectWithLabel, GroupBase, MultiValueProps, StylesConfig } from "react-select";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { playersActions } from "modules/players/hooks/playersPageSlice";
 import { OptionTypeValueNumber } from "common/components/StyledSelect";
 import { getTeamIds, getTeamsOptions } from "modules/players/selectors";
+import { LoadTeamOptions } from "../helpers/teamOptions";
+import { useAsyncHook } from "common/helpers/useAsyncHook";
+import { CSSProperties } from "react";
+import styled, { CSSObject } from "styled-components";
+import { themeColors } from "ThemeColors";
+
+const ThemedReactSelect = styled(ReactSelect)`
+.Select__control--is-focused {
+  border: 0.5px solid ${themeColors.lightest_grey};
+  box-shadow: none;
+}
+`;
+
 
 export const PlayerTeamFilter: React.FunctionComponent = () => {
   const teamNames = useAppSelector(getTeamsOptions);
@@ -19,6 +33,13 @@ export const PlayerTeamFilter: React.FunctionComponent = () => {
   const selectRef = useRef(null);
   const [maxToShow, setMaxToShow] = useState(5);
 
+  /*
+  const [teamNames, setTeamNames] = useState<OptionTypeValueNumber[]>();
+  const [result, loading] = useAsyncHook(LoadTeamOptions);
+  useEffect(() => {
+    if ((loading as string) === "true") setTeamNames(result as []);
+  }, [loading]);
+*/
   const updateTeamFilter = (evn: OptionTypeValueNumber[]) => {
     if (!evn) {
       dispatch(playersActions.setTeamFilter(null));
@@ -51,10 +72,10 @@ export const PlayerTeamFilter: React.FunctionComponent = () => {
     let minOffsetTop = multiValuesNodes[0].offsetTop;
     multiValuesNodes.forEach(
       (child: any) =>
-        (minOffsetTop =
-          child.offsetTop && minOffsetTop > child.offsetTop
-            ? child.offsetTop
-            : minOffsetTop)
+      (minOffsetTop =
+        child.offsetTop && minOffsetTop > child.offsetTop
+          ? child.offsetTop
+          : minOffsetTop)
     );
 
     let count = 0;
@@ -90,21 +111,20 @@ export const PlayerTeamFilter: React.FunctionComponent = () => {
       if (
         (selectedItems.length > count + 1 &&
           multiValueContainerRef.clientWidth -
-            childrenWidth -
-            approximateNexItemLength >
-            dotsWidth) ||
+          childrenWidth -
+          approximateNexItemLength >
+          dotsWidth) ||
         (selectedItems.length == count + 1 &&
           multiValueContainerRef.clientWidth -
-            childrenWidth -
-            approximateNexItemLength >
-            10)
+          childrenWidth -
+          approximateNexItemLength >
+          10)
       ) {
         setMaxToShow(count + 1);
       } else setMaxToShow(count);
     }
-    console.log(multiValueContainerRef.clientHeight);
-  }, []);
 
+  }, []);
 
   useEffect(() => {
     resetMaxToShow();
@@ -114,35 +134,156 @@ export const PlayerTeamFilter: React.FunctionComponent = () => {
     window.addEventListener("resize", resetMaxToShow);
     return () => window.addEventListener("resize", resetMaxToShow);
   }, []);
-
+  const dotsStyle = {
+    backgroundColor: themeColors.red,
+    color: themeColors.white,
+    borderRadius: "4px",
+    padding: "0 4px 0 4px",
+    height: "24px",
+  }
   const MoreSelectedBadge = () => {
-    return <div className="Select__multi-value dots"> ... </div>;
+    return <div className="Select__multi-value dots" style={dotsStyle}> ... </div>;
   };
-  const MultiValue = (props: MultiValueProps) => {
+
+  const MultiValue = <
+    Option,
+    IsMulti extends boolean,
+    Group extends GroupBase<Option>
+  >(
+    props: MultiValueProps<Option, IsMulti, Group>
+  ) => {
     const { index, getValue } = props;
 
-
-    return index < maxToShow ? (
+    return (index < maxToShow ? (
       <components.MultiValue {...props} cropWithEllipsis />
     ) : index === maxToShow ? (
       <MoreSelectedBadge />
-    ) : null;
+    ) : <></>);
   };
 
+
+  const customStyles: StylesConfig<unknown, boolean> = {
+    control: (provided, state) => {
+      return {
+        ...provided,
+        outline: "none",
+        boxShadow: "none",
+        border: "0.5px solid " + themeColors.lightest_grey,
+        "&:optopnal": {
+          border: "0.5px solid " + themeColors.lightest_grey,
+          boxShadow: "none",
+        },
+        "&:focus": {
+          border: "0.5px solid " + themeColors.lightest_grey,
+          boxShadow: "none",
+        },
+        "&:hover": {
+          border: "0.5px solid " + themeColors.lightest_grey,
+          boxShadow: "none",
+        },
+        "&:active": {
+          border: "0.5px solid " + themeColors.lightest_grey,
+          boxShadow: "none",
+        }
+      };
+    },
+    multiValue: (provided, state) => {
+      return {
+        ...provided,
+        backgroundColor: themeColors.red,
+        color: themeColors.white,
+        borderRadius: "4px",
+        padding: "0 4px 0 4px",
+        height: "24px",
+      };
+    },
+    multiValueLabel: (provided, state) => {
+      return {
+        ...provided,
+        color: themeColors.white,
+        fontWeight: "400",
+        fontSize: "14px",
+        lineHeight: "19px",
+      };
+    },
+    menuList: (provided, state) => {
+      return {
+        ...provided,
+        "&:focused": {
+          backgroundColor: themeColors.lightest_red,
+          color: themeColors.white,
+        }
+      };
+    },
+    placeholder: (provided, state) => {
+      return {
+        ...provided,
+        fontWeight: "500",
+        fontSize: "15px",
+        lineHeight: "24px",
+      };
+    },
+    option: (provided, state) => {
+      return {
+        ...provided,
+        backgroundColor: state.isSelected ? themeColors.light_red : themeColors.white,
+        color: state.isSelected ? themeColors.white : themeColors.light_grey,
+        borderBottom: "0.5px solid " + themeColors.lightest_grey,
+        overflowWrap: "anywhere",
+        fontWeight: "500",
+        fontSize: "14px",
+        lineHeight: "24px",
+        "&:hover": {
+          backgroundColor: themeColors.dark_red,
+          color: themeColors.white,
+        },
+        "&:focused": {
+          backgroundColor: themeColors.lightest_red,
+          color: themeColors.white,
+        }
+      };
+    },
+  }
+
   return (
-    <StyledMultiSelect
-      ref={selectRef}
+    <ThemedReactSelect
       classNamePrefix="Select"
+      ref={selectRef}
+      styles={customStyles}
       options={teamNames}
+      isSearchable={false}
       isMulti
-      value={teamNames.filter((obj: OptionTypeValueNumber) =>
+      value={teamNames?.filter((obj: OptionTypeValueNumber) =>
         teamIds.includes(obj.value)
       )}
       onChange={(e: any) => updateTeamFilter(e as OptionTypeValueNumber[])}
-      isSearchable={false}
       components={{
         MultiValue: MultiValue,
       }}
     />
   );
 };
+
+
+/*
+
+
+
+<StyledMultiSelect
+      ref={selectRef}
+      classNamePrefix="Select"
+      options={teamNames}
+      isMulti
+      isSearchable={false}
+      value={teamNames?.filter((obj: OptionTypeValueNumber) =>
+        teamIds.includes(obj.value)
+      )}
+      onChange={(e: any) => updateTeamFilter(e as OptionTypeValueNumber[])}
+      onBlur={(event) => console.log(event.target.value)}
+
+      components={{
+        MultiValue: MultiValue,
+      }}
+    />
+
+      */

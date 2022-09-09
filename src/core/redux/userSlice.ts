@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import AuthService from "api/requests/authService";
+import { AuthService } from "api/requests/authService";
 import { LoginFormDto, RegisterFormDto, UserDto } from "api/Dto/userDto";
-import { number } from "prop-types";
 
 export const login = createAsyncThunk(
   `user/login`,
   async (params: LoginFormDto, { rejectWithValue }) => {
     try {
       const responce = await AuthService.login(params.login, params.password);
+      localStorage.setItem("user", JSON.stringify(responce));
       return responce;
     } catch (error: any) {
       if (error.status == 401)
@@ -29,11 +29,12 @@ export const register = createAsyncThunk(
         params.password
       )
         .then((responce) => {
+          localStorage.setItem("user", JSON.stringify(responce));
           return responce;
         })
         .catch((err) => {
           if (err.status == 409) {
-            rejectWithValue("User with such login already exists");
+            return rejectWithValue("User with such login already exists");
           }
         });
     } catch (error: any) {
@@ -47,14 +48,13 @@ interface UserState {
   isLoggedIn: boolean;
   isFetching: boolean;
   error?: string;
-  postAttemptTime:number
+  postAttemptTime: number;
 }
 
 const initialState = {
   currentUser: undefined,
-  isLoggedIn: false,
   isFetching: false,
-  postAttemptTime: 0
+  postAttemptTime: 0,
 } as UserState;
 
 const userSlice = createSlice({
@@ -63,12 +63,10 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.currentUser = action.payload;
-      state.isLoggedIn = true;
     },
     removeUser: (state) => {
       state.currentUser = undefined;
       localStorage.removeItem("user");
-      state.isLoggedIn = false;
     },
     removeError: (state) => {
       state.error = undefined;
@@ -78,14 +76,12 @@ const userSlice = createSlice({
     builder
       .addCase(login.pending, (state, action) => {
         state.isFetching = true;
-        state.postAttemptTime = Date.now()
+        state.postAttemptTime = Date.now();
       })
       .addCase(login.fulfilled, (state, action) => {
         state.isFetching = false;
         state.currentUser = action.payload;
-        localStorage.setItem("user", JSON.stringify(action.payload));
         state.error = undefined;
-        state.isLoggedIn = true;
       })
       .addCase(login.rejected, (state, action) => {
         state.isFetching = false;
@@ -93,14 +89,12 @@ const userSlice = createSlice({
       })
       .addCase(register.pending, (state, action) => {
         state.isFetching = true;
-        state.postAttemptTime = Date.now()
+        state.postAttemptTime = Date.now();
       })
       .addCase(register.fulfilled, (state, action) => {
         state.isFetching = false;
         state.currentUser = action.payload;
-        localStorage.setItem("user", JSON.stringify(action.payload));
         state.error = undefined;
-        state.isLoggedIn = true;
       })
       .addCase(register.rejected, (state, action) => {
         state.isFetching = false;

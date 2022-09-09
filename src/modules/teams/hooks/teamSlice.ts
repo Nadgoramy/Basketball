@@ -1,19 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { PlayerDto, PlayerDtoPageResult } from "api/Dto/playerDto";
 import { NewTeamDto, TeamDto } from "api/Dto/teamDto";
-import PlayerService from "api/players/playerService";
-import TeamService from "api/requests/teamService";
+import { PlayerService } from "api/players/playerService";
+import { TeamService } from "api/requests/teamService";
 import { authorizationExpired } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
-
-import debounce from "lodash.debounce";
+import { teamOptionActions } from "modules/players/hooks/teamOptionSlice";
 
 export const getTeam = createAsyncThunk(
   `team/getTeam`,
   async (id: number, { rejectWithValue, dispatch }) => {
     try {
-      const responce = await TeamService.getTeam(id);
+      const responce = (await TeamService.getTeam(id)) as TeamDto;
       if (responce && (responce as TeamDto).id) {
         const teamPlayers = await PlayerService.getPlayers("", 1, 100, [id]);
         responce.players = (teamPlayers as PlayerDtoPageResult).data;
@@ -85,19 +84,15 @@ export const addTeam = createAsyncThunk(
   }
 );
 
-interface StateType {
+interface TeamSliseStateType {
   team: TeamDto;
   isFetching: boolean;
   error?: string;
-  updateSucceded: boolean;
-  deleteSucceded: boolean;
 }
-const initialState: StateType = {
+const initialState: TeamSliseStateType = {
   team: {} as TeamDto,
   isFetching: false,
   error: undefined,
-  updateSucceded: false,
-  deleteSucceded: false,
 };
 const teamSlice = createSlice({
   name: "team",
@@ -105,22 +100,16 @@ const teamSlice = createSlice({
   reducers: {
     setTeam: (state, action) => {
       state.team = action.payload;
-      state.deleteSucceded = false;
-      state.updateSucceded = false;
     },
     clearState: (state) => {
       state.team = {} as TeamDto;
       state.error = undefined;
-      state.deleteSucceded = false;
-      state.updateSucceded = false;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getTeam.pending, (state, action) => {
         state.isFetching = true;
-        state.updateSucceded = false;
-        state.deleteSucceded = false;
       })
       .addCase(getTeam.fulfilled, (state, action) => {
         state.isFetching = false;
@@ -133,7 +122,6 @@ const teamSlice = createSlice({
       })
       .addCase(updateTeam.pending, (state, action) => {
         state.isFetching = true;
-        state.updateSucceded = false;
       })
       .addCase(updateTeam.fulfilled, (state, action) => {
         state.isFetching = false;
@@ -142,7 +130,6 @@ const teamSlice = createSlice({
         state.team.division = action.payload.division;
         state.team.foundationYear = action.payload.foundationYear;
         state.team.imageUrl = action.payload.imageUrl;
-        state.updateSucceded = true;
         state.error = undefined;
       })
       .addCase(updateTeam.rejected, (state, action) => {
@@ -151,12 +138,10 @@ const teamSlice = createSlice({
       })
       .addCase(deleteTeam.pending, (state, action) => {
         state.isFetching = true;
-        state.deleteSucceded = false;
       })
       .addCase(deleteTeam.fulfilled, (state, action) => {
         state.isFetching = false;
         state.team = action.payload;
-        state.deleteSucceded = true;
         state.error = undefined;
       })
       .addCase(deleteTeam.rejected, (state, action) => {
@@ -165,12 +150,10 @@ const teamSlice = createSlice({
       })
       .addCase(addTeam.pending, (state, action) => {
         state.isFetching = true;
-        state.updateSucceded = false;
       })
       .addCase(addTeam.fulfilled, (state, action) => {
         state.isFetching = false;
         state.team = action.payload;
-        state.updateSucceded = true;
         state.error = undefined;
       })
       .addCase(addTeam.rejected, (state, action) => {

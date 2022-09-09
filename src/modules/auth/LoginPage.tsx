@@ -1,8 +1,8 @@
-import LoginForm from "./loginForm";
+import { LoginForm } from "./loginForm";
 import loginPageImg from "asserts/images/loginWebPage.svg";
 import { StyledImageContainer } from "./AuthComponents";
 
-const LoginPage = () => {
+export const LoginPage = () => {
   return (
     <>
       <LoginForm />
@@ -10,4 +10,3 @@ const LoginPage = () => {
     </>
   );
 };
-export default LoginPage;

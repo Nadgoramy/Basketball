@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import * as selectors from "modules/teams/selectors";
-import Preloader from "common/components/preloader";
+import { Preloader } from "common/components/preloader";
 import { TeamDto } from "api/Dto/teamDto";
 import { TeamCard } from "modules/teams/components/teamCard";
-import Search from "common/components/Search/Search";
+import { Search } from "common/components/Search/Search";
 import { StyledButton } from "common/components/Button/Button.styled";
 import {
   StyledFooter,
@@ -18,12 +18,12 @@ import { useNavigate } from "react-router-dom";
 import { IParams, teamsActions } from "../hooks/teamsPageSlice";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { EmptyList } from "common/components/EmptyList";
-import { StyledSelect } from "common/components/StyledSelect";
-import { pageSizeOptions } from "common/helpers/pageSizeOptions";
-import { errorActions } from "core/redux/errorSlice";
 import debounce from "lodash.debounce";
 import arrowLeft from "asserts/icons/chevron_left.svg";
 import arrowRight from "asserts/icons/chevron_right.svg";
+import { useAPIError } from "common/hooks/useApiError";
+import { shallowEqual } from "react-redux";
+import PageSizeSelector from "common/components/PageSizeSelector/PageSizeSelector";
 
 type PropsType = {};
 export const TeamsList: React.FunctionComponent<PropsType> = (
@@ -31,29 +31,35 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
 ) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const pageParams = useAppSelector(selectors.getTeamsPageParams);
+  const pageParams = useAppSelector(selectors.getTeamsPageParams, shallowEqual);
   const teams = useAppSelector(selectors.getTeams);
-  const isFetching = useAppSelector(selectors.getIsFetching);
-  const itemsCount = useAppSelector(selectors.getCount);
-  const error = useAppSelector(selectors.getError);
+  const isFetching = useAppSelector(selectors.getIsFetchingTeams);
+  const itemsCount = useAppSelector(selectors.getTeamsCount);
+  const [requestCompleted, setRequestCompleted] = useState(false);
 
+  const error = useAppSelector(selectors.getTeamsError);
+  const { addError } = useAPIError();
   useEffect(() => {
-    dispatch(errorActions.setErrorMessage(error));
+    if (error) addError(error);
   }, [error]);
 
-  useEffect(() => {
-    delayedUpdatePage(pageParams);
-  }, [pageParams]);
   const updatePage = (pageParams: IParams) => {
+    setRequestCompleted(false);
     dispatch(
       teamsActions.getTeamsPage({
         filter: pageParams.filter,
         page: pageParams.page,
         pageSize: pageParams.pageSize,
       })
-    );
+    )
+      .then(() => setRequestCompleted(true))
+      .catch(() => setRequestCompleted(true));
   };
+
   const delayedUpdatePage = useCallback(debounce(updatePage, 300), []);
+  useEffect(() => {
+    delayedUpdatePage(pageParams);
+  }, [pageParams]);
   const updateFilterValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(teamsActions.setFilter(e.target.value));
   };
@@ -76,16 +82,18 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
         </StyledButton>
       </StyledHeader>
       {isFetching && <Preloader />}
-      {!teams || teams.length == 0 ? (
+      {requestCompleted && (!teams || teams.length == 0) && (
         <EmptyList mode="team" />
-      ) : (
-        <StyledGridContainer>
-          <StyledTeamGrid>
-            {teams &&
-              teams.map((p: TeamDto) => <TeamCard team={p} key={p.id} />)}
-          </StyledTeamGrid>
-        </StyledGridContainer>
       )}
+
+      <StyledGridContainer>
+        <StyledTeamGrid>
+          {requestCompleted &&
+            teams &&
+            teams.length > 0 &&
+            teams.map((p: TeamDto) => <TeamCard team={p} key={p.id} />)}
+        </StyledTeamGrid>
+      </StyledGridContainer>
 
       {Math.ceil(itemsCount / pageParams.pageSize) > 0 && (
         <StyledFooter>
@@ -107,17 +115,7 @@ export const TeamsList: React.FunctionComponent<PropsType> = (
                 forcePage={pageParams.page - 1}
               />
             </StyledPaginateContainer>
-            <StyledSelect
-              classNamePrefix="Select"
-              className="pagesizeSelector"
-              options={pageSizeOptions}
-              defaultValue={pageSizeOptions[0]}
-              onChange={handlePageSizeSelect}
-              menuPlacement="auto"
-              value={pageSizeOptions.filter(
-                ({ value }) => value === pageParams.pageSize
-              )}
-            />
+            <PageSizeSelector value={pageParams.pageSize} onChange={handlePageSizeSelect} />
           </div>
         </StyledFooter>
       )}

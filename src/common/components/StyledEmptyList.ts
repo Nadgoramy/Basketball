@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { EmptyListPtopType } from "./EmptyList";
 import noteamPng from "asserts/images/noTeam.png";
 import noplayerPng from "asserts/images/noPlayer.png";
+import { themeColors } from "ThemeColors";
 
 export const NoTeamStyled = styled.div<EmptyListPtopType>`
   display: flex;
@@ -37,7 +38,7 @@ export const NoTeamStyled = styled.div<EmptyListPtopType>`
     font-size: 36px;
     line-height: 49px;
     text-align: center;
-    color: ${({ theme }) => theme.colors.lightest_red};
+    color: ${themeColors.lightest_red};
     @media (max-width: ${({ theme }) => theme.mobile}) {
       font-size: 17px;
       line-height: 25px;
@@ -47,7 +48,7 @@ export const NoTeamStyled = styled.div<EmptyListPtopType>`
     font-weight: 400;
     font-size: 24px;
     line-height: 33px;
-    color: ${({ theme }) => theme.colors.grey};
+    color: ${themeColors.grey};
     @media (max-width: ${({ theme }) => theme.mobile}) {
       font-size: 15px;
       line-height: 24px;

@@ -1,10 +1,16 @@
 import styled from "styled-components";
+import { themeColors } from "ThemeColors";
 import { InputProps } from "./Input/Input";
 
 const borderProp = (props: any) => {
-  if (props.error) return "1px solid " + props.theme.colors.lightest_red;
-  if (props.icon) return "0.5px solid #" + props.theme.colors.lightest_grey;
+  if (props.error) return "1px solid " + themeColors.lightest_red;
+  if (props.icon) return "0.5px solid #" + themeColors.lightest_grey;
   return "none";
+};
+const borderWidth = (props: any) => {
+  if (props.error) return 1;
+  if (props.icon) return 0.5;
+  return 0;
 };
 
 export const StyledInputContaner = styled.div<InputProps>`
@@ -19,39 +25,39 @@ export const StyledInputContaner = styled.div<InputProps>`
     position: absolute;
     left: 0;
     right: 0;
-    height: 40px;
+    height: ${(props: InputProps) => `${40 - 2 * borderWidth(props)}px;`};
     width: -moz-available;
     padding: 0 12px;
     ${(props: InputProps) => (props.icon ? "padding-right: 28px;" : "")}
 
     border-radius: 4px;
     border-width: 0;
-    background: ${({ theme }) => theme.colors.lightest_grey1};
-    color: ${({ theme }) => theme.colors.dark_grey};
+    background: ${themeColors.lightest_grey1};
+    color: ${themeColors.dark_grey};
     border: ${(props) => borderProp(props)};
     box-shadow: none;
   }
   input:-internal-autofill-selected {
-    background: ${({ theme }) => theme.colors.lightest_grey1};
+    background: ${themeColors.lightest_grey1};
   }
   input:hover {
-    color: ${({ theme }) => theme.colors.dark_grey};
-    background: ${({ theme }) => theme.colors.lightest_grey};
+    color: ${themeColors.dark_grey};
+    background: ${themeColors.lightest_grey};
     outline-style: none;
   }
   input:active {
-    color: ${({ theme }) => theme.colors.dark_grey};
+    color: ${themeColors.dark_grey};
     outline-style: none;
   }
   input:focus {
-    background: ${({ theme }) => theme.colors.lightest_grey1};
+    background: ${themeColors.lightest_grey1};
     box-shadow: 0px 0px 5px #d9d9d9;
-    color: ${({ theme }) => theme.colors.dark_grey};
+    color: ${themeColors.dark_grey};
     outline-style: none;
   }
   input:disabled {
-    background: ${({ theme }) => theme.colors.lightest_grey};
-    color: ${({ theme }) => theme.colors.lightest_grey};
+    background: ${themeColors.lightest_grey};
+    color: ${themeColors.lightest_grey};
   }
   .input--error {
     border: ${(props) => borderProp(props)};
@@ -64,7 +70,7 @@ export const StyledInputContaner = styled.div<InputProps>`
     font-weight: 500;
     font-size: 12px;
     line-height: 150%;
-    color: ${({ theme }) => theme.colors.lightest_red};
+    color: ${themeColors.lightest_red};
     padding-top: 2px;
   }
 
@@ -73,9 +79,11 @@ export const StyledInputContaner = styled.div<InputProps>`
     right: 0;
     top: 0;
     padding: 12px 12px;
+    cursor:pointer;
   }
   img {
     width: 16px;
     height: 16px;
+    cursor:pointer;
   }
 `;

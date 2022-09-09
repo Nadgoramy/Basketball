@@ -2,7 +2,7 @@ import { createSelector } from "reselect";
 import { AppStateType } from "core/redux/configureStore";
 import { IParams } from "./hooks/teamsPageSlice";
 
-export const getIsFetching = (state: AppStateType) => {
+export const getIsFetchingTeams = (state: AppStateType) => {
   return state.teams.isFetching;
 };
 
@@ -10,11 +10,11 @@ export const getTeams = (state: AppStateType) => {
   return state.teams.pageItems;
 };
 
-export const getCount = (state: AppStateType) => {
+export const getTeamsCount = (state: AppStateType) => {
   return state.teams.count;
 };
 
-export const getError = (state: AppStateType) => {
+export const getTeamsError = (state: AppStateType) => {
   return state.teams.error;
 };
 

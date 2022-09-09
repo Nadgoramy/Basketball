@@ -1,13 +1,13 @@
-import React, { useEffect, useMemo } from "react";
+import React from "react";
 import styled from "styled-components";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import ErrorPopUp from "common/components/ErrorPopUp";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { PageNotFound } from "modules/layout/PageNotFound";
-import LoginPage from "./LoginPage";
-import RegistrationPage from "./RegistrationPage";
-import { useAppDispatch, useAppSelector } from "core/redux/store";
+import { LoginPage } from "./LoginPage";
+import { RegistrationPage } from "./RegistrationPage";
+import { useAppSelector } from "core/redux/store";
 import { AppStateType } from "core/redux/configureStore";
-import { errorActions } from "core/redux/errorSlice";
+import { themeColors } from "ThemeColors";
+import APIErrorProvider from "common/hooks/apiErrorProvider";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -27,7 +27,7 @@ const StyledLoginContainer = styled.div`
   height: 100%;
   display: flex;
   justify-content: center;
-  background: ${({ theme }) => theme.colors.white};
+  background: ${themeColors.white};
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
     width: 100%;
@@ -35,30 +35,24 @@ const StyledLoginContainer = styled.div`
   }
 `;
 
-const UnauthApp: React.FunctionComponent = () => {
-  const error = useAppSelector((store: AppStateType) => store.error.message);
+export const UnauthApp: React.FunctionComponent = () => {
   const user = useAppSelector((store: AppStateType) => store.user.currentUser);
-  const location = useLocation();
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(errorActions.clearErrorMessage());
-  }, [location.pathname]);
-  const errorNode = <ErrorPopUp errorMessage={error} />;
+
   if (user) {
     return <Navigate to="/teams" replace />;
   }
 
   return (
     <StyledContainer>
-      <StyledLoginContainer>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/register" element={<RegistrationPage />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </StyledLoginContainer>
-      {error && errorNode}
+      <APIErrorProvider>
+        <StyledLoginContainer>
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/register" element={<RegistrationPage />} />
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+        </StyledLoginContainer>
+      </APIErrorProvider>
     </StyledContainer>
   );
 };
-export default UnauthApp;

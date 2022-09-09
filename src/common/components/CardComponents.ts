@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { themeColors } from "ThemeColors";
 
 export const StyledContainer = styled.div`
   background: linear-gradient(121.57deg, #707070 1.62%, #393939 81.02%);
@@ -45,7 +46,6 @@ export const StyledPlayerImageContainer = styled.div<PhotoPropsType>`
   background-position-y: bottom;
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
-    //width: 140px;
     background-position: center;
     height: 93px;
     margin: 11px auto 0 auto;
@@ -63,10 +63,11 @@ export const StyledFooter = styled.div`
   height: 100px;
   bottom: 0;
   width: 100%;
-  background: ${({ theme }) => theme.colors.dark_grey};
+  background: ${themeColors.dark_grey};
   border-radius: 0px 0px 4px 4px;
-  color: ${({ theme }) => theme.colors.white};
+  color: ${themeColors.white};
   text-align: center;
+  
   @media (max-width: ${({ theme }) => theme.mobile}) {
     height: 76px;
   }
@@ -76,7 +77,7 @@ export const StyledFooter = styled.div`
     font-size: 14px;
     line-height: 24px;
     text-align: center;
-    color: ${({ theme }) => theme.colors.light_grey};
+    color: ${themeColors.light_grey};
     @media (max-width: ${({ theme }) => theme.mobile}) {
       font-size: 13px;
       line-height: 18px;
@@ -89,7 +90,7 @@ export const StyledFooter = styled.div`
     font-weight: 600;
     font-size: 18px;
     line-height: 22px;
-    color: ${({ theme }) => theme.colors.white};
+    color: ${themeColors.white};
 
     width: 90%;
     max-height: 44px;
@@ -100,10 +101,13 @@ export const StyledFooter = styled.div`
       font-weight: 500;
       margin-top: 14px;
       margin-bottom: 0px;
+
+      margin-top: 0px;
+      margin-bottom: 4px;
     }
 
     span {
-      color: ${({ theme }) => theme.colors.red};
+      color: ${themeColors.red};
       font-weight: 600;
       font-size: 18px;
       line-height: 22px;
@@ -124,7 +128,7 @@ export const StyledTeamFooter = styled(StyledFooter)`
 
   h4 {
     margin-top: 0px;
-    color: ${({ theme }) => theme.colors.white};
+    color: ${themeColors.white};
     @media (max-width: ${({ theme }) => theme.mobile}) {
       margin-top: 0px;
       margin-bottom: 4px;

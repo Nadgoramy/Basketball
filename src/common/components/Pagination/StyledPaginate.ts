@@ -1,12 +1,12 @@
-import ReactPaginate from "react-paginate";
 import styled from "styled-components";
+import { themeColors } from "ThemeColors";
 
 export const StyledPaginateContainer = styled.div`
   display: flex;
   width: 100%;
 
   .pagination {
-    color: ${({ theme }) => theme.colors.grey};
+    color: ${themeColors.grey};
     list-style-type: none;
     cursor: pointer;
     padding-inline-start: 0;
@@ -46,8 +46,8 @@ export const StyledPaginateContainer = styled.div`
   }
   .active {
     border-color: transparent;
-    background-color: ${({ theme }) => theme.colors.red};
+    background-color: ${themeColors.red};
     border-radius: 4px;
-    color: ${({ theme }) => theme.colors.white};
+    color: ${themeColors.white};
   }
 `;

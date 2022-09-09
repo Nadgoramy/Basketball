@@ -1,7 +1,8 @@
-import { errorActions } from "core/redux/errorSlice";
+import { useAPIError } from "common/hooks/useApiError";
 import { useAppDispatch } from "core/redux/store";
 import { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
+import { themeColors } from "ThemeColors";
 
 const fadeOut = keyframes`
   from {
@@ -36,7 +37,7 @@ const ErrorPopUpStyled = styled.div`
   height: 40px;
   z-index: 1000;
 
-  background: ${({ theme }) => theme.colors.light_red};
+  background: ${themeColors.light_red};
   border-radius: 4px;
   margin: 36px;
 
@@ -45,7 +46,7 @@ const ErrorPopUpStyled = styled.div`
   transition: visibility 2s linear;
 
   span {
-    color: ${({ theme }) => theme.colors.white};
+    color: ${themeColors.white};
     font-weight: 500;
     font-size: 16px;
     line-height: 24px;
@@ -55,26 +56,23 @@ const ErrorPopUpStyled = styled.div`
 interface PropType {
   errorMessage: string;
 }
-const ErrorPopUp = (props: PropType) => {
+export const ErrorPopUp = (props: PropType) => {
   const [fading, setFading] = useState(false);
-  const [text, setText] = useState(props.errorMessage);
+  const { error, removeError } = useAPIError();
+
   const dispatch = useAppDispatch();
   const fade = () => {
     setFading(true);
-    setTimeout(() => dispatch(errorActions.clearErrorMessage()), 2100);
+    setTimeout(() => removeError(), 2100);
   };
   useEffect(() => {
     setFading(false);
-  }, [text]);
-  useEffect(() => {
-    setText(props.errorMessage);
-  }, [props.errorMessage]);
+  }, [error]);
+
   const fadeTimer = setTimeout(() => setFading(true), 10000);
   return (
     <ErrorPopUpStyled onMouseEnter={fade} fading={fading}>
-      <span>{text}</span>
+      <span>{error?.message}</span>
     </ErrorPopUpStyled>
   );
 };
-
-export default ErrorPopUp;

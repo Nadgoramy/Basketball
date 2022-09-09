@@ -1,7 +1,7 @@
 import { AppStateType } from "core/redux/configureStore";
 import { createSelector } from "reselect";
 
-export const getIsFetching = (state: AppStateType) => {
+export const getIsFetchingtPlayers = (state: AppStateType) => {
   return state.players.isFetching;
 };
 
@@ -15,10 +15,6 @@ export const getCount = (state: AppStateType) => {
 
 export const getTeamIds = (state: AppStateType) => {
   return state.players.teamFilter;
-};
-
-export const getFilter = (state: AppStateType) => {
-  return state.players.filter;
 };
 
 export const getTeamsOptions = (state: AppStateType) => {

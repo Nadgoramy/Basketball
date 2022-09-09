@@ -1,34 +1,28 @@
 import React from "react";
 import {
   DetailedHTMLProps,
-  forwardRef,
   InputHTMLAttributes,
   LegacyRef,
-  ReactNode,
-  Ref,
 } from "react";
-import styled, { ThemedStyledProps } from "styled-components";
 import { ErrorInputSpan } from "../ErrorInputSpan";
 import { StyledInputContaner } from "../StyledInputContainer";
 
-type ReactInputProps = DetailedHTMLProps<
+export type ReactInputProps = DetailedHTMLProps<
   InputHTMLAttributes<HTMLInputElement>,
   HTMLInputElement
 >;
 
 export type InputProps = {
-  children?: ReactNode;
-  className?: string;
   error?: string;
   icon?: string;
-  width?: string;
+  iconClick?: Function
 } & ReactInputProps;
 
-const Input = React.forwardRef<
+export const Input = React.forwardRef<
   HTMLInputElement,
   React.PropsWithChildren<InputProps>
->((props: InputProps, ref: LegacyRef<HTMLInputElement>) => {
-  const { children, className, error, icon, ...rest } = props;
+>((props: InputProps, ref) => {
+  const { children, className, error, icon, iconClick, ...rest } = props;
 
   const classnames = `inp ${className} ${error ? "input--error" : ""}`;
   return (
@@ -38,12 +32,10 @@ const Input = React.forwardRef<
       </input>
       {error && <ErrorInputSpan title={error}>{error}</ErrorInputSpan>}
       {icon && (
-        <div>
-          <img src={icon} />
+        <div onClick={() => iconClick?.()}>
+          <img src={icon} onClick={() => iconClick?.()} />
         </div>
       )}
     </StyledInputContaner>
   );
 });
-
-export default Input;

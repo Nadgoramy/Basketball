@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { themeColors } from "ThemeColors";
 
 interface IProps {
   url: any;
@@ -68,7 +69,7 @@ export const StyledFormContainer = styled.div`
       font-weight: 500;
       font-size: 14px;
       line-height: 24px;
-      color: ${({ theme }) => theme.colors.grey};
+      color: ${themeColors.grey};
       margin: 0 0 8px 0;
     }
     button {
@@ -83,10 +84,10 @@ export const StyledFormContainer = styled.div`
     font-weight: 500;
     font-size: 14px;
     line-height: 24px;
-    color: ${({ theme }) => theme.colors.grey};
+    color: ${themeColors.grey};
 
     a {
-      color: ${({ theme }) => theme.colors.lightest_red};
+      color: ${themeColors.lightest_red};
     }
   }
 `;

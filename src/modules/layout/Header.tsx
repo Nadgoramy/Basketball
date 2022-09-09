@@ -3,6 +3,8 @@ import logo from "asserts/images/logo.svg";
 import { AppStateType } from "core/redux/configureStore";
 import noUserImg from "asserts/images/profile.svg";
 import { useAppSelector } from "core/redux/store";
+import { themeColors } from "ThemeColors";
+import React from "react";
 
 const StyledHeader = styled.header`
   position: absolute;
@@ -10,7 +12,7 @@ const StyledHeader = styled.header`
   right: 0%;
   top: 0%;
 
-  background: ${({ theme }) => theme.colors.white};
+  background: ${themeColors.white};
   box-shadow: 0px 1px 10px rgba(209, 209, 209, 0.5);
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
@@ -18,7 +20,6 @@ const StyledHeader = styled.header`
     height: 62px;
   }
 `;
-
 const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
@@ -27,7 +28,6 @@ const Nav = styled.nav`
     flex-direction: column;
   }
 `;
-
 const Logo = styled.img`
   margin: 16px 51px;
   width: 191px;
@@ -58,7 +58,6 @@ const OpenLinkButton = styled.button`
     display: none;
   }
 `;
-
 const UserPrifile = styled.div`
   padding: 22px 51px;
   display: inline;
@@ -83,7 +82,11 @@ const UserPrifile = styled.div`
   }
 `;
 
-const Header = (props: any) => {
+interface IHeaderProps {
+  toggleMobileSideBar: Function;
+}
+
+const Header = (props: IHeaderProps) => {
   const userFromStore = useAppSelector(
     (state: AppStateType) => state.user.currentUser
   );
@@ -91,7 +94,7 @@ const Header = (props: any) => {
   return (
     <StyledHeader>
       <Nav>
-        <OpenLinkButton onClick={props.toggleMobileSideBar}>
+        <OpenLinkButton onClick={() => props.toggleMobileSideBar()}>
           &#8801;
         </OpenLinkButton>
         <Logo src={logo} />
@@ -110,4 +113,10 @@ const Header = (props: any) => {
   );
 };
 
-export default Header;
+const areEqual = (prevProps: IHeaderProps, nextProps: IHeaderProps) => {
+  /*if (prevProps.toggleMobileSideBar === nextProps.toggleMobileSideBar) {
+    return true; // donot re-render
+  }*/
+  return true;
+};
+export default React.memo(Header, areEqual);

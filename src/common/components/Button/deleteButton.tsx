@@ -3,8 +3,6 @@ import deleteSvg from "asserts/icons/delete_rounded.svg";
 import {
   ButtonHTMLAttributes,
   DetailedHTMLProps,
-  DOMAttributes,
-  HtmlHTMLAttributes,
   MouseEventHandler,
 } from "react";
 import deletSvg from "asserts/icons/delete.svg";
@@ -39,21 +37,21 @@ export const StyledDeleteButton = styled.button`
   & > div {
     width: 24px;
     height: 24px;
-    background-image: url("${(props) => deletSvg}");
+    background-image: url("${deletSvg}");
     background-repeat: no-repeat;
     background-size: contain;
     border: none;
   }
 `;
 
-interface IProps {
-  onClick?: MouseEventHandler<HTMLButtonElement>;
+interface IDeleteButtonProps {
+  onClick: MouseEventHandler<HTMLButtonElement>;
 }
-export const DeleteButton: React.FunctionComponent<IProps> = (
-  props: IProps
+export const DeleteButton: React.FunctionComponent<IDeleteButtonProps> = (
+  props: IDeleteButtonProps
 ) => {
   return (
-    <StyledDeleteButton {...props}>
+    <StyledDeleteButton onClick={props.onClick}>
       <div></div>
     </StyledDeleteButton>
   );

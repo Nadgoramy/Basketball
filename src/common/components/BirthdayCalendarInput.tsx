@@ -3,22 +3,23 @@ import DatePicker, {
   CalendarContainer,
   ReactDatePickerProps,
 } from "react-datepicker";
-import React, { forwardRef, Ref, useState } from "react";
-import Input from "./Input/Input";
+import { forwardRef, Ref } from "react";
+import { Input, InputProps } from "./Input/Input";
 import calendarSvg from "asserts/icons/calendar-blank.svg";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { themeColors } from "ThemeColors";
+import React from "react";
 const borderProp = (props: any) => {
-  if (props.error) return "1px solid " + props.theme.colors.lightest_red;
-  if (props.icon) return "0.5px solid #" + props.theme.colors.lightest_grey;
+  if (props.error) return "1px solid " + themeColors.lightest_red;
+  if (props.icon) return "0.5px solid #" + themeColors.lightest_grey;
   return "none";
 };
 
 export const StyledCalendar = styled(DatePicker)`
   border-radius: 4px;
   border-width: 0;
-  background: ${({ theme }) => theme.colors.lightest_grey1};
-  color: ${({ theme }) => theme.colors.dark_grey};
+  background: ${themeColors.lightest_grey1};
+  color: ${themeColors.dark_grey};
   border: ${(props) => borderProp(props)};
   box-shadow: none;
   flex: auto;
@@ -33,14 +34,14 @@ export const StyledCalendar = styled(DatePicker)`
   width: -moz-available;
 
   .react-datepicker__day--selected {
-    color: ${({ theme }) => theme.colors.white};
-    background-color: ${({ theme }) => theme.colors.red};
+    color: ${themeColors.white};
+    background-color: ${themeColors.red};
   }
 
   .react-datepicker {
     max-width: 366px;
-    background-color: ${({ theme }) => theme.colors.white};
-    color: ${({ theme }) => theme.colors.grey};
+    background-color: ${themeColors.white};
+    color: ${themeColors.grey};
     font-family: ${({ theme }) => theme.font};
   }
 
@@ -61,32 +62,32 @@ export const StyledCalendar = styled(DatePicker)`
 
     border-radius: 4px;
     border-width: 0;
-    background: ${({ theme }) => theme.colors.lightest_grey1};
-    color: ${({ theme }) => theme.colors.dark_grey};
+    background: ${themeColors.lightest_grey1};
+    color: ${themeColors.dark_grey};
     border: ${(props) => borderProp(props)};
     box-shadow: none;
   }
   input:-internal-autofill-selected {
-    background: ${({ theme }) => theme.colors.lightest_grey1};
+    background: ${themeColors.lightest_grey1};
   }
   &:hover {
-    color: ${({ theme }) => theme.colors.dark_grey};
-    background: ${({ theme }) => theme.colors.lightest_grey};
+    color: ${themeColors.dark_grey};
+    background: ${themeColors.lightest_grey};
     outline-style: none;
   }
   &:active {
-    color: ${({ theme }) => theme.colors.dark_grey};
+    color: ${themeColors.dark_grey};
     outline-style: none;
   }
   &:focus {
-    background: ${({ theme }) => theme.colors.lightest_grey1};
+    background: ${themeColors.lightest_grey1};
     box-shadow: 0px 0px 5px #d9d9d9;
-    color: ${({ theme }) => theme.colors.dark_grey};
+    color: ${themeColors.dark_grey};
     outline-style: none;
   }
   &:disabled {
-    background: ${({ theme }) => theme.colors.lightest_grey};
-    color: ${({ theme }) => theme.colors.lightest_grey};
+    background: ${themeColors.lightest_grey};
+    color: ${themeColors.lightest_grey};
   }
   .error {
     border: ${(props) => borderProp(props)};
@@ -105,8 +106,8 @@ export const StyledCalendar = styled(DatePicker)`
 
       border-radius: 4px;
       border-width: 0;
-      background: ${({ theme }) => theme.colors.lightest_grey1};
-      color: ${({ theme }) => theme.colors.dark_grey};
+      background: ${themeColors.lightest_grey1};
+      color: ${themeColors.dark_grey};
       border: ${(props) => borderProp(props)};
       box-shadow: none;
     }
@@ -114,36 +115,45 @@ export const StyledCalendar = styled(DatePicker)`
 `;
 
 const CustomCalendarContainerStyled = styled.div`
-  border: 1px solid ${({ theme }) => theme.colors.light_grey};
-  background-color: ${({ theme }) => theme.colors.white};
+  border: 1px solid ${themeColors.light_grey};
+  background-color: ${themeColors.white};
   border-radius: 0.3rem;
   display: inline-block;
   position: relative;
-  color: ${({ theme }) => theme.colors.dark_grey};
+  color: ${themeColors.dark_grey};
 
   .customColor,
   .react-datepicker__day--selected {
-    background-color: ${({ theme }) => theme.colors.red};
-    color: ${({ theme }) => theme.colors.white};
+    background-color: ${themeColors.red};
+    color: ${themeColors.white};
   }
   .customColor,
   .react-datepicker__day--keyboard-selected {
-    background-color: ${({ theme }) => theme.colors.lightest_red};
-    color: ${({ theme }) => theme.colors.white};
+    background-color: ${themeColors.lightest_red};
+    color: ${themeColors.white};
   }
 `;
 
-const CustomInput = forwardRef((props: any, ref: Ref<HTMLInputElement>) => (
-  <Input
-    icon={calendarSvg}
-    onClick={props.onClick}
-    onChange={props.onChange}
-    ref={ref}
-    id={props.id}
-    value={props.value}
-    error={props.error}
-  />
-));
+const CustomInput = React.forwardRef<
+  HTMLInputElement,
+  React.PropsWithChildren<InputProps>>((props: InputProps, forwardRef: any) => {
+    const innerRef = React.createRef<HTMLInputElement>();
+    React.useImperativeHandle(forwardRef, () => innerRef?.current);
+    const onIconClick = () => innerRef.current?.click();
+
+    return (
+      <Input
+        icon={calendarSvg}
+        onClick={props.onClick}
+        iconClick={() => onIconClick()}
+        onChange={props.onChange}
+        ref={innerRef}
+        id={props.id}
+        value={props.value}
+        error={props.error}
+      />
+    );
+  });
 
 const CustomCalendarContainer = (props: any) => {
   const { className, children } = props;
@@ -160,7 +170,7 @@ interface CustomDatePickerProps extends ReactDatePickerProps {
   error?: string;
 }
 
-const BirthdayCalendarInput = (props: CustomDatePickerProps, ref: any) => {
+export const BirthdayCalendarInput = forwardRef((props: CustomDatePickerProps, ref: any) => {
   const { selected, onChange, error, ...rest } = props;
 
   const lessthenToday = (date: Date) => {
@@ -179,5 +189,5 @@ const BirthdayCalendarInput = (props: CustomDatePickerProps, ref: any) => {
       calendarContainer={CustomCalendarContainer}
     />
   );
-};
-export default React.forwardRef(BirthdayCalendarInput);
+});
+

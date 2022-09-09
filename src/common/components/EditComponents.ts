@@ -3,9 +3,9 @@ import styled from "styled-components";
 
 export const StyledFlexRow = styled.div<PropsType>`
   display: flex;
-  align-items: ${(props: PropsType) => props.align || "stretch"};
+  align-items: stretch;
   justify-content: ${(props: PropsType) => props.justify || "stretch"};
-  margin: ${(props: PropsType) => props.margin || "0"};
+  margin: 0;
   column-gap:24px;
 
   &>div{
@@ -23,9 +23,9 @@ export const StyledFlexRow = styled.div<PropsType>`
 
 export const StyledFlexAutoDiv = styled.div<PropsType>`
   flex: auto;
-  align-items: ${(props: PropsType) => props.align || "stretch"};
+  align-items: stretch;
   justify-content: ${(props: PropsType) => props.justify || "stretch"};
-  margin: ${(props: PropsType) => props.margin || "0"};
+  margin: 0;
   column-gap:24px;
  
 `;

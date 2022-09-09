@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppStateType } from "core/redux/configureStore";
 import { StyledFlex, StyledFlexRow } from "common/components/Flex";
@@ -8,45 +8,35 @@ import { StyledLink } from "common/components/Link/styledLink";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { deleteTeam, getTeam, teamActions } from "../hooks/teamSlice";
 import { DeleteButton } from "common/components/Button/deleteButton";
-import { errorActions } from "core/redux/errorSlice";
 import { teamsActions } from "../hooks/teamsPageSlice";
 import debounce from "lodash.debounce";
 import { getAge } from "common/helpers/age";
+import { useAPIError } from "common/hooks/useApiError";
+import { IError } from "common/hooks/apiErrorProvider";
 
-type PropTypes = {};
-export const TeamInfo: React.FunctionComponent<PropTypes> = (
-  props: PropTypes
-) => {
+export const TeamInfo: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
   const [teamId, setTeamId] = useState(id ? parseInt(id) : 0);
   const team = useAppSelector((store: AppStateType) => store.team.team);
-  const deleteOperationSucceded = useAppSelector(
-    (store: AppStateType) => store.team.deleteSucceded
-  );
+  const { addError } = useAPIError();
   const navigate = useNavigate();
+  const delayedTeamRequest = useCallback(
+    debounce(() => {
+      dispatch(getTeam(teamId));
+    }, 200),
+    [id]
+  );
 
   useEffect(() => {
     if (!id) return;
-
-    const delayedRequest = debounce(() => {
-      dispatch(getTeam(teamId));
-    }, 500);
-    delayedRequest();
+    delayedTeamRequest();
   }, [teamId]);
 
   const error = useAppSelector((store) => store.team.error);
   useEffect(() => {
-    dispatch(errorActions.setErrorMessage(error));
+    if (error) addError(error);
   }, [error]);
-
-  useEffect(() => {
-    if (deleteOperationSucceded) {
-      dispatch(teamsActions.clearState());
-      dispatch(teamActions.clearState());
-      navigate(-1);
-    }
-  }, [deleteOperationSucceded]);
 
   const handleDeleteClick = (e: any) => {
     if (!id) return;
@@ -54,7 +44,17 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
     if (team.players && team.players.length > 0) {
       window.alert("Team has players. Please remove them first");
     } else {
-      if (window.confirm("Are you sure?")) dispatch(deleteTeam(teamId));
+      if (window.confirm("Are you sure?"))
+        dispatch(deleteTeam(teamId))
+          .then(() => {
+            dispatch(teamsActions.clearState());
+            dispatch(teamActions.clearState());
+            navigate("/teams");
+          })
+          .catch((reason) => {
+            let err = reason as IError;
+            if (err.message) addError(err.message);
+          });
     }
   };
 
@@ -65,11 +65,11 @@ export const TeamInfo: React.FunctionComponent<PropTypes> = (
         {team && (
           <div>
             <Info.StyledHeaderContainer>
-              <span className="headerText">
+              <div>
                 <StyledLink to="/teams">Teams</StyledLink>
                 <span> / </span>
                 <span>{team.name}</span>
-              </span>
+              </div>
               <Info.StyledHeaderButtonContainer>
                 <EditLink to={"/teams/edit/" + id} />
                 <DeleteButton onClick={handleDeleteClick} />

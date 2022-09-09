@@ -1,13 +1,14 @@
+import React from "react";
 import { post } from "../baseRequest";
 import { AuthUserDto } from "../Dto/AuthUserDto";
 
-const API_URL = "auth/";
+export const AUTH_API_URL = "auth/";
 const throwError = (msg: string) => {
   throw Error(msg);
 };
 
 const register = (username: string, login: string, password: string) => {
-  return post(API_URL + "signup", {
+  return post(AUTH_API_URL + "signup", {
     username,
     login,
     password,
@@ -15,14 +16,14 @@ const register = (username: string, login: string, password: string) => {
 };
 const login = (login: string, password: string) => {
   console.log(login + "/" + password);
-  return post(API_URL + "signin", {
+  return post(AUTH_API_URL + "signin", {
     login,
     password,
   });
 };
 
 const change = (username: string, avatarUrl: string) => {
-  return post(API_URL + "change", {
+  return post(AUTH_API_URL + "change", {
     username,
     avatarUrl,
   }).then((response) => {
@@ -40,10 +41,13 @@ const getCurrentUser = (): AuthUserDto | null => {
     token: user.token,
   } as AuthUserDto;
 };
+const clearUser = () => {
+  localStorage.removeItem("user");
+};
 
-const AuthService = {
+export const AuthService = {
   register,
   login,
   getCurrentUser,
+  clearUser
 };
-export default AuthService;

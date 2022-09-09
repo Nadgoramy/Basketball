@@ -1,14 +1,13 @@
 import { TeamDto } from "api/Dto/teamDto";
-import ImageService from "api/requests/imageServise";
-import DragDropFile from "common/components/DragDropFile";
+import { ImageService } from "api/requests/imageServise";
+import { DragDropFile } from "common/components/DragDropFile";
 import { StyledFlex } from "common/components/Flex";
 import { StyledLink } from "common/components/Link/styledLink";
 import { AppStateType } from "core/redux/configureStore";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import Input from "common/components/Input/Input";
-import { errorActions } from "core/redux/errorSlice";
+import { Input } from "common/components/Input/Input";
 import {
   StyledHeaderContainer,
   StyledMainContainer,
@@ -18,12 +17,12 @@ import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { addTeam, getTeam, teamActions, updateTeam } from "../hooks/teamSlice";
 import { StyledFlexRow } from "common/components/EditComponents";
 import { teamsActions } from "modules/teams/hooks/teamsPageSlice";
+import { useAPIError } from "common/hooks/useApiError";
+import { IError } from "common/hooks/apiErrorProvider";
 
-const TeamEdit = () => {
+export const TeamEdit = () => {
   const team = useAppSelector((state: AppStateType) => state.team.team);
-  const operationSecceded = useAppSelector(
-    (state: AppStateType) => state.team.updateSucceded
-  );
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -38,9 +37,10 @@ const TeamEdit = () => {
     setValue,
   } = useForm<TeamDto>();
 
+  const { addError } = useAPIError();
   const error = useAppSelector((store: AppStateType) => store.player.error);
   useEffect(() => {
-    dispatch(errorActions.setErrorMessage(error));
+    if (error) addError(error);
   }, [error]);
 
   useEffect(() => {
@@ -54,14 +54,6 @@ const TeamEdit = () => {
     setFormValues(team);
     setCurrentImageUrl(team?.imageUrl);
   }, [team]);
-
-  useEffect(() => {
-    if (operationSecceded) {
-      dispatch(teamsActions.clearState());
-      dispatch(teamActions.clearState());
-      navigate("/teams/" + team.id);
-    }
-  }, [operationSecceded]);
 
   const emptyTeam: TeamDto = {
     name: "",
@@ -92,7 +84,10 @@ const TeamEdit = () => {
         setCurrentImageUrl(url);
         setValue("imageUrl", url, { shouldDirty: true });
       })
-      .catch((e) => dispatch(errorActions.setErrorMessage(e.message)));
+      .catch((e) => {
+        let err = e as IError;
+        if (err.message) addError(err.message);
+      });
   };
 
   const onSubmit = (data: TeamDto) => {
@@ -100,14 +95,26 @@ const TeamEdit = () => {
 
     const teamId = parseInt(id ?? "0");
     if (teamId) {
-      dispatch(updateTeam(data));
+      dispatch(updateTeam(data)).then(() => {
+        onSubmitted(teamId);
+      });
     } else {
-      dispatch(addTeam(data));
+      dispatch(addTeam(data)).then((params) => {
+        onSubmitted((params.payload as TeamDto).id);
+      });
     }
   };
+
+  const onSubmitted = (id: number) => {
+    dispatch(teamsActions.clearState());
+    dispatch(teamActions.clearState());
+    navigate("/teams/" + id);
+  };
+
   const onCancel = () => {
     removeImageIfNeeded();
-    setFormValues(team);
+    //setFormValues(team);
+    navigate(-1);
   };
   const removeImageIfNeeded = () => {
     if (id == "0" && currentImageUrl) removeImageOnServer(currentImageUrl);
@@ -197,5 +204,3 @@ const TeamEdit = () => {
     </StyledFlex>
   );
 };
-
-export default TeamEdit;

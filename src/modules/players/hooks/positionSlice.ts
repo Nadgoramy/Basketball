@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PositionDto } from "api/Dto/positionDto";
-import PlayerService from "api/players/playerService";
+import { PlayerService } from "api/players/playerService";
+import { AuthService } from "api/requests/authService";
 import { OptionTypeValueString } from "common/components/StyledSelect";
 import { authorizationExpired } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
@@ -8,15 +9,14 @@ import { userActions } from "core/redux/userSlice";
 
 export const getPositions = createAsyncThunk(
   `position/getOptions`,
-  async (_, { rejectWithValue, getState , dispatch}) => {
+  async (_, { rejectWithValue, getState, dispatch }) => {
     try {
       let list = (getState() as AppStateType).positions.list;
-      if(list.length>0 ) return list;
-      
+      if (list.length > 0) return list;
+
       let responce = await PlayerService.getPositions();
       if (!responce) {
         rejectWithValue("Unauthorized user");
-        return;
       }
       if (responce) {
         return responce;
@@ -24,20 +24,22 @@ export const getPositions = createAsyncThunk(
     } catch (error: any) {
       if (error.status == 401) {
         dispatch(userActions.removeUser());
+        AuthService.clearUser();
         return rejectWithValue("Authorization error");
       }
       return rejectWithValue(error.message);
     }
-  },{
+  },
+  {
     condition: (_, { getState, extra }) => {
-      const { positions, user } = getState() as AppStateType      
-      if (positions.isFetching) return false
-      if (authorizationExpired(user.currentUser)) return false
+      const { positions, user } = getState() as AppStateType;
+      if (positions.isFetching) return false;
+      if (authorizationExpired(user.currentUser)) return false;
     },
   }
 );
 
-type StateType = {
+type PositionSliceStateType = {
   isFetching: boolean;
   list: PositionDto[];
   options: OptionTypeValueString[];
@@ -47,7 +49,7 @@ const initialState = {
   isFetching: false,
   list: [],
   options: [],
-} as StateType;
+} as PositionSliceStateType;
 
 const positionSlice = createSlice({
   name: "position",

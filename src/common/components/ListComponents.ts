@@ -3,7 +3,6 @@ import styled from "styled-components";
 
 export const StyledHeader = styled.div`
   display: flex;
-  //justify-content: space-between;
   margin-bottom: 32px;
   column-gap: 24px;
 
@@ -52,10 +51,14 @@ export const StyledGrid = styled.div`
   column-gap: 2%;
   row-gap: 24px;
   & > div {
-    flex: 0 1 32%; 
+    flex: 0 1 32%;
     height: 380px;
+    @media (max-width: ${({ theme }) => theme.tablet}) {
+      flex: 0 1 49%;
+      height: 380px;
+    }
     @media (max-width: ${({ theme }) => theme.mobile}) {
-      flex: 0 1 48%; 
+      flex: 0 1 48%;
       height: 180px;
     }
   }
@@ -74,8 +77,12 @@ export const StyledTeamGrid = styled.div`
   & > * {
     flex: 0 1 32%;
     height: 380px;
+    @media (max-width: ${({ theme }) => theme.tablet}) {
+      flex: 0 1 49%;
+      height: 380px;
+    }
     @media (max-width: ${({ theme }) => theme.mobile}) {
-      flex: 0 1  48%; 
+      flex: 0 1 48%;
       height: 201px;
     }
   }

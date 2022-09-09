@@ -30,7 +30,3 @@ export const TeamCard: React.FunctionComponent<PropsType> = (
     </CardComponents.StyledContainer>
   );
 };
-
-function useHistory() {
-  throw new Error("Function not implemented.");
-}

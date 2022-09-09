@@ -1,5 +1,4 @@
 import { get, post, remove, put } from "api/baseRequest";
-import AuthService from "api/requests/authService";
 import {
   NewPlayerDto,
   PlayerDto,
@@ -10,15 +9,14 @@ import { PositionDto } from "api/Dto/positionDto";
 const API_URL = "player/";
 
 const getPositions = () => {
-  const currentUser = AuthService.getCurrentUser();
-  if (!currentUser) return null;
-  return get(API_URL + "getpositions", currentUser.token).then((response) => {
-    let list: PositionDto[] = [];
-    (response as Array<string>).map((value: any, i: number) =>
-      list.push({ id: i, title: value } as PositionDto)
-    );
-    return list;
-  });
+  return get(API_URL + "getpositions")
+    ?.then((response) => {
+      let list: PositionDto[] = [];
+      (response as Array<string>).map((value: any, i: number) =>
+        list.push({ id: i, title: value } as PositionDto)
+      );
+      return list;
+    });
 };
 
 const getPlayers = (
@@ -27,12 +25,10 @@ const getPlayers = (
   pageSize: number,
   teamIds: number[] | null
 ) => {
-  const currentUser = AuthService.getCurrentUser();
-  if (!currentUser) return;
   let requestParams =
     "?Name=" + name + "&Page=" + page + "&PageSize=" + pageSize;
   if (teamIds) teamIds.forEach((tId) => (requestParams += "&TeamIds=" + tId));
-  return get(API_URL + "getplayers" + requestParams, currentUser.token).then(
+  return get(API_URL + "getplayers" + requestParams).then(
     (response) => {
       return response as PlayerDtoPageResult;
     }
@@ -40,40 +36,31 @@ const getPlayers = (
 };
 
 const getPlayer = (id: number) => {
-  const currentUser = AuthService.getCurrentUser();
-  if (!currentUser) return null;
-  return get(API_URL + "get?id=" + id, currentUser.token).then((response) => {
-    return response as PlayerDto;
-  });
+  return get(API_URL + "get?id=" + id);
 };
 
 const addPlayer = (player: NewPlayerDto) => {
-  const currentUser = AuthService.getCurrentUser();
-  if (!currentUser) return;
-  return post(API_URL + "add", player, currentUser.token).then((response) => {
+  
+  return post(API_URL + "add", player).then((response) => {
     return response as PlayerDto;
   });
 };
 
-const updatePlayer = (player: PlayerDto) => {
-  const currentUser = AuthService.getCurrentUser();
-  if (!currentUser) return;
-  return put(API_URL + "update", player, currentUser.token).then((response) => {
+const updatePlayer = (player: PlayerDto) => {  
+  return put(API_URL + "update", player).then((response) => {
     return response as PlayerDto;
   });
 };
 
-const deletePlayer = (id: number) => {
-  const currentUser = AuthService.getCurrentUser();
-  if (!currentUser) return;
-  return remove(API_URL + "delete?id=" + id, currentUser.token).then(
+const deletePlayer = (id: number) => {  
+  return remove(API_URL + "delete?id=" + id).then(
     (response) => {
       return response as PlayerDto;
     }
   );
 };
 
-const PlayerService = {
+export const PlayerService = {
   getPositions,
   getPlayers,
   getPlayer,
@@ -81,4 +68,4 @@ const PlayerService = {
   updatePlayer,
   deletePlayer,
 };
-export default PlayerService;
+

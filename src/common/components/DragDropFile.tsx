@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import svg from "asserts/icons/addPhoto.svg";
-import { useAppDispatch } from "core/redux/store";
-import { errorActions } from "core/redux/errorSlice";
+import { themeColors } from "ThemeColors";
+import { useAPIError } from "common/hooks/useApiError";
 
 const StyledFileUploader = styled.div<PropsType>`
   position: relative;
@@ -29,7 +29,7 @@ const StyledFileUploader = styled.div<PropsType>`
     border-radius: 10px;
     max-width: 336px;
     height: 261px;
-    background-color: ${({ theme }) => theme.colors.light_grey};
+    background-color: ${themeColors.light_grey};
 
     @media (max-width: ${({ theme }) => theme.mobile}) {
       width: 185px;
@@ -57,7 +57,7 @@ const StyledFileUploader = styled.div<PropsType>`
     right: 0px;
     bottom: 0px;
     left: 0px;
-    background-color: ${({ theme }) => theme.colors.white};
+    background-color: ${themeColors.white};
     opacity: 0.5;
   }
 `;
@@ -67,7 +67,7 @@ interface PropsType {
   url?: string;
 }
 
-const DragDropFile = (props: PropsType) => {
+export const DragDropFile = (props: PropsType) => {
   const [dragActive, setDragActive] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -80,20 +80,16 @@ const DragDropFile = (props: PropsType) => {
       setDragActive(false);
     }
   };
-  const dispatch = useAppDispatch();
+
+  const { addError, removeError } = useAPIError();
   const handleFile = function (files: FileList | null) {
     if (!files) return;
     const file = files[0];
     if (isImage(file.name)) {
       props.handleFiles(file);
-      dispatch(errorActions.clearErrorMessage());
+      removeError();
     } else {
-      dispatch(
-        errorActions.setErrorMessage(
-          "Not allowed File type: " + getExtension(file.name)
-        )
-      );
-      //clear input?
+      addError("Not allowed File type: " + getExtension(file.name));
     }
   };
   function getExtension(file_name: string) {
@@ -145,5 +141,3 @@ const DragDropFile = (props: PropsType) => {
     </StyledFileUploader>
   );
 };
-
-export default DragDropFile;

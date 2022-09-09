@@ -1,16 +1,17 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import Input from "common/components/Input/Input";
+import { Input } from "common/components/Input/Input";
 import { StyledButton } from "common/components/Button/Button.styled";
-import Checkbox from "common/components/Checkbox";
+import { Checkbox } from "common/components/Checkbox";
 import { NavLink, useNavigate } from "react-router-dom";
 import PasswordInput from "common/components/PasswordInput";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
-import { errorActions } from "core/redux/errorSlice";
 import { register as userRegister, userActions } from "core/redux/userSlice";
 import { RegisterFormDto } from "api/Dto/userDto";
 import { AppStateType } from "core/redux/configureStore";
 import { StyledFormContainer } from "./AuthComponents";
+import { useAPIError } from "common/hooks/useApiError";
+import { simplePasswordPatern } from "regexpList";
 
 interface UserSubmitForm extends RegisterFormDto {
   confirmPassword: string;
@@ -23,46 +24,41 @@ const initialValue: UserSubmitForm = {
   confirmPassword: "",
   acceptTerms: false,
 };
-interface RegProps {
-  setError?: (msg: string) => void;
-}
-const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
+
+export const RegistrationForm: React.FC = () => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
     getValues,
     setValue,
   } = useForm<UserSubmitForm>();
 
   const navigate = useNavigate();
-  const passwordPatern = RegExp(
-    /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})$/
-  );
-  const simplePasswordPatern = RegExp(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/);
+
   const dispatch = useAppDispatch();
   const error = useAppSelector((store: AppStateType) => store.user.error);
-  const isLoggedIn = useAppSelector(
-    (store: AppStateType) => store.user.isLoggedIn
-  );
+  const { addError, removeError } = useAPIError();
+  const user = useAppSelector((store: AppStateType) => store.user.currentUser);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (user) {
+      removeError();
       navigate("/");
     }
-  }, [isLoggedIn]);
+  }, [user]);
 
   useEffect(() => {
     if (error) {
-      dispatch(errorActions.setErrorMessage(error));
+      addError(error);
+      clearUserError();
     }
   }, [error]);
 
   const onSubmit = (data: UserSubmitForm) => {
     dispatch(userRegister(data));
   };
-  const removeError = () => {
+  const clearUserError = () => {
     dispatch(userActions.removeError());
   };
 
@@ -148,7 +144,7 @@ const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
         </div>
         <nav>
           <span>Already a member? </span>
-          <NavLink to="/" onClick={removeError}>
+          <NavLink to="/" onClick={clearUserError}>
             Sing in
           </NavLink>
         </nav>
@@ -156,5 +152,3 @@ const RegistrationForm: React.FC<RegProps> = ({ setError }) => {
     </StyledFormContainer>
   );
 };
-
-export default RegistrationForm;

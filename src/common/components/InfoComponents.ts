@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { themeColors } from "ThemeColors";
 
 export const StyledContainer = styled.div`
   flex: 1;
@@ -17,10 +18,10 @@ export const StyledContainerZeroMargin = styled.div`
 
 export const StyledHeaderContainer = styled.div`
   box-sizing: border-box;
-  background: ${({ theme }) => theme.colors.white};
+  background: ${themeColors.white};
   border: 0.5px solid #9c9c9c;
   border-radius: 10px 10px 0px 0px;
-  color: ${({ theme }) => theme.colors.red};
+  color: ${themeColors.red};
 
   display: flex;
   justify-content: space-between;
@@ -38,6 +39,16 @@ export const StyledHeaderContainer = styled.div`
     textdecoration: none;
     &a:-webkit-any-link {
       textdecoration: none;
+    }
+  }
+
+  div:first-child {
+    width: calc(100%-80px);
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @media (max-width: ${({ theme }) => theme.mobile}) {
     }
   }
 `;
@@ -124,10 +135,12 @@ export const StyledDescriptionContainer = styled.div`
     font-weight: 800;
     font-size: 36px;
     line-height: 49px;
-    color: ${({ theme }) => theme.colors.white};
+    color: ${themeColors.white};
     text-align: left;
     margin-top: 65px;
     margin-bottom: 0;
+
+    overflow-wrap: anywhere;
 
     @media (max-width: ${({ theme }) => theme.mobile}) {
       font-size: 17px;
@@ -138,14 +151,14 @@ export const StyledDescriptionContainer = styled.div`
       margin-bottom: 18px;
     }
     span {
-      color: ${({ theme }) => theme.colors.red};
+      color: ${themeColors.red};
     }
   }
   label {
     font-weight: 800;
     font-size: 24px;
     line-height: 33px;
-    color: ${({ theme }) => theme.colors.white};
+    color: ${themeColors.white};
 
     @media (max-width: ${({ theme }) => theme.mobile}) {
       font-size: 17px;
@@ -157,7 +170,7 @@ export const StyledDescriptionContainer = styled.div`
     font-size: 18px;
     line-height: 25px;
     margin: 8px 0;
-    color: ${({ theme }) => theme.colors.white};
+    color: ${themeColors.white};
 
     @media (max-width: ${({ theme }) => theme.mobile}) {
       font-size: 15px;
@@ -179,6 +192,7 @@ export const StyledDescriptionContainerPlayer = styled(
   h2 {
     margin-top: 65px;
     margin-bottom: 0;
+    overflow-wrap: anywhere;
 
     @media (max-width: ${({ theme }) => theme.mobile}) {
       margin-top: 4px;
@@ -224,10 +238,10 @@ export const StyledDescriptionColumn = styled.div`
 
 export const StyledTeamListHeader = styled.div`
   box-sizing: border-box;
-  background: ${({ theme }) => theme.colors.white};
-  border: 0.5px solid ${({ theme }) => theme.colors.light_grey};
+  background: ${themeColors.white};
+  border: 0.5px solid ${themeColors.light_grey};
   border-radius: 10px 10px 0px 0px;
-  color: ${({ theme }) => theme.colors.grey};
+  color: ${themeColors.grey};
 
   display: flex;
   flex-direction: row;
@@ -259,7 +273,7 @@ export const StyledTeamListHeader = styled.div`
 export const StyledTeamListContainer = styled.div`
   margin-bottom: 24px;
   border-radius: 0px 0px 10px 10px;
-  border: 0.5px solid ${({ theme }) => theme.colors.light_grey};
+  border: 0.5px solid ${themeColors.light_grey};
   @media (max-width: ${({ theme }) => theme.mobile}) {
     border-radius: 0;
   }
@@ -271,7 +285,7 @@ export const StyledTeamListContainer = styled.div`
 
     tbody > tr {
       background: transparent;
-      border-top: 0.5px solid ${({ theme }) => theme.colors.light_grey};
+      border-top: 0.5px solid ${themeColors.light_grey};
       height: 54px;
 
       td {

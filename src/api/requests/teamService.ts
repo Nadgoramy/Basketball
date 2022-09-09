@@ -1,58 +1,37 @@
 import { get, post, remove, put } from "../baseRequest";
-import AuthService from "./authService";
-import { NewTeamDto, TeamDto } from "api/Dto/teamDto";
-
+import { NewTeamDto, TeamDto, TeamDtoPageResult } from "api/Dto/teamDto";
 const API_URL = "team/";
 
 const getTeams = (name: string, page: number, pageSize: number) => {
-  const currentUser = AuthService.getCurrentUser();
-  if (!currentUser) {
-    throw {
-      isCustomError: true,
-      status: 401,
-      message: "Authorization exception",
-    };
-  }
   const requestParams =
     "?Name=" + name + "&Page=" + page + "&PageSize=" + pageSize;
-  return get(API_URL + "getteams" + requestParams, currentUser.token);
+  return get(API_URL + "getteams" + requestParams).then((response) => {
+    return response as TeamDtoPageResult;
+  });
 };
 
 const getTeam = (id: number) => {
-  const currentUser = AuthService.getCurrentUser();
-  if (!currentUser)
-    return new Promise((_, reject) => {
-      reject("Authorization exception");
-    });
-  return get(API_URL + "get?id=" + id, currentUser.token);
+  return get(API_URL + "get?id=" + id).then((response) => {
+    return response as TeamDto;
+  });
 };
 
 const addTeam = (team: NewTeamDto) => {
-  const currentUser = AuthService.getCurrentUser();
-  if (!currentUser)
-    return new Promise((_, reject) => {
-      reject("Authorization exception");
-    });
-  return post<NewTeamDto>(API_URL + "add", team, currentUser.token);
+  return post<NewTeamDto>(API_URL + "add", team);
 };
 
 const updateTeam = (team: TeamDto) => {
-  const currentUser = AuthService.getCurrentUser();
-  if (!currentUser) return;
-  return put(API_URL + "update", team, currentUser.token);
+  return put(API_URL + "update", team);
 };
 
 const deleteTeam = (id: number) => {
-  const currentUser = AuthService.getCurrentUser();
-  if (!currentUser) return;
-  return remove(API_URL + "delete?id=" + id, currentUser.token);
+  return remove(API_URL + "delete?id=" + id);
 };
 
-const TeamService = {
+export const TeamService = {
   getTeams,
   getTeam,
   addTeam,
   updateTeam,
   deleteTeam,
 };
-export default TeamService;

@@ -24,7 +24,7 @@ const StyledOverlay = styled.div`
 
 type PropsType = {};
 
-const Preloader: React.FC = () => {
+export const Preloader: React.FC = () => {
   return (
     <StyledOverlay>
       <div>
@@ -33,5 +33,3 @@ const Preloader: React.FC = () => {
     </StyledOverlay>
   );
 };
-
-export default Preloader;

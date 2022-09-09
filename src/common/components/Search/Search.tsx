@@ -1,75 +1,51 @@
-import Input, { InputProps } from "../Input/Input";
+import { Input, InputProps } from "../Input/Input";
 import icon from "asserts/icons/search_rounded.svg";
 import styled from "styled-components";
-import React, { ForwardedRef, LegacyRef, Ref } from "react";
+import React from "react";
+import { themeColors } from "ThemeColors";
 
 const StyledContainer = styled.div`
   & > div {
     min-width: 150px;
     max-width: 364px;
+    background-color: ${themeColors.white};
     @media (max-width: ${({ theme }) => theme.mobile}) {
       width: 100%;
       min-width: 0;
       max-width: 100%;
     }
   }
-
+input{
+  background-color: ${themeColors.white};
+}
   input:active {
-    border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
+    border: 0.5px solid ${themeColors.lightest_grey};
     outline-width: 0;
     box-shadow: none;
+    background-color: ${themeColors.white};
   }
 
   input:enabled {
     outline-width: 0;
-    border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
+    border: 0.5px solid ${themeColors.lightest_grey};
     box-shadow: none;
+    background-color: ${themeColors.white};
   }
   input:focus {
     outline-width: 0;
-    border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
+    border: 0.5px solid ${themeColors.lightest_grey};
     box-shadow: none;
+    background-color: ${themeColors.white};
   }
   input:visited {
     outline-width: 0;
-    border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
+    border: 0.5px solid ${themeColors.lightest_grey};
     box-shadow: none;
-  }
-`;
-const StyledSearch = styled(Input)`
-  background: ${({ theme }) => theme.colors.white};
-  border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
-  border-radius: 4px;
-  outline-width: 0;
-
-  .search-container {
-    min-width: 364px;
-  }
-
-  &:active {
-    border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
-    outline-width: 0;
-    box-shadow: none;
-  }
-
-  &:enabled {
-    outline-width: 0;
-    border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
-    box-shadow: none;
-  }
-  &:focus {
-    outline-width: 0;
-    border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
-    box-shadow: none;
-  }
-  &:visited {
-    outline-width: 0;
-    border: 0.5px solid ${({ theme }) => theme.colors.lightest_grey};
-    box-shadow: none;
+    background-color: ${themeColors.white};
   }
 `;
 
-const Search = (props: InputProps, ref: any) => {
+export const Search = React.forwardRef((props: InputProps, ref: any) => {
   const { children, ...rest } = props;
   return (
     <StyledContainer>
@@ -85,5 +61,4 @@ const Search = (props: InputProps, ref: any) => {
       </Input>
     </StyledContainer>
   );
-};
-export default React.forwardRef(Search);
+});

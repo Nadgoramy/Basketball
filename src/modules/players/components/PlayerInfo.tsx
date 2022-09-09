@@ -8,9 +8,8 @@ import { StyledLink } from "common/components/Link/styledLink";
 import { getPlayer, deletePlayer } from "../hooks/playerSlice";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { DeleteButton } from "common/components/Button/deleteButton";
-import { errorActions } from "core/redux/errorSlice";
-import { playersActions } from "../hooks/playersPageSlice";
 import { getAge } from "common/helpers/age";
+import { useAPIError } from "common/hooks/useApiError";
 
 type PlayerInfoPtopType = React.HTMLAttributes<HTMLElement> & {};
 
@@ -19,9 +18,8 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
 ) => {
   const dispatch = useAppDispatch();
   const player = useAppSelector((store: AppStateType) => store.player.player);
-  const deleteOperationSucceded = useAppSelector(
-    (store: AppStateType) => store.player.deleteSucceded
-  );
+  const { addError } = useAPIError();
+
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -33,16 +31,8 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
 
   const error = useAppSelector((store: AppStateType) => store.player.error);
   useEffect(() => {
-    dispatch(errorActions.setErrorMessage(error));
+    if (error) addError(error);
   }, [error]);
-
-  useEffect(() => {
-    if (deleteOperationSucceded) {
-      dispatch(playersActions.clearState());
-      navigate(-1);
-    }
-  }, [deleteOperationSucceded]);
-
 
   const playerAge = useMemo(() => getAge(player.birthday), [player.birthday]);
 
@@ -50,7 +40,9 @@ export const PlayerInfo: React.FunctionComponent<PlayerInfoPtopType> = (
     if (!id) return;
     const playerId = parseInt(id);
     if (window.confirm("Are you sure?")) {
-      dispatch(deletePlayer(playerId));
+      dispatch(deletePlayer(playerId)).then(() => {
+        navigate("/players");
+      });
     }
   };
 
