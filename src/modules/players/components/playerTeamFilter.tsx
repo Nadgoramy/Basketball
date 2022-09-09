@@ -263,27 +263,3 @@ export const PlayerTeamFilter: React.FunctionComponent = () => {
     />
   );
 };
-
-
-/*
-
-
-
-<StyledMultiSelect
-      ref={selectRef}
-      classNamePrefix="Select"
-      options={teamNames}
-      isMulti
-      isSearchable={false}
-      value={teamNames?.filter((obj: OptionTypeValueNumber) =>
-        teamIds.includes(obj.value)
-      )}
-      onChange={(e: any) => updateTeamFilter(e as OptionTypeValueNumber[])}
-      onBlur={(event) => console.log(event.target.value)}
-
-      components={{
-        MultiValue: MultiValue,
-      }}
-    />
-
-      */
