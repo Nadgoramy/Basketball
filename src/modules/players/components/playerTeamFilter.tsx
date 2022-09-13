@@ -4,16 +4,13 @@ import React, {
   useEffect,
   useLayoutEffect,
   useCallback,
-  useMemo,
 } from "react";
-import ReactSelect, { components, ControlProps, CSSObjectWithLabel, GroupBase, MultiValueProps, StylesConfig } from "react-select";
+import ReactSelect, { components, GroupBase, MultiValueProps, StylesConfig } from "react-select";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { playersActions } from "modules/players/hooks/playersPageSlice";
 import { OptionTypeValueNumber } from "common/components/StyledSelect";
-import { getTeamIds, getTeamsOptions } from "modules/players/selectors";
-import { LoadTeamOptions } from "../helpers/teamOptions";
-import { useAsyncHook } from "common/helpers/useAsyncHook";
-import styled, { CSSObject } from "styled-components";
+import { getTeamIds, getTeamList } from "modules/players/selectors";
+import styled from "styled-components";
 import { themeColors } from "ThemeColors";
 
 const ThemedReactSelect = styled(ReactSelect)`
@@ -25,19 +22,18 @@ const ThemedReactSelect = styled(ReactSelect)`
 
 
 export const PlayerTeamFilter: React.FunctionComponent = () => {
-  const teamNames = useAppSelector(getTeamsOptions);
+  const teamList = useAppSelector(getTeamList);
   const teamIds = useAppSelector(getTeamIds);
   const dispatch = useAppDispatch();
   const selectRef = useRef(null);
   const [maxToShow, setMaxToShow] = useState(5);
 
-  /*
-  const [teamNames, setTeamNames] = useState<OptionTypeValueNumber[]>();
-  const [result, loading] = useAsyncHook(LoadTeamOptions);
-  useEffect(() => {
-    if ((loading as string) === "true") setTeamNames(result as []);
-  }, [loading]);
-*/
+  const teamOptions = React.useMemo(() => {
+    let options = new Array<OptionTypeValueNumber>();
+    teamList.map(t => options.push({ label: t.name, value: t.id, isLast: (teamList.indexOf(t) === teamList.length - 1) }));
+    return options;
+  }, [teamList]);
+
   const updateTeamFilter = (evn: OptionTypeValueNumber[]) => {
     if (!evn) {
       dispatch(playersActions.setTeamFilter(null));
@@ -112,7 +108,7 @@ export const PlayerTeamFilter: React.FunctionComponent = () => {
           childrenWidth -
           approximateNexItemLength >
           dotsWidth) ||
-        (selectedItems.length == count + 1 &&
+        (selectedItems.length === count + 1 &&
           multiValueContainerRef.clientWidth -
           childrenWidth -
           approximateNexItemLength >
@@ -150,7 +146,7 @@ export const PlayerTeamFilter: React.FunctionComponent = () => {
   >(
     props: MultiValueProps<Option, IsMulti, Group>
   ) => {
-    const { index, getValue } = props;
+    const { index } = props;
 
     return (index < maxToShow ? (
       <components.MultiValue {...props} cropWithEllipsis />
@@ -226,7 +222,7 @@ export const PlayerTeamFilter: React.FunctionComponent = () => {
         ...provided,
         backgroundColor: state.isSelected ? themeColors.light_red : themeColors.white,
         color: state.isSelected ? themeColors.white : themeColors.light_grey,
-        borderBottom: teamNames[teamNames.length - 1].value != (state.data as OptionTypeValueNumber).value ? "0.5px solid " + themeColors.lightest_grey : "none",
+        borderBottom: teamOptions[teamOptions.length - 1].value !== (state.data as OptionTypeValueNumber).value ? "0.5px solid " + themeColors.lightest_grey : "none",
         overflowWrap: "anywhere",
         fontWeight: "500",
         fontSize: "14px",
@@ -248,10 +244,10 @@ export const PlayerTeamFilter: React.FunctionComponent = () => {
       classNamePrefix="Select"
       ref={selectRef}
       styles={customStyles}
-      options={teamNames}
+      options={teamOptions}
       isSearchable={false}
       isMulti
-      value={teamNames?.filter((obj: OptionTypeValueNumber) =>
+      value={teamOptions?.filter((obj: OptionTypeValueNumber) =>
         teamIds.includes(obj.value)
       )}
       onChange={(e: any) => updateTeamFilter(e as OptionTypeValueNumber[])}

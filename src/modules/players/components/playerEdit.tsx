@@ -20,7 +20,6 @@ import {
 } from "common/components/StyledEditComponents";
 import { StyledButton } from "common/components/Button/Button.styled";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
-import { getPositions } from "../hooks/positionSlice";
 import {
   StyledFlexAutoDiv,
   StyledFlexRow,
@@ -41,10 +40,6 @@ export const PlayerEdit: React.FunctionComponent = () => {
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | undefined>(
     undefined
   );
-  const positionOptions = useAppSelector(
-    (store: AppStateType) => store.positions.options
-  );
-
   const player = useAppSelector((state: AppStateType) => state.player.player);
 
   const isFetching = useAppSelector((store: AppStateType) => store.player.isFetching);
@@ -56,7 +51,6 @@ export const PlayerEdit: React.FunctionComponent = () => {
     formState: { errors, isDirty },
     setValue,
     control,
-    watch,
   } = useForm<PlayerDto>();
 
   const emptyPlayer: PlayerDto = {
@@ -76,14 +70,13 @@ export const PlayerEdit: React.FunctionComponent = () => {
 
   useEffect(() => {
     dispatch(playerActions.setPlayer(emptyPlayer));
-    dispatch(getPositions());
   }, []);
 
   useEffect(() => {
     if (id) {
       const playerId = parseInt(id);
       if (playerId > 0) dispatch(getPlayer(playerId));
-      if (playerId == 0) {
+      if (playerId === 0) {
         dispatch(playerActions.setPlayer(emptyPlayer));
         setFormValues(emptyPlayer);
       }
@@ -107,11 +100,11 @@ export const PlayerEdit: React.FunctionComponent = () => {
   };
 
   const removeImageIfNeeded = () => {
-    if (id == "0" && currentAvatarUrl) removeImageOnServer(currentAvatarUrl);
+    if (id === "0" && currentAvatarUrl) removeImageOnServer(currentAvatarUrl);
     if (
       currentAvatarUrl &&
       initialState?.avatarUrl &&
-      currentAvatarUrl != initialState.avatarUrl
+      currentAvatarUrl !== initialState.avatarUrl
     )
       removeImageOnServer(currentAvatarUrl);
   };

@@ -1,24 +1,27 @@
 import { OptionTypeValueNumber, SingleSelectCustomStyles, StyledSelect } from "common/components/StyledSelect";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
-import React, { LegacyRef, RefObject } from "react";
-import { forwardRef, useEffect } from "react";
+import React, { useEffect } from "react";
 import { ControllerRenderProps } from "react-hook-form";
-import reactSelect from "react-select";
-import Select from "react-select/dist/declarations/src/Select";
-import { getTeamOptions } from "../hooks/teamOptionSlice";
-import { getTeamsOptions } from "../selectors";
+import { getTeamOptions } from "../hooks/teamListSlice";
+import { getTeamList } from "../selectors";
 
 type PlayerTeamComponentProps = {
     error?: string
 } & ControllerRenderProps;
 
 const PlayerTeamComponent = (props: PlayerTeamComponentProps, ref: any) => {
-    const teamOptions = useAppSelector(getTeamsOptions);
+    const teamList = useAppSelector(getTeamList);
     const { error, onChange, onBlur, value } = props;
     const dispatch = useAppDispatch();
     useEffect(() => {
         dispatch(getTeamOptions());
     }, []);
+
+    const teamOptions = React.useMemo(() => {
+        let options = new Array<OptionTypeValueNumber>();
+        teamList.map(t => options.push({ label: t.name, value: t.id, isLast: (teamList.indexOf(t) === teamList.length - 1) }));
+        return options;
+    }, [teamList]);
 
     return (
         <StyledSelect
@@ -26,10 +29,7 @@ const PlayerTeamComponent = (props: PlayerTeamComponentProps, ref: any) => {
             classNamePrefix="Select"
             styles={SingleSelectCustomStyles}
             className={error ? "error" : ""}
-            options={teamOptions.map(x => teamOptions.indexOf(x) === teamOptions.length - 1 ?
-                { ...x, isLast: true }
-                : { ...x, isLast: false }
-            )}
+            options={teamOptions}
             menuPlacement="auto"
             onChange={(newValue, action) => {
                 onChange((newValue as OptionTypeValueNumber).value);
@@ -38,7 +38,7 @@ const PlayerTeamComponent = (props: PlayerTeamComponentProps, ref: any) => {
             value={
                 teamOptions
                     ? teamOptions.find(
-                        (o: OptionTypeValueNumber) => o.value == value
+                        (o: OptionTypeValueNumber) => o.value === value
                     )
                     : undefined
             }

@@ -1,8 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PositionDto } from "api/Dto/positionDto";
 import { PlayerService } from "api/players/playerService";
-import { AuthService } from "api/requests/authService";
-import { OptionTypeValueString } from "common/components/StyledSelect";
 import { authorizationExpired, UserActions } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
@@ -22,7 +20,7 @@ export const getPositions = createAsyncThunk(
         return responce;
       } else throw new Error("No position found");
     } catch (error: any) {
-      if (error.status == 401) {
+      if (error.status === 401) {
         dispatch(userActions.removeUser());
         UserActions.clearUser();
         return rejectWithValue("Authorization error");
@@ -31,7 +29,7 @@ export const getPositions = createAsyncThunk(
     }
   },
   {
-    condition: (_, { getState, extra }) => {
+    condition: (_, { getState }) => {
       const { positions, user } = getState() as AppStateType;
       if (positions.isFetching) return false;
       if (authorizationExpired(user.currentUser)) return false;
@@ -42,13 +40,11 @@ export const getPositions = createAsyncThunk(
 type PositionSliceStateType = {
   isFetching: boolean;
   list: PositionDto[];
-  options: OptionTypeValueString[];
 };
 
 const initialState = {
   isFetching: false,
   list: [],
-  options: [],
 } as PositionSliceStateType;
 
 const positionSlice = createSlice({
@@ -62,15 +58,7 @@ const positionSlice = createSlice({
       })
       .addCase(getPositions.fulfilled, (state, action: any) => {
         state.isFetching = false;
-        if (action.payload) {
-          let options = new Array<OptionTypeValueString>();
-          action.payload.map((t: PositionDto) =>
-            options.push({ label: t.title, value: t.title })
-          );
-
-          state.list = action.payload;
-          state.options = options;
-        }
+        state.list = action.payload;
       })
       .addCase(getPositions.rejected, (state, action) => {
         state.isFetching = false;

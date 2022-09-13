@@ -1,24 +1,21 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { TeamDto } from "api/Dto/teamDto";
 import { TeamService } from "api/requests/teamService";
-import { OptionTypeValueNumber } from "common/components/StyledSelect";
 import { authorizationExpired, UserActions } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 
-async function LoadTeamOptions() {
+async function LoadTeams() {
   let teamCount = 25;
   let iteration = 0;
-  let options = new Array<OptionTypeValueNumber>();
+  let allTeams = new Array<TeamDto>();
   do {
     iteration++;
     let responce = await TeamService.getTeams("", iteration, 25);
     teamCount = responce.count;
-    responce.data.map((t: TeamDto) =>
-      options.push({ label: t.name, value: t.id })
-    );
-  } while (options.length < teamCount);
-  return options;
+    responce.data.map((t: TeamDto) => allTeams.push(t));
+  } while (allTeams.length < teamCount);
+  return allTeams;
 }
 
 export const getTeamOptions = createAsyncThunk(
@@ -26,12 +23,12 @@ export const getTeamOptions = createAsyncThunk(
   async (_, { rejectWithValue, getState, dispatch }) => {
     try {
       const state = getState() as AppStateType;
-      if (state.teamOptions.options.length > 0)
-        return state.teamOptions.options;
+      if (state.teamList.list.length > 0)
+        return state.teamList.list;
 
-      return LoadTeamOptions();
+      return LoadTeams();
     } catch (error: any) {
-      if (error.status == 401) {
+      if (error.status === 401) {
         dispatch(userActions.removeUser());
         UserActions.clearUser()
         return rejectWithValue("Authorization error");
@@ -41,8 +38,8 @@ export const getTeamOptions = createAsyncThunk(
   },
   {
     condition: (_, { getState }) => {
-      const { teamOptions, user } = getState() as AppStateType;
-      if (teamOptions.isFetching) return false;
+      const { teamList, user } = getState() as AppStateType;
+      if (teamList.isFetching) return false;
       if (authorizationExpired(user.currentUser)) return false;
     },
   }
@@ -50,22 +47,22 @@ export const getTeamOptions = createAsyncThunk(
 
 type TeamOptionSliceStateType = {
   isFetching: boolean;
-  options: OptionTypeValueNumber[];
+  list: TeamDto[];
   error: string | undefined;
 };
 
 const initialState = {
   isFetching: false,
-  options: [],
+  list: [],
   error: undefined,
 } as TeamOptionSliceStateType;
 
-const teamOptionSlice = createSlice({
+const teamListSlice = createSlice({
   name: "teamOptions",
   initialState: initialState,
   reducers: {
     clearState: (state) => {
-      state.options = [];
+      state.list = [];
       state.error = undefined;
       state.isFetching = false;
     },
@@ -78,7 +75,7 @@ const teamOptionSlice = createSlice({
       .addCase(getTeamOptions.fulfilled, (state, action) => {
         state.isFetching = false;
         if (action.payload) {
-          state.options = action.payload;
+          state.list = action.payload;
         }
       })
       .addCase(getTeamOptions.rejected, (state, action) => {
@@ -88,5 +85,5 @@ const teamOptionSlice = createSlice({
   },
 });
 
-export const teamOptionActions = { ...teamOptionSlice.actions };
-export default teamOptionSlice.reducer;
+export const teamOptionActions = { ...teamListSlice.actions };
+export default teamListSlice.reducer;

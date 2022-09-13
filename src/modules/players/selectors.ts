@@ -17,8 +17,8 @@ export const getTeamIds = (state: AppStateType) => {
   return state.players.teamFilter;
 };
 
-export const getTeamsOptions = (state: AppStateType) => {
-  return state.teamOptions.options;
+export const getTeamList = (state: AppStateType) => {
+  return state.teamList.list;
 };
 
 export const getError = (state: AppStateType) => {

@@ -6,7 +6,6 @@ import { TeamService } from "api/requests/teamService";
 import { authorizationExpired } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
-import { teamOptionActions } from "modules/players/hooks/teamOptionSlice";
 
 export const getTeam = createAsyncThunk(
   `team/getTeam`,
@@ -22,7 +21,7 @@ export const getTeam = createAsyncThunk(
       } else throw new Error("Team not found");
       return responce as TeamDto;
     } catch (error: any) {
-      if (error.status == 401) {
+      if (error.status === 401) {
         dispatch(userActions.removeUser());
         return rejectWithValue("Authorization error");
       }
@@ -31,8 +30,7 @@ export const getTeam = createAsyncThunk(
   },
   {
     condition: (id: number, { getState, extra }) => {
-      const { teamOptions, user, team } = getState() as AppStateType;
-      if (teamOptions.isFetching) return false;
+      const { user, team } = getState() as AppStateType;
       if (authorizationExpired(user.currentUser)) return false;
       if (team.team.id === id) return false;
     },
@@ -45,7 +43,7 @@ export const updateTeam = createAsyncThunk(
       const responce = await TeamService.updateTeam(params);
       return responce as TeamDto;
     } catch (error: any) {
-      if (error.status == 401) {
+      if (error.status === 401) {
         dispatch(userActions.removeUser());
         return rejectWithValue("Authorization error");
       }
@@ -60,7 +58,7 @@ export const deleteTeam = createAsyncThunk(
       const responce = await TeamService.deleteTeam(id);
       return responce as TeamDto;
     } catch (error: any) {
-      if (error.status == 401) {
+      if (error.status === 401) {
         dispatch(userActions.removeUser());
         return rejectWithValue("Authorization error");
       }
@@ -75,7 +73,7 @@ export const addTeam = createAsyncThunk(
       const responce = await TeamService.addTeam(player);
       return responce as TeamDto;
     } catch (error: any) {
-      if (error.status == 401) {
+      if (error.status === 401) {
         dispatch(userActions.removeUser());
         return rejectWithValue("Authorization error");
       }

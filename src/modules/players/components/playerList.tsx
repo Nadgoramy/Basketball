@@ -21,7 +21,7 @@ import { StyledPaginateContainer } from "common/components/Pagination/StyledPagi
 import ReactPaginate from "react-paginate";
 import { EmptyList } from "common/components/EmptyList";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
-import { getTeamOptions } from "../hooks/teamOptionSlice";
+import { getTeamOptions } from "../hooks/teamListSlice";
 import { PlayerTeamFilter } from "modules/players/components/playerTeamFilter";
 import debounce from "lodash.debounce";
 import arrowLeft from "asserts/icons/chevron_left.svg";
@@ -44,7 +44,7 @@ export const PlayerList: React.FunctionComponent = () => {
   const { addError } = useAPIError();
   const [requestCompleted, setRequestCompleted] = useState(false);
 
-  const teamNames = useAppSelector(selectors.getTeamsOptions);
+  const teamNames = useAppSelector(selectors.getTeamList);
   useEffect(() => {
     dispatch(getTeamOptions());
     dispatch(playersActions.clearState());
@@ -102,7 +102,7 @@ export const PlayerList: React.FunctionComponent = () => {
         </StyledButton>
       </StyledHeader>
       {isFetching && <Preloader />}
-      {requestCompleted && (!players || players.length == 0) && (
+      {requestCompleted && (!players || players.length === 0) && (
         <EmptyList mode="player" />
       )}
 

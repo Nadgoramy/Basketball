@@ -1,6 +1,5 @@
-import { PositionDto } from "api/Dto/positionDto";
-import { PlayerService } from "api/players/playerService";
-import { OptionTypeValueNumber, OptionTypeValueString, SingleSelectCustomStyles, StyledSelect } from "common/components/StyledSelect";
+
+import { OptionTypeValueNumber, SingleSelectCustomStyles, StyledSelect } from "common/components/StyledSelect";
 import { AppStateType } from "core/redux/configureStore";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import React from "react";
@@ -11,46 +10,21 @@ import { getPositions } from "../hooks/positionSlice";
 type PlayerPositionComponentProps = {
     error?: string
 } & ControllerRenderProps
-async function LoadPositions() {
-    let responce = await PlayerService.getPositions();
-    if (responce) {
-        return responce;
-    }
-}
 
 const PlayerPositionComponent = (props: PlayerPositionComponentProps, ref: any) => {
     const { error, onChange, onBlur, value } = props;
-
-
     const dispatch = useAppDispatch()
-    const positionOptions = useAppSelector(
-        (store: AppStateType) => store.positions.options
+    const positions = useAppSelector(
+        (store: AppStateType) => store.positions.list
     );
     useEffect(() => {
-
         dispatch(getPositions());
     }, []);
-
-    /*
-    let positions: Array<OptionTypeValueNumber> = new Array<OptionTypeValueNumber>();
-    useEffect(() => {
-        if (positions.length == 0) {
-            LoadPositions().then(responce => {
-                if (!responce) { return }
-                //let options = new Array<OptionTypeValueNumber>();
-                responce.map((t: PositionDto) => {
-                    if (!positions.find(x => x.value == t.id)) {
-                        positions.push({ label: t.title, value: t.id })
-                    }
-                }
-                );
-
-                positions.forEach(x => x.isLast = positions.indexOf(x) === positions.length - 1)
-                //positions = options
-                console.log(positions);
-            })
-        }
-    }, []);*/
+    const positionOptions = useMemo(() => {
+        let options = new Array<OptionTypeValueNumber>();
+        positions.map(p => options.push({ label: p.title, value: p.id, isLast: (positions.indexOf(p) === positions.length - 1) }));
+        return options;
+    }, [positions])
 
     return (
         <StyledSelect
@@ -65,13 +39,13 @@ const PlayerPositionComponent = (props: PlayerPositionComponentProps, ref: any) 
             )}
             menuPlacement="auto"
             onChange={(newValue, action) => {
-                onChange((newValue as OptionTypeValueString).value);
+                onChange((newValue as OptionTypeValueNumber).label);
             }}
             onBlur={onBlur}
             value={
                 positionOptions
                     ? positionOptions.find(
-                        (o: OptionTypeValueString) => o.value == value
+                        (o: OptionTypeValueNumber) => o.label === value
                     )
                     : undefined
             }

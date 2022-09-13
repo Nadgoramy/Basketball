@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { NewPlayerDto, PlayerDto } from "api/Dto/playerDto";
 import { PlayerService } from "api/players/playerService";
-import { AuthService } from "api/requests/authService";
 import { authorizationExpired, UserActions } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
@@ -11,14 +10,14 @@ export const getPlayer = createAsyncThunk(
   async (id: number, { rejectWithValue, dispatch, getState }) => {
     try {
       const currentPlayer = (getState() as AppStateType).player.player;
-      if (id == currentPlayer.id) return currentPlayer;
+      if (id === currentPlayer.id) return currentPlayer;
 
       const responce = await PlayerService.getPlayer(id);
       if (responce && (responce as PlayerDto).id) {
         return correctPlayerBirthdayIfNeeded(responce as PlayerDto);
       } else throw new Error("Player not found");
     } catch (error: any) {
-      if (error.status == 401) {
+      if (error.status === 401) {
         dispatch(userActions.removeUser());
         UserActions.clearUser();
         return rejectWithValue("Authorization error");
@@ -42,7 +41,7 @@ export const updatePlayer = createAsyncThunk(
       const responce = await PlayerService.updatePlayer(params);
       return correctPlayerBirthdayIfNeeded(responce as PlayerDto);
     } catch (error: any) {
-      if (error.status == 401) {
+      if (error.status === 401) {
         dispatch(userActions.removeUser());
         UserActions.clearUser();
         return rejectWithValue("Authorization error");
@@ -58,7 +57,7 @@ export const deletePlayer = createAsyncThunk(
       const responce = await PlayerService.deletePlayer(id);
       return responce as PlayerDto;
     } catch (error: any) {
-      if (error.status == 401) {
+      if (error.status === 401) {
         dispatch(userActions.removeUser());
         UserActions.clearUser();
         return rejectWithValue("Authorization error");
@@ -74,7 +73,7 @@ export const addPlayer = createAsyncThunk(
       const responce = await PlayerService.addPlayer(player);
       return correctPlayerBirthdayIfNeeded(responce as PlayerDto);
     } catch (error: any) {
-      if (error.status == 401) {
+      if (error.status === 401) {
         dispatch(userActions.removeUser());
         UserActions.clearUser();
         return rejectWithValue("Authorization error");

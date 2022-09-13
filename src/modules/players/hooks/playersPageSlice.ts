@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PlayerDto, PlayerDtoPageResult } from "api/Dto/playerDto";
+import { TeamDto } from "api/Dto/teamDto";
 import { PlayerService } from "api/players/playerService";
-import { AuthService } from "api/requests/authService";
-import { OptionTypeValueNumber } from "common/components/StyledSelect";
 import { authorizationExpired, UserActions } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
@@ -19,7 +18,7 @@ export const getPlayersPage = createAsyncThunk(
   async (params: IParams, { rejectWithValue, getState, dispatch }) => {
     try {
       const { page, pageSize, filter, teamFilter } = params;
-      const { teamOptions } = getState() as AppStateType;
+      const { teamList } = getState() as AppStateType;
       const response = await PlayerService.getPlayers(
         filter,
         page,
@@ -28,17 +27,16 @@ export const getPlayersPage = createAsyncThunk(
       );
 
       let playerPage = response as PlayerDtoPageResult;
-      if (teamOptions.options) {
+      if (teamList.list) {
         playerPage.data.forEach((x) => {
-          x.teamName = teamOptions.options.find(
-            (to: OptionTypeValueNumber) => to.value == x.team
-          )?.label;
+          x.teamName = teamList.list.find(
+            (to: TeamDto) => to.id === x.team)?.name;
         });
       }
 
       return playerPage;
     } catch (error: any) {
-      if (error.status == 401) {
+      if (error.status === 401) {
         dispatch(userActions.removeUser());
         UserActions.clearUser();
         return rejectWithValue("Authorization error");
@@ -101,11 +99,11 @@ const playersPageSlice = createSlice({
       state.page = 1;
     },
     setPlayerTeamName: (state, action) => {
-      let options = action.payload as OptionTypeValueNumber[];
+      let options = action.payload as TeamDto[];
       if (state.pageItems && options) {
         state.pageItems.forEach(
           (item) =>
-            (item.teamName = options.find((t) => t.value == item.team)?.label)
+            (item.teamName = options.find((t) => t.id === item.team)?.name)
         );
       }
     },
@@ -137,7 +135,7 @@ const playersPageSlice = createSlice({
             });
 
             const newPlayers = action.payload.data.filter(
-              (x) => existingIds.indexOf(x.id) == -1
+              (x) => existingIds.indexOf(x.id) === -1
             );
             state.pageItems = new Array<PlayerDto>().concat(
               previousItems,
