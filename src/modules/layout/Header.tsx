@@ -92,7 +92,7 @@ const Header = (props: IHeaderProps) => {
   const userFromStore = useAppSelector(
     (state: AppStateType) => state.user.currentUser
   );
-
+  console.log("Header is rendering");
   return (
     <StyledHeader>
       <Nav>

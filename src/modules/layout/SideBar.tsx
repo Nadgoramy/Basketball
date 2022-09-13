@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { userActions } from "core/redux/userSlice";
 import { themeColors } from "ThemeColors";
 import { UserActions } from "common/helpers/userCheck";
+import React from "react";
+import { shallowEqual } from "react-redux";
 
 const menu = [
   {
@@ -259,4 +261,4 @@ const SideBar = (props: SideBarProps) => {
     </StyledSideBarContainer>
   );
 };
-export default SideBar; //React.memo(SideBar, shallowEqual);
+export default React.memo(SideBar, shallowEqual);//SideBar; //
