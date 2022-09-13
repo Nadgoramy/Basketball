@@ -21,12 +21,6 @@ import {
 import { StyledButton } from "common/components/Button/Button.styled";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { getPositions } from "../hooks/positionSlice";
-import { getTeamOptions } from "../hooks/teamOptionSlice";
-import {
-  OptionTypeValueNumber,
-  OptionTypeValueString,
-  StyledSelect,
-} from "common/components/StyledSelect";
 import {
   StyledFlexAutoDiv,
   StyledFlexRow,
@@ -37,6 +31,8 @@ import { ErrorInputSpan } from "common/components/ErrorInputSpan";
 import { Preloader } from "common/components/preloader";
 import { playersActions } from "../hooks/playersPageSlice";
 import { useAPIError } from "common/hooks/useApiError";
+import PlayerTeamComponent from "./playerTeamComponent";
+import PlayerPositionComponent from "./playerPositionComponent";
 
 export const PlayerEdit: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
@@ -48,12 +44,10 @@ export const PlayerEdit: React.FunctionComponent = () => {
   const positionOptions = useAppSelector(
     (store: AppStateType) => store.positions.options
   );
-  const teamOptions = useAppSelector(
-    (store: AppStateType) => store.teamOptions.options
-  );
+
   const player = useAppSelector((state: AppStateType) => state.player.player);
 
-  const isFetching = useAppSelector((store) => store.player.isFetching);
+  const isFetching = useAppSelector((store: AppStateType) => store.player.isFetching);
   const [initialState, setInitialState] = useState<PlayerDto | null>();
   const {
     register,
@@ -74,7 +68,7 @@ export const PlayerEdit: React.FunctionComponent = () => {
     birthday: undefined,
   };
 
-  const error = useAppSelector((store) => store.player.error);
+  const error = useAppSelector((store: AppStateType) => store.player.error);
   const { addError } = useAPIError();
   useEffect(() => {
     if (error) addError(error);
@@ -83,7 +77,6 @@ export const PlayerEdit: React.FunctionComponent = () => {
   useEffect(() => {
     dispatch(playerActions.setPlayer(emptyPlayer));
     dispatch(getPositions());
-    dispatch(getTeamOptions());
   }, []);
 
   useEffect(() => {
@@ -162,7 +155,7 @@ export const PlayerEdit: React.FunctionComponent = () => {
     removeImageIfNeeded();
     navigate(-1);
   };
-  const values = watch();
+
   return (
     <StyledEditContainer>
       {isFetching && <Preloader />}
@@ -207,25 +200,12 @@ export const PlayerEdit: React.FunctionComponent = () => {
                   render={({
                     field: { onChange, onBlur, value, name, ref },
                   }) => (
-                    <StyledSelect
-                      border={false}
-                      classNamePrefix="Select"
-                      className={errors.position ? "error" : ""}
-                      id={name}
-                      options={positionOptions}
-                      menuPlacement="auto"
-                      onChange={(newValue, _) => {
-                        onChange((newValue as OptionTypeValueString).value);
-                      }}
+                    <PlayerPositionComponent
+                      error={errors.position?.message}
+                      onChange={onChange}
                       onBlur={onBlur}
-                      value={
-                        positionOptions
-                          ? positionOptions.find(
-                            (o: OptionTypeValueString) => o.value == value
-                          )
-                          : undefined
-                      }
-                      ref={ref}
+                      value={value}
+                      ref={ref} name={name}
                     />
                   )}
                 />
@@ -243,27 +223,13 @@ export const PlayerEdit: React.FunctionComponent = () => {
                   name="team"
                   render={({
                     field: { onChange, onBlur, value, name, ref },
-                    fieldState: { invalid, isTouched, isDirty, error },
-                    formState,
                   }) => (
-                    <StyledSelect
-                      border={false}
-                      classNamePrefix="Select"
-                      className={errors.position ? "error" : ""}
-                      options={teamOptions}
-                      menuPlacement="auto"
-                      onChange={(newValue, action) => {
-                        onChange((newValue as OptionTypeValueNumber).value);
-                      }}
+                    <PlayerTeamComponent
+                      error={errors.team?.message}
+                      onChange={onChange}
                       onBlur={onBlur}
-                      value={
-                        teamOptions
-                          ? teamOptions.find(
-                            (o: OptionTypeValueNumber) => o.value == value
-                          )
-                          : undefined
-                      }
-                      ref={ref}
+                      value={value}
+                      ref={ref} name="team"
                     />
                   )}
                 />

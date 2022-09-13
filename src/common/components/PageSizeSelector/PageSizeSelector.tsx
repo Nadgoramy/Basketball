@@ -1,9 +1,9 @@
 import React from "react";
 import { shallowEqual } from "react-redux";
 import styled from "styled-components";
-import { StyledSelect } from "../StyledSelect";
+import { OptionTypeValueNumber, SingleSelectCustomStyles, StyledSelect } from "../StyledSelect";
 
-const options = [
+const options: OptionTypeValueNumber[] = [
   {
     label: "6",
     value: 6,
@@ -32,7 +32,6 @@ const StyledPageSizeSelector = styled(StyledSelect)`
     height: 28px;
     width: 60px;
   }
-
  
 .Select__indicator {
   align-items: center;
@@ -42,7 +41,6 @@ const StyledPageSizeSelector = styled(StyledSelect)`
       align-items: center;
       }
   }
-
 
 .Select__input-container {
   align-items: center;
@@ -55,7 +53,9 @@ const StyledPageSizeSelector = styled(StyledSelect)`
       
   }
 }
-
+.Select__option {  
+  height: 40px; 
+}
 .Select__value-container {
   @media (max-width: ${({ theme }) => theme.mobile}) {    
     padding: 2px 2px;
@@ -80,7 +80,11 @@ const PageSizeSelector = (props: PageSizeSelectorPropType) => {
       border={true}
       classNamePrefix="Select"
       className="pagesizeSelector"
-      options={options}
+      styles={SingleSelectCustomStyles}
+      options={options.map(x => {
+        options.indexOf(x) === options.length - 1 ? x.isLast = true : x.isLast = false;
+        return x;
+      })}
       defaultValue={options[0]}
       onChange={props.onChange}
       menuPlacement="auto"

@@ -1,7 +1,7 @@
 //import { IRequestBaseBody } from '../helpers/interfaces/requestInterfaces/RequestBase';
 //import { RequestGenericType } from '../helpers/types/types';
 
-import { authorizationExpired, tokenExpired } from "common/helpers/userCheck";
+import { authorizationExpired, tokenExpired, UserActions } from "common/helpers/userCheck";
 import { AuthService, AUTH_API_URL } from "./requests/authService";
 
 const base = process.env.REACT_APP_API;
@@ -20,7 +20,7 @@ interface IRequestBaseBody {
   size?: number; // =0 maximum response body size in bytes. 0 to disable
   timeout?: number; // =0 req/res timeout in ms, it resets on redirect. 0 to disable (OS limit applies)
 }
-class RequestGenericType implements IRequestBaseBody {}
+class RequestGenericType implements IRequestBaseBody { }
 
 const request = async (
   url: string,
@@ -30,14 +30,14 @@ const request = async (
   const headersForToken =
     token && !tokenExpired(token)
       ? {
-          Authorization: `Bearer ${token}`,
-        }
+        Authorization: `Bearer ${token}`,
+      }
       : {};
   const headerForMultiPart =
     typeof data.body === "string"
       ? {
-          "Content-Type": "application/json;charset=utf-8",
-        }
+        "Content-Type": "application/json;charset=utf-8",
+      }
       : {};
   try {
     const response = await fetch(url, {
@@ -70,7 +70,7 @@ const request = async (
 };
 
 export const get = (url: string, token?: string) => {
-  const currentUser = AuthService.getCurrentUser();
+  const currentUser = UserActions.getCurrentUser();
   if (!currentUser || authorizationExpired(currentUser))
     return Promise.reject({
       isCustomError: true,
@@ -85,7 +85,7 @@ export function post<T extends RequestGenericType>(
   body: T,
   token?: string
 ) {
-  const currentUser = AuthService.getCurrentUser();
+  const currentUser = UserActions.getCurrentUser();
   if (
     (!currentUser || authorizationExpired(currentUser)) &&
     !url.startsWith(AUTH_API_URL)
@@ -104,7 +104,7 @@ export function post<T extends RequestGenericType>(
 }
 
 export const remove = (url: string, token?: string) => {
-  const currentUser = AuthService.getCurrentUser();
+  const currentUser = UserActions.getCurrentUser();
   if (!currentUser || authorizationExpired(currentUser))
     return Promise.reject({
       isCustomError: true,
@@ -119,7 +119,7 @@ export function put<T extends RequestGenericType>(
   body: T,
   token?: string
 ) {
-  const currentUser = AuthService.getCurrentUser();
+  const currentUser = UserActions.getCurrentUser();
   if (!currentUser || authorizationExpired(currentUser))
     return Promise.reject({
       isCustomError: true,
@@ -139,7 +139,7 @@ export function imagePost<T extends RequestGenericType>(
   body: FormData,
   token?: string
 ) {
-  const currentUser = AuthService.getCurrentUser();
+  const currentUser = UserActions.getCurrentUser();
   if (!currentUser || authorizationExpired(currentUser))
     return Promise.reject({
       isCustomError: true,

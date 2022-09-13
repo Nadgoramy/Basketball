@@ -1,6 +1,6 @@
 import { AppStateType } from "core/redux/configureStore";
-import { HTMLAttributes, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { HTMLAttributes } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import teamImg from "asserts/images/group_person.svg";
 import playerImg from "asserts/images/person.svg";
@@ -11,9 +11,7 @@ import SingoutImg from "asserts/images/singout.svg";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { userActions } from "core/redux/userSlice";
 import { themeColors } from "ThemeColors";
-import { shallowEqual } from "react-redux";
-import React from "react";
-import { AuthService } from "api/requests/authService";
+import { UserActions } from "common/helpers/userCheck";
 
 const menu = [
   {
@@ -33,6 +31,25 @@ const menu = [
 interface StyledSideBarPropsType extends HTMLAttributes<HTMLHeadingElement> {
   show: boolean;
 }
+
+export const StyledSideBarContainer = styled.div<StyledSideBarPropsType>`
+  position: fixed;
+  width: 140px;
+  left: 0;
+  top: 80px;
+  bottom: 0;
+  display: block;
+  @media (max-width: ${({ theme }) => theme.mobile}) {
+    position: fixed;
+    top: 62px;
+    width: 100vw;
+    height: calc(100vh - 62px);
+    z-index: 8888;
+    background: rgba(65, 65, 65, 0.6);
+    left: ${(props: StyledSideBarPropsType) => (props.show ? "0" : "-100vw")};
+  }
+`;
+
 const StyledSideBar = styled.div<StyledSideBarPropsType>`
   position: fixed;
   width: 140px;
@@ -46,9 +63,9 @@ const StyledSideBar = styled.div<StyledSideBarPropsType>`
   @media (max-width: ${({ theme }) => theme.mobile}) {
     top: 62px;
     width: 200px;
-    z-index: 8888;
-    background: ${themeColors.white};
-    display: ${(props) => (props.show ? "" : "none")};
+    //z-index: 8888;
+    background: ${themeColors.white};    
+    left: ${(props: StyledSideBarPropsType) => (props.show ? "0" : "-100vw")};
   }
 `;
 const UserProfile = styled.div`
@@ -195,7 +212,7 @@ const SideBar = (props: SideBarProps) => {
   const dispatch = useAppDispatch();
   const singout = () => {
     dispatch(userActions.removeUser());
-    AuthService.clearUser()
+    UserActions.clearUser()
   };
 
   const userFromStore = useAppSelector(
@@ -203,17 +220,18 @@ const SideBar = (props: SideBarProps) => {
   );
   const itemIsActive = (item: any) => item.link.indexOf(props.activeItem) > 0;
   console.log("sideBar is rendering");
-  if (userFromStore)
-    return (
+
+  return (
+    <StyledSideBarContainer show={props.isOpen}>
       <StyledSideBar show={props.isOpen}>
         <UserProfile>
           <div>
             <img
               src={
-                userFromStore.avatarUrl ? userFromStore.avatarUrl : noUserImg
+                userFromStore?.avatarUrl ? userFromStore.avatarUrl : noUserImg
               }
             />
-            <label>{userFromStore.name}</label>
+            <label>{userFromStore?.name}</label>
           </div>
         </UserProfile>
 
@@ -238,7 +256,7 @@ const SideBar = (props: SideBarProps) => {
           </SingOutLink>
         </LogOutContainer>
       </StyledSideBar>
-    );
-  else return <></>;
+    </StyledSideBarContainer>
+  );
 };
-export default React.memo(SideBar, shallowEqual);
+export default SideBar; //React.memo(SideBar, shallowEqual);

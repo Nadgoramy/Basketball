@@ -40,7 +40,8 @@ export const StyledMainContainer = styled.div`
   flex-direction: row;
   align-items: stretch;
   margin: 0;
-  gap: 5%;
+  gap: 8%;
+  padding: 0 2%;
   background-color: #fff;
   background-color: ${themeColors.white};
 
@@ -51,7 +52,7 @@ export const StyledMainContainer = styled.div`
   }
 
   & > div {
-    flex: 1 1 40%;
+    flex: 1 1 37%;
     @media (max-width: ${({ theme }) => theme.mobile}) {
       flex: 1 1 auto;
     }

@@ -1,20 +1,19 @@
-import React from "react";
+import { UserDto } from "api/Dto/userDto";
 import { post } from "../baseRequest";
-import { AuthUserDto } from "../Dto/AuthUserDto";
 
 export const AUTH_API_URL = "auth/";
 const throwError = (msg: string) => {
   throw Error(msg);
 };
 
-const register = (username: string, login: string, password: string) => {
+const register = (username: string, login: string, password: string): Promise<UserDto> => {
   return post(AUTH_API_URL + "signup", {
     username,
     login,
     password,
   });
 };
-const login = (login: string, password: string) => {
+const login = (login: string, password: string): Promise<UserDto> => {
   console.log(login + "/" + password);
   return post(AUTH_API_URL + "signin", {
     login,
@@ -22,7 +21,7 @@ const login = (login: string, password: string) => {
   });
 };
 
-const change = (username: string, avatarUrl: string) => {
+const change = (username: string, avatarUrl: string): Promise<UserDto> => {
   return post(AUTH_API_URL + "change", {
     username,
     avatarUrl,
@@ -31,23 +30,10 @@ const change = (username: string, avatarUrl: string) => {
   });
 };
 
-const getCurrentUser = (): AuthUserDto | null => {
-  const userFromStorage = localStorage.getItem("user");
-  if (!userFromStorage) return null;
-  const user = JSON.parse(userFromStorage);
-  return {
-    name: user.name,
-    avatarUrl: user.avatarUrl,
-    token: user.token,
-  } as AuthUserDto;
-};
-const clearUser = () => {
-  localStorage.removeItem("user");
-};
 
 export const AuthService = {
   register,
   login,
-  getCurrentUser,
-  clearUser
+  //getCurrentUser,
+  //clearUser
 };

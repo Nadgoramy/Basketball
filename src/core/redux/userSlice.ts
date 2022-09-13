@@ -1,13 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { AuthService } from "api/requests/authService";
 import { LoginFormDto, RegisterFormDto, UserDto } from "api/Dto/userDto";
+import { UserActions } from "common/helpers/userCheck";
 
 export const login = createAsyncThunk(
   `user/login`,
   async (params: LoginFormDto, { rejectWithValue }) => {
     try {
       const responce = await AuthService.login(params.login, params.password);
-      localStorage.setItem("user", JSON.stringify(responce));
+      UserActions.setCurrentUser(JSON.stringify(responce));
       return responce;
     } catch (error: any) {
       if (error.status == 401)
@@ -29,7 +30,7 @@ export const register = createAsyncThunk(
         params.password
       )
         .then((responce) => {
-          localStorage.setItem("user", JSON.stringify(responce));
+          UserActions.setCurrentUser(JSON.stringify(responce));
           return responce;
         })
         .catch((err) => {
@@ -66,7 +67,7 @@ const userSlice = createSlice({
     },
     removeUser: (state) => {
       state.currentUser = undefined;
-      localStorage.removeItem("user");
+      UserActions.clearUser();
     },
     removeError: (state) => {
       state.error = undefined;

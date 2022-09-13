@@ -1,11 +1,10 @@
-import { AuthService } from "./authService";
 import { imagePost, post, remove } from "../baseRequest";
+import { UserActions } from "common/helpers/userCheck";
 
 const API_URL = "image/";
 
 const saveImage = async (file: File) => {
-  const buff = await file.arrayBuffer();
-  const currentUser = AuthService.getCurrentUser();
+  const currentUser = UserActions.getCurrentUser();
   if (!currentUser) return null;
   let formData = new FormData();
   formData.append("file", file);
@@ -18,7 +17,7 @@ const saveImage = async (file: File) => {
 };
 
 const deleteImage = (fileName: string) => {
-  const currentUser = AuthService.getCurrentUser();
+  const currentUser = UserActions.getCurrentUser();
   if (!currentUser) return null;
   return remove(
     API_URL + "DeleteImage?fileName=" + fileName,

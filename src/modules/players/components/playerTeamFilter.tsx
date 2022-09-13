@@ -6,7 +6,6 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
-import { StyledMultiSelect } from "common/components/StyledMultiSelect";
 import ReactSelect, { components, ControlProps, CSSObjectWithLabel, GroupBase, MultiValueProps, StylesConfig } from "react-select";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { playersActions } from "modules/players/hooks/playersPageSlice";
@@ -14,7 +13,6 @@ import { OptionTypeValueNumber } from "common/components/StyledSelect";
 import { getTeamIds, getTeamsOptions } from "modules/players/selectors";
 import { LoadTeamOptions } from "../helpers/teamOptions";
 import { useAsyncHook } from "common/helpers/useAsyncHook";
-import { CSSProperties } from "react";
 import styled, { CSSObject } from "styled-components";
 import { themeColors } from "ThemeColors";
 
@@ -228,7 +226,7 @@ export const PlayerTeamFilter: React.FunctionComponent = () => {
         ...provided,
         backgroundColor: state.isSelected ? themeColors.light_red : themeColors.white,
         color: state.isSelected ? themeColors.white : themeColors.light_grey,
-        borderBottom: "0.5px solid " + themeColors.lightest_grey,
+        borderBottom: teamNames[teamNames.length - 1].value != (state.data as OptionTypeValueNumber).value ? "0.5px solid " + themeColors.lightest_grey : "none",
         overflowWrap: "anywhere",
         fontWeight: "500",
         fontSize: "14px",

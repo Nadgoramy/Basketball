@@ -3,7 +3,7 @@ import { PlayerDto, PlayerDtoPageResult } from "api/Dto/playerDto";
 import { PlayerService } from "api/players/playerService";
 import { AuthService } from "api/requests/authService";
 import { OptionTypeValueNumber } from "common/components/StyledSelect";
-import { authorizationExpired } from "common/helpers/userCheck";
+import { authorizationExpired, UserActions } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 
@@ -40,7 +40,7 @@ export const getPlayersPage = createAsyncThunk(
     } catch (error: any) {
       if (error.status == 401) {
         dispatch(userActions.removeUser());
-        AuthService.clearUser();
+        UserActions.clearUser();
         return rejectWithValue("Authorization error");
       }
       return rejectWithValue(error.message);

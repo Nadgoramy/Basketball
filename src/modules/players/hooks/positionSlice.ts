@@ -3,7 +3,7 @@ import { PositionDto } from "api/Dto/positionDto";
 import { PlayerService } from "api/players/playerService";
 import { AuthService } from "api/requests/authService";
 import { OptionTypeValueString } from "common/components/StyledSelect";
-import { authorizationExpired } from "common/helpers/userCheck";
+import { authorizationExpired, UserActions } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 
@@ -24,7 +24,7 @@ export const getPositions = createAsyncThunk(
     } catch (error: any) {
       if (error.status == 401) {
         dispatch(userActions.removeUser());
-        AuthService.clearUser();
+        UserActions.clearUser();
         return rejectWithValue("Authorization error");
       }
       return rejectWithValue(error.message);
@@ -63,13 +63,13 @@ const positionSlice = createSlice({
       .addCase(getPositions.fulfilled, (state, action: any) => {
         state.isFetching = false;
         if (action.payload) {
-          let optopns = new Array<OptionTypeValueString>();
+          let options = new Array<OptionTypeValueString>();
           action.payload.map((t: PositionDto) =>
-            optopns.push({ label: t.title, value: t.title })
+            options.push({ label: t.title, value: t.title })
           );
 
           state.list = action.payload;
-          state.options = optopns;
+          state.options = options;
         }
       })
       .addCase(getPositions.rejected, (state, action) => {

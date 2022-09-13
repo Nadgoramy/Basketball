@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { NewPlayerDto, PlayerDto } from "api/Dto/playerDto";
 import { PlayerService } from "api/players/playerService";
 import { AuthService } from "api/requests/authService";
-import { authorizationExpired } from "common/helpers/userCheck";
+import { authorizationExpired, UserActions } from "common/helpers/userCheck";
 import { AppStateType } from "core/redux/configureStore";
 import { userActions } from "core/redux/userSlice";
 
@@ -20,7 +20,7 @@ export const getPlayer = createAsyncThunk(
     } catch (error: any) {
       if (error.status == 401) {
         dispatch(userActions.removeUser());
-        AuthService.clearUser();
+        UserActions.clearUser();
         return rejectWithValue("Authorization error");
       }
       return rejectWithValue(error.message);
@@ -44,7 +44,7 @@ export const updatePlayer = createAsyncThunk(
     } catch (error: any) {
       if (error.status == 401) {
         dispatch(userActions.removeUser());
-        AuthService.clearUser();
+        UserActions.clearUser();
         return rejectWithValue("Authorization error");
       }
       return rejectWithValue(error.message);
@@ -60,7 +60,7 @@ export const deletePlayer = createAsyncThunk(
     } catch (error: any) {
       if (error.status == 401) {
         dispatch(userActions.removeUser());
-        AuthService.clearUser();
+        UserActions.clearUser();
         return rejectWithValue("Authorization error");
       }
       return rejectWithValue(error.message);
@@ -76,7 +76,7 @@ export const addPlayer = createAsyncThunk(
     } catch (error: any) {
       if (error.status == 401) {
         dispatch(userActions.removeUser());
-        AuthService.clearUser();
+        UserActions.clearUser();
         return rejectWithValue("Authorization error");
       }
       return rejectWithValue(error.message);

@@ -5,6 +5,7 @@ import noUserImg from "asserts/images/profile.svg";
 import { useAppSelector } from "core/redux/store";
 import { themeColors } from "ThemeColors";
 import React from "react";
+import { shallowEqual } from "react-redux";
 
 const StyledHeader = styled.header`
   position: absolute;
@@ -13,11 +14,12 @@ const StyledHeader = styled.header`
   top: 0%;
 
   background: ${themeColors.white};
-  box-shadow: 0px 1px 10px rgba(209, 209, 209, 0.5);
+  box-shadow: 0px 1px 10px rgba(209, 209, 209, 0.5);  
 
   @media (max-width: ${({ theme }) => theme.mobile}) {
     padding: 0;
     height: 62px;
+    box-shadow: none; 
   }
 `;
 const Nav = styled.nav`
@@ -113,10 +115,4 @@ const Header = (props: IHeaderProps) => {
   );
 };
 
-const areEqual = (prevProps: IHeaderProps, nextProps: IHeaderProps) => {
-  /*if (prevProps.toggleMobileSideBar === nextProps.toggleMobileSideBar) {
-    return true; // donot re-render
-  }*/
-  return true;
-};
-export default React.memo(Header, areEqual);
+export default React.memo(Header, shallowEqual);

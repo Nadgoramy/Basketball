@@ -1,5 +1,4 @@
 import { UnauthApp } from "modules/auth/UnauthApp";
-import { AuthService } from "api/requests/authService";
 import { AppStateType } from "core/redux/configureStore";
 import { ThemeProvider } from "styled-components";
 import { AuthApp } from "modules/layout/AuthApp";
@@ -14,11 +13,11 @@ import { PlayerInfo } from "modules/players/components/PlayerInfo";
 import { PlayerList } from "modules/players/components/playerList";
 import { useAppDispatch, useAppSelector } from "core/redux/store";
 import { userActions } from "core/redux/userSlice";
-import { authorizationExpired } from "common/helpers/userCheck";
+import { authorizationExpired, UserActions } from "common/helpers/userCheck";
 
 export const App = () => {
   const dispatch = useAppDispatch();
-  const user = AuthService.getCurrentUser();
+  const user = UserActions.getCurrentUser();
   const userFromStorage = useAppSelector(
     (state: AppStateType) => state.user.currentUser
   );

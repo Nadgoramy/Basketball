@@ -1,5 +1,4 @@
 import { UserDto } from "api/Dto/userDto";
-import { AuthService } from "api/requests/authService";
 
 const parseJwt = (token: string) => {
   try {
@@ -9,7 +8,7 @@ const parseJwt = (token: string) => {
   }
 };
 export const isUserAuthorised = () => {
-  const currentUser = AuthService.getCurrentUser();
+  const currentUser = getCurrentUser();
   if (!currentUser || authorizationExpired(currentUser)) {
     return false;
   }
@@ -29,4 +28,33 @@ export const tokenExpired = (token?: string) => {
     }
     return false;
   } else return true;
+};
+
+export const getCurrentUser = (): UserDto | null => {
+  const userFromStorage = localStorage.getItem("user");
+  if (!userFromStorage) return null;
+  const user = JSON.parse(userFromStorage);
+  if (tokenExpired(user.token)) return null;
+  return {
+    name: user.name,
+    avatarUrl: user.avatarUrl,
+    token: user.token,
+  } as UserDto;
+};
+
+const setCurrentUser = (userInfo: string) => {
+  localStorage.setItem("user", userInfo);
+};
+
+const clearUser = () => {
+  localStorage.removeItem("user");
+};
+
+export const UserActions = {
+  getCurrentUser,
+  setCurrentUser,
+  clearUser,
+  isUserAuthorised,
+  tokenExpired,
+  authorizationExpired
 };

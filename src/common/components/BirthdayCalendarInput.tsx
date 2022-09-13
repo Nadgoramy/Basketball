@@ -3,7 +3,7 @@ import DatePicker, {
   CalendarContainer,
   ReactDatePickerProps,
 } from "react-datepicker";
-import { forwardRef, Ref } from "react";
+import { forwardRef } from "react";
 import { Input, InputProps } from "./Input/Input";
 import calendarSvg from "asserts/icons/calendar-blank.svg";
 import "react-datepicker/dist/react-datepicker.css";
