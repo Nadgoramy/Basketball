@@ -65,7 +65,6 @@ const StyledSideBar = styled.div<StyledSideBarPropsType>`
   @media (max-width: ${({ theme }) => theme.mobile}) {
     top: 62px;
     width: 200px;
-    //z-index: 8888;
     background: ${themeColors.white};    
     left: ${(props: StyledSideBarPropsType) => (props.show ? "0" : "-100vw")};
   }
@@ -261,4 +260,4 @@ const SideBar = (props: SideBarProps) => {
     </StyledSideBarContainer>
   );
 };
-export default React.memo(SideBar, shallowEqual);//SideBar; //
+export default React.memo(SideBar, shallowEqual);
