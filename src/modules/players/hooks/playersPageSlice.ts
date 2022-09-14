@@ -108,7 +108,8 @@ const playersPageSlice = createSlice({
       }
     },
     clearState: (state) => {
-      state = initialState;
+      state.isFetching = false;
+      state.error = undefined;
     },
   },
   extraReducers: (builder) => {

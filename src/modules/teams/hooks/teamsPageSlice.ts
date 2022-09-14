@@ -75,7 +75,8 @@ const teamsPageSlice = createSlice({
       state.page = 1;
     },
     clearState: (state) => {
-      state = initialState;
+      state.isFetching = false;
+      state.error = undefined;
     },
   },
   extraReducers: (builder) => {
