@@ -32,11 +32,7 @@ const PlayerPositionComponent = (props: PlayerPositionComponentProps, ref: any) 
             classNamePrefix="Select"
             styles={SingleSelectCustomStyles}
             className={error ? "error" : ""}
-            options={positionOptions.map(x =>
-                positionOptions.indexOf(x) === positionOptions.length - 1 ?
-                    { ...x, isLast: true }
-                    : { ...x, isLast: false }
-            )}
+            options={positionOptions}
             menuPlacement="auto"
             onChange={(newValue, action) => {
                 onChange((newValue as OptionTypeValueNumber).label);

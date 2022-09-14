@@ -48,7 +48,7 @@ export const StyledSideBarContainer = styled.div<StyledSideBarPropsType>`
     height: calc(100vh - 62px);
     z-index: 8888;
     background: rgba(65, 65, 65, 0.6);
-    left: ${(props: StyledSideBarPropsType) => (props.show ? "0" : "-100vw")};
+    left: ${(props: StyledSideBarPropsType) => (props.show ? "0" : "100vw")};
   }
 `;
 
@@ -66,7 +66,7 @@ const StyledSideBar = styled.div<StyledSideBarPropsType>`
     top: 62px;
     width: 200px;
     background: ${themeColors.white};    
-    left: ${(props: StyledSideBarPropsType) => (props.show ? "0" : "-100vw")};
+    left: ${(props: StyledSideBarPropsType) => (props.show ? "0" : "100vw")};
   }
 `;
 const UserProfile = styled.div`

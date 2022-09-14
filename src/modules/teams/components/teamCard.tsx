@@ -24,8 +24,8 @@ export const TeamCard: React.FunctionComponent<PropsType> = (
     >
       <CardComponents.StyledTeamImageContainer url={props.team.imageUrl} />
       <CardComponents.StyledTeamFooter>
-        <h4 title={props.team.name}>{props.team.name}</h4>
-        <span>Year of foundation: {props.team.foundationYear}</span>
+        <h4 title={props.team.name}>{props.team.name?.someWords(3)}</h4>
+        <h5>{"Year of foundation: " + props.team.foundationYear}</h5>
       </CardComponents.StyledTeamFooter>
     </CardComponents.StyledContainer>
   );

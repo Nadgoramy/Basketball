@@ -141,7 +141,7 @@ export const TeamEdit = () => {
           <DragDropFile handleFiles={handleFiles} url={currentImageUrl} />
         </div>
         <div>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit((e) => onSubmit(e as TeamDto))}>
             <div>
               <p>Name</p>
               <Input

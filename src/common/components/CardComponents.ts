@@ -63,6 +63,10 @@ export const StyledFooter = styled.div`
   height: 100px;
   bottom: 0;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background: ${themeColors.dark_grey};
   border-radius: 0px 0px 4px 4px;
   color: ${themeColors.white};
@@ -72,7 +76,97 @@ export const StyledFooter = styled.div`
     height: 76px;
   }
 
-  span {
+  h4 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 20px;
+    margin-bottom: 12px;
+    
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 22px;
+    color: ${themeColors.white};
+
+    width: 90%;
+    max-height: 44px;
+
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      font-size: 15px;
+      line-height: 24px;
+      font-weight: 500;
+      margin-top: 14px;
+      margin-bottom: 0px;
+
+      margin-top: 0px;
+      margin-bottom: 4px;
+    }
+  }
+
+  h5{
+    text-overflow: ellipsis;
+    margin: 0 auto;
+    width: 90%;
+    word-break: break-all;
+    max-height: 24px;
+    overflow: hidden;
+
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+    color: ${themeColors.light_grey};
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      font-size: 13px;
+      line-height: 18px;
+      max-height: 18px;
+    }
+  }
+`;
+
+export const StyledTeamFooter = styled(StyledFooter)` 
+  gap: 4px;
+  @media (max-width: ${({ theme }) => theme.mobile}) {
+    height: 94px;
+  }
+
+  h4 {
+    //margin-top: 0px;
+    text-overflow: ellipsis;
+
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      margin-top: 0px;
+      margin-bottom: 4px;
+    }
+  }
+  h5 {
+    text-overflow: ellipsis;
+  }
+  span{
+    width:95%;
+    overflow: hidden;
+  }
+`;
+export const StyledPlayerFooter = styled(StyledFooter)`
+  h4 {    
+    text-overflow: ellipsis;
+
+    @media (max-width: ${({ theme }) => theme.mobile}) {
+      margin-top: 0px;
+      margin-bottom: 4px;
+    }
+  }
+  h5 {
+    text-overflow: ellipsis;
+    margin-bottom:4px;
+  }
+  span.number{
+    color: ${themeColors.red};
+  }
+`;
+
+
+/*
+span {
     font-weight: 500;
     font-size: 14px;
     line-height: 24px;
@@ -82,7 +176,7 @@ export const StyledFooter = styled.div`
       font-size: 13px;
       line-height: 18px;
     }
-  }
+  } 
   h4 {
     overflow: hidden;
     margin-top: 20px;
@@ -114,24 +208,4 @@ export const StyledFooter = styled.div`
       margin-bottom: 8px;
     }
   }
-`;
-
-export const StyledTeamFooter = styled(StyledFooter)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  @media (max-width: ${({ theme }) => theme.mobile}) {
-    height: 94px;
-  }
-
-  h4 {
-    margin-top: 0px;
-    color: ${themeColors.white};
-    @media (max-width: ${({ theme }) => theme.mobile}) {
-      margin-top: 0px;
-      margin-bottom: 4px;
-    }
-  }
-`;
+  */

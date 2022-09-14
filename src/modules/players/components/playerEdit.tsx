@@ -12,7 +12,7 @@ import { Input } from "common/components/Input/Input";
 import { DragDropFile } from "common/components/DragDropFile";
 import { ImageService } from "api/requests/imageServise";
 import { StyledLink } from "common/components/Link/styledLink";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, FieldError, useForm } from "react-hook-form";
 import {
   StyledEditContainer,
   StyledHeaderContainer,
@@ -172,7 +172,7 @@ export const PlayerEdit: React.FunctionComponent = () => {
                 <p>Name</p>
                 <Input
                   type="text"
-                  error={errors.name?.message}
+                  error={errors.name ? (errors.name as FieldError).message : undefined}
                   {...register("name", {
                     required: "Name is required",
                     maxLength: {

@@ -1,5 +1,5 @@
 export interface NewPlayerDto {
-  name?: string;
+  name?: String;
   number?: number;
   height?: number;
   birthday?: Date;
